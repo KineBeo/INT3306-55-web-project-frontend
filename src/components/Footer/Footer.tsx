@@ -37,9 +37,7 @@ const widgetMenus: WidgetFooterMenu[] = [
   {
     id: "3",
     title: "Cargo",
-    menus: [
-      { href: "#", label: "Cargo Website" },
-    ],
+    menus: [{ href: "#", label: "Cargo Website" }],
   },
   {
     id: "4",
@@ -59,17 +57,11 @@ const Footer: React.FC = () => {
   const renderWidgetMenuItem = (menu: WidgetFooterMenu, index: number) => {
     return (
       <div key={index} className="text-sm">
-        <h2 className="font-semibold text-neutral-700">
-          {menu.title}
-        </h2>
+        <h2 className="font-semibold text-neutral-700">{menu.title}</h2>
         <ul className="mt-5 space-y-4">
           {menu.menus.map((item, index) => (
             <li key={index}>
-              <a
-                key={index}
-                className="text-neutral-6000 hover:text-black"
-                href={item.href}
-              >
+              <a key={index} className="text-neutral-6000 hover:text-black" href={item.href}>
                 {item.label}
               </a>
             </li>

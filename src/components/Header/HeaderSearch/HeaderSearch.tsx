@@ -12,11 +12,7 @@ export interface HeaderSearchProps {
 }
 const TABS: SearchTab[] = ["Book", "Manage Booking", "Online Check-in"];
 
-const HeaderSearch: FC<HeaderSearchProps> = ({
-  className = "",
-  defaultTab = "Book",
-  onTabChange,
-}) => {
+const HeaderSearch: FC<HeaderSearchProps> = ({ className = "", defaultTab = "Book", onTabChange }) => {
   const [tabActive, setTabActive] = useState<SearchTab>(defaultTab);
 
   useEffect(() => {
@@ -34,12 +30,12 @@ const HeaderSearch: FC<HeaderSearchProps> = ({
                 setTabActive(tab);
                 onTabChange && onTabChange(tab);
               }}
-              className={`relative flex-shrink-0 flex items-center cursor-pointer text-base ${active
+              className={`relative flex-shrink-0 flex items-center cursor-pointer text-base ${
+                active
                   ? "text-neutral-900 dark:text-neutral-200 font-medium"
                   : "text-neutral-500 dark:text-neutral-300 "
-                } `}
-              key={tab}
-            >
+              } `}
+              key={tab}>
               <div className="relative select-none">
                 <span>{tab}</span>
                 {active && (
@@ -54,14 +50,11 @@ const HeaderSearch: FC<HeaderSearchProps> = ({
   };
 
   const renderForm = () => {
-    return <SearchForm />
+    return <SearchForm />;
   };
 
   return (
-    <div
-      className={`nc-HeroSearchFormSmall ${className}`}
-      data-nc-id="HeroSearchFormSmall"
-    >
+    <div className={`nc-HeaderSearchFormSmall ${className}`} data-nc-id="HeaderSearchFormSmall">
       {renderTab()}
       <div className="mt-2">{renderForm()}</div>
     </div>

@@ -23,7 +23,8 @@
     "react-datepicker": "^7.5.0",
     "react-dom": "^18",
     "react-hooks-global-state": "^2.1.0",
-    "react-use": "^17.5.1"
+    "react-use": "^17.5.1",
+    "sass": "^1.80.6"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -74,30 +74,30 @@
   transform-origin: 50% 50% 0px;
 }
 
-// HERO
-.nc-hero-field-padding {
+// Header
+.nc-Header-field-padding {
   @apply py-3 px-4 md:py-4 md:px-7 xl:py-6 xl:px-8;
 }
 
-.nc-hero-field-padding--small {
+.nc-Header-field-padding--small {
   @apply py-3 px-4 md:py-3 md:px-7 xl:px-8;
 }
 
-.nc-hero-field-focused {
+.nc-Header-field-focused {
   @apply rounded-full dark:bg-white/5;
   box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px,
     rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
 
 .ListingDetailPage {
-  .nc-hero-field-focused {
+  .nc-Header-field-focused {
     @apply rounded-3xl shadow-2xl;
   }
   &.nc-ListingExperiencesDetailPage {
-    .ExperiencesDateSingleInput .nc-hero-field-focused {
+    .ExperiencesDateSingleInput .nc-Header-field-focused {
       @apply rounded-r-none;
     }
-    .listingExperiencesDetailPage__GuestsInput .nc-hero-field-focused {
+    .listingExperiencesDetailPage__GuestsInput .nc-Header-field-focused {
       @apply rounded-l-none;
     }
   }
@@ -112,17 +112,17 @@
 }
 
 .nc-ListingStayDetailPage__guestsInput {
-  .nc-hero-field-focused {
+  .nc-Header-field-focused {
     @apply rounded-t-none;
   }
 }
 .nc-ListingStayDetailPage__stayDatesRangeInput {
-  .nc-hero-field-focused {
+  .nc-Header-field-focused {
     @apply rounded-b-none;
   }
 }
 
-.nc-hero-field-focused--2 {
+.nc-Header-field-focused--2 {
   @apply rounded-full dark:bg-white/5;
   box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px,
     rgba(17, 17, 26, 0.05) 0px 8px 32px;

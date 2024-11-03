@@ -56,10 +56,7 @@ const LocationInput: FC<LocationInputProps> = ({
     setShowPopover(false);
   };
 
-  const testLocation = ["Ha Noi, Viet Nam",
-          "Ho Chi Minh, Viet Nam",
-          "Da Nang, Viet Nam",
-          "Hue, Viet Nam",];
+  const testLocation = ["Ha Noi, Viet Nam", "Ho Chi Minh, Viet Nam", "Da Nang, Viet Nam", "Hue, Viet Nam"];
   const renderSearchValue = () => {
     return (
       <>
@@ -67,14 +64,11 @@ const LocationInput: FC<LocationInputProps> = ({
           <span
             onClick={() => handleSelectLocation(item)}
             key={item}
-            className="flex px-4 sm:px-6 items-center space-x-3 py-4 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer"
-          >
+            className="flex px-4 sm:px-6 items-center space-x-3 py-4 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer">
             <span className="block text-neutral-400">
               <MapPinIcon className="h-4 w-4 sm:h-6 sm:w-6" />
             </span>
-            <span className="block text-neutral-700 dark:text-neutral-200">
-              {item}
-            </span>
+            <span className="block text-neutral-700 dark:text-neutral-200">{item}</span>
           </span>
         ))}
       </>
@@ -85,10 +79,9 @@ const LocationInput: FC<LocationInputProps> = ({
     <div className={`relative flex ${className}`} ref={containerRef}>
       <div
         onClick={() => setShowPopover(true)}
-        className={`flex flex-1 relative z-10 [ nc-hero-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left ${
-          showPopover ? "nc-hero-field-focused--2" : ""
-        }`}
-      >
+        className={`flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left ${
+          showPopover ? "nc-Header-field-focused--2" : ""
+        }`}>
         <div className="flex-1">
           <input
             className={`block w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-400 xl:text-base font-semibold placeholder-neutral-800 dark:placeholder-neutral-200 truncate`}
@@ -101,16 +94,13 @@ const LocationInput: FC<LocationInputProps> = ({
           <span className="block mt-0.5 text-sm text-neutral-400 font-light ">
             <span className="line-clamp-1">{!!value ? placeHolder : desc}</span>
           </span>
-          {value && showPopover && (
-            <ClearDataButton onClick={() => setValue("")} />
-          )}
+          {value && showPopover && <ClearDataButton onClick={() => setValue("")} />}
         </div>
       </div>
 
       {showPopover && (
         <div
-          className={`h-8 absolute self-center top-1/2 -translate-y-1/2 z-0 bg-white dark:bg-neutral-800 ${divHideVerticalLineClass}`}
-        ></div>
+          className={`h-8 absolute self-center top-1/2 -translate-y-1/2 z-0 bg-white dark:bg-neutral-800 ${divHideVerticalLineClass}`}></div>
       )}
 
       {showPopover && (
