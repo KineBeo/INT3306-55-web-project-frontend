@@ -7,6 +7,7 @@ import ClearDataButton from "@/shared/ClearDataButton";
 import { useRef } from "react";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { MapPinIcon } from "@heroicons/react/24/outline";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 
 export interface LocationInputProps {
   onInputDone?: (value: string) => void;
@@ -64,11 +65,11 @@ const LocationInput: FC<LocationInputProps> = ({
           <span
             onClick={() => handleSelectLocation(item)}
             key={item}
-            className="flex px-4 sm:px-6 items-center space-x-3 py-4 hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer">
+            className="flex px-4 sm:px-6 items-center space-x-3 py-4 hover:bg-neutral-100 cursor-pointer">
             <span className="block text-neutral-400">
               <MapPinIcon className="h-4 w-4 sm:h-6 sm:w-6" />
             </span>
-            <span className="block text-neutral-700 dark:text-neutral-200">{item}</span>
+            <span className="block text-neutral-700">{item}</span>
           </span>
         ))}
       </>
@@ -84,7 +85,7 @@ const LocationInput: FC<LocationInputProps> = ({
         }`}>
         <div className="flex-1">
           <input
-            className={`block w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-400 xl:text-base font-semibold placeholder-neutral-800 dark:placeholder-neutral-200 truncate`}
+            className={`block w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-400 xl:text-base font-semibold placeholder-neutral-800 truncate`}
             placeholder={placeHolder}
             value={value}
             autoFocus={showPopover}
@@ -100,11 +101,11 @@ const LocationInput: FC<LocationInputProps> = ({
 
       {showPopover && (
         <div
-          className={`h-8 absolute self-center top-1/2 -translate-y-1/2 z-0 bg-white dark:bg-neutral-800 ${divHideVerticalLineClass}`}></div>
+          className={`h-8 absolute self-center top-1/2 -translate-y-1/2 z-0 bg-white ${""}`}></div>
       )}
 
       {showPopover && (
-        <div className="absolute left-0 z-40 w-full min-w-[300px] sm:min-w-[400px] bg-white dark:bg-neutral-800 top-full mt-3 py-3 sm:py-5 rounded-3xl shadow-xl max-h-96 overflow-y-auto">
+        <div className="absolute left-0 z-40 w-full min-w-[300px] sm:min-w-[400px] bg-white top-full mt-3 py-3 sm:py-5 rounded-3xl shadow-xl max-h-96 overflow-y-auto">
           {renderSearchValue()}
         </div>
       )}

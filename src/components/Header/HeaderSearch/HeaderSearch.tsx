@@ -32,14 +32,14 @@ const HeaderSearch: FC<HeaderSearchProps> = ({ className = "", defaultTab = "Boo
               }}
               className={`relative flex-shrink-0 flex items-center cursor-pointer text-base ${
                 active
-                  ? "text-neutral-900 dark:text-neutral-200 font-medium"
-                  : "text-neutral-500 dark:text-neutral-300 "
+                  ? "text-neutral-900 font-medium"
+                  : "text-neutral-500 "
               } `}
               key={tab}>
               <div className="relative select-none">
                 <span>{tab}</span>
                 {active && (
-                  <span className="absolute top-full mt-1 block w-full h-0.5 rounded-full bg-neutral-800 dark:bg-neutral-100 mr-2" />
+                  <span className="absolute top-full mt-1 block w-full h-0.5 rounded-full bg-neutral-800 mr-2" />
                 )}
               </div>
             </li>
@@ -54,7 +54,7 @@ const HeaderSearch: FC<HeaderSearchProps> = ({ className = "", defaultTab = "Boo
   };
 
   return (
-    <div className={`nc-HeaderSearchFormSmall ${className}`} data-nc-id="HeaderSearchFormSmall">
+    <div className={`nc-HeaderSearch ${className}`} data-nc-id="HeaderSearch" id="nc-HeaderSearch">
       {renderTab()}
       <div className="mt-2">{renderForm()}</div>
     </div>

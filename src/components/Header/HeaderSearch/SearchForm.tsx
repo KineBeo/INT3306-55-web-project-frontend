@@ -1,12 +1,12 @@
 "use client";
 
-import React, { FC, useState } from "react";
-import { Popover, Transition } from "@headlessui/react";
+import React, { FC, useState, useRef } from "react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import { Fragment } from "react";
 import LocationInput from "./LocationInput";
 import InputNumber from "@/components/InputNumber";
 import FlightDateRangeInput from "./FlightDateRangeInput";
+import ButtonSubmit from "@/shared/ButtonSubmit";
 
 export interface GuestsObject {
   guestAdults: number;
@@ -60,113 +60,88 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
 
   const totalGuests = guestChildrenInputValue + guestAdultsInputValue + guestInfantsInputValue;
 
+  const ref = useRef<HTMLDivElement>(null);
+
   const renderGuest = () => {
     return (
-      <div className="">
-        <Popover className="relative">
-          {({ open }) => (
-            <>
-              <Popover.Button
-                className={`px-4 py-1.5 rounded-md inline-flex items-center font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-0 text-xs`}>
-                <span>{`${totalGuests || ""} Guests`}</span>
-                <ChevronDownIcon
-                  className={`${
-                    open ? "" : "text-opacity-70"
-                  } ml-2 h-4 w-4 group-hover:text-opacity-80 transition ease-in-out duration-150`}
-                  aria-hidden="true"
-                />
-              </Popover.Button>
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-200"
-                enterFrom="opacity-0 translate-y-1"
-                enterTo="opacity-100 translate-y-0"
-                leave="transition ease-in duration-150"
-                leaveFrom="opacity-100 translate-y-0"
-                leaveTo="opacity-0 translate-y-1">
-                <Popover.Panel className="absolute z-20 w-full sm:min-w-[340px] max-w-sm bg-white top-full mt-3 left-1/2 -translate-x-1/2  py-5 sm:py-6 px-4 sm:px-8 rounded-3xl shadow-xl ring-1 ring-black/5">
-                  <InputNumber
-                    className="w-full"
-                    defaultValue={guestAdultsInputValue}
-                    onChange={(value) => handleChangeData(value, "guestAdults")}
-                    max={10}
-                    min={1}
-                    label="Adults"
-                    desc="Ages 13 or above"
-                  />
-                  <InputNumber
-                    className="w-full mt-6"
-                    defaultValue={guestChildrenInputValue}
-                    onChange={(value) => handleChangeData(value, "guestChildren")}
-                    max={4}
-                    label="Children"
-                    desc="Ages 2–12"
-                  />
-
-                  <InputNumber
-                    className="w-full mt-6"
-                    defaultValue={guestInfantsInputValue}
-                    onChange={(value) => handleChangeData(value, "guestInfants")}
-                    max={4}
-                    label="Infants"
-                    desc="Ages 0–2"
-                  />
-                </Popover.Panel>
-              </Transition>
-            </>
-          )}
-        </Popover>
+      <div>
+        <Dropdown portalContainer={ref.current as HTMLElement}>
+          <DropdownTrigger>
+            <button
+              className={`px-4 py-1.5 rounded-md inline-flex items-center font-medium hover:text-opacity-100 focus:outline-none text-xs`}>
+              <span>{`${totalGuests || ""} Guests`}</span>
+              <ChevronDownIcon
+                className="text-opacity-70 ml-2 h-4 w-4 group-hover:text-opacity-80 transition ease-in-out duration-150"
+                aria-hidden="true"
+              />
+            </button>
+          </DropdownTrigger>
+          <DropdownMenu shouldFocusWrap={false} closeOnSelect={false}>
+            <DropdownItem textValue="Adults" className="no-hover no-focus">
+              <InputNumber
+                className="w-full"
+                defaultValue={guestAdultsInputValue}
+                onChange={(value) => handleChangeData(value, "guestAdults")}
+                max={10}
+                min={1}
+                label="Adults"
+                desc="Ages 13 or above"
+              />
+            </DropdownItem>
+            <DropdownItem textValue="Children" className="no-hover no-focus">
+              <InputNumber
+                className="w-full mt-6"
+                defaultValue={guestChildrenInputValue}
+                onChange={(value) => handleChangeData(value, "guestChildren")}
+                max={4}
+                label="Children"
+                desc="Ages 2–12"
+              />
+            </DropdownItem>
+            <DropdownItem textValue="Infants" className="no-hover no-focus">
+              <InputNumber
+                className="w-full mt-6"
+                defaultValue={guestInfantsInputValue}
+                onChange={(value) => handleChangeData(value, "guestInfants")}
+                max={4}
+                label="Infants"
+                desc="Ages 0–2"
+              />
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
     );
   };
 
   const renderSelectClass = () => {
+    const [selectedKeys, setSelectedKeys] = React.useState(new Set(["Economy"]));
+
     return (
-      <div className="">
-        <Popover className="relative">
-          {({ open, close }) => (
-            <>
-              <Popover.Button
-                className={`px-4 py-1.5 rounded-md inline-flex items-center font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-0 text-xs`}>
-                <span>{`${flightClassState}`}</span>
-                <ChevronDownIcon
-                  className={`${
-                    open ? "" : "text-opacity-70"
-                  } ml-2 h-4 w-4 group-hover:text-opacity-80 transition ease-in-out duration-150`}
-                  aria-hidden="true"
-                />
-              </Popover.Button>
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-200"
-                enterFrom="opacity-0 translate-y-1"
-                enterTo="opacity-100 translate-y-0"
-                leave="transition ease-in duration-150"
-                leaveFrom="opacity-100 translate-y-0"
-                leaveTo="opacity-0 translate-y-1">
-                <Popover.Panel className="absolute z-30 w-screen max-w-[200px] sm:max-w-[220px] px-4 mt-3 transform -translate-x-1/2 left-1/2 sm:px-0 ">
-                  <div className="overflow-hidden rounded-2xl shadow-lg ring-1 ring-black/5 ">
-                    <div className="relative grid bg-white p-3">
-                      {flightClass.map((item) => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setFlightClassState(item.name);
-                            close();
-                          }}
-                          className="flex items-center p-2 transition duration-150 ease-in-out rounded-lg hover:bg-neutral-100 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50">
-                          <p className="text-sm font-medium ">{item.name}</p>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                </Popover.Panel>
-              </Transition>
-            </>
-          )}
-        </Popover>
+      <div>
+        <Dropdown portalContainer={ref.current as HTMLElement}>
+          <DropdownTrigger>
+            <button
+              className={`px-4 py-1.5 rounded-md inline-flex items-center font-medium hover:bg-gray-100 focus:outline-none text-xs`}>
+              <span>{`${flightClassState}`}</span>
+              <ChevronDownIcon
+                className="text-opacity-70 ml-2 h-4 w-4 group-hover:text-opacity-80 transition ease-in-out duration-150"
+                aria-hidden="true"
+              />
+            </button>
+          </DropdownTrigger>
+          <DropdownMenu
+            disallowEmptySelection
+            selectionMode="single"
+            selectedKeys={selectedKeys}
+            onSelectionChange={(keys) => setSelectedKeys(new Set(keys as string))}>
+            {flightClass.map((item) => (
+              <DropdownItem key={item.name} onClick={() => setFlightClassState(item.name)} className="custom-focus">
+                {item.name}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
       </div>
     );
   };
@@ -178,7 +153,7 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
           className={`py-1.5 px-4 flex items-center rounded-full font-medium text-xs cursor-pointer select-none ${
             dropOffLocationType === "roundTrip"
               ? "bg-black shadow-black/10 shadow-lg text-white"
-              : "border border-neutral-300"
+              : "border border-neutral-300 hover:bg-gray-100"
           }`}
           onClick={(e) => setDropOffLocationType("roundTrip")}>
           Round-trip
@@ -187,7 +162,7 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
           className={`py-1.5 px-4 flex items-center rounded-full font-medium text-xs cursor-pointer select-none ${
             dropOffLocationType === "oneWay"
               ? "bg-black text-white shadow-black/10 shadow-lg"
-              : "border border-neutral-300"
+              : "border border-neutral-300 hover:bg-gray-100"
           }`}
           onClick={(e) => setDropOffLocationType("oneWay")}>
           One-way
@@ -203,21 +178,21 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
 
   const renderForm = () => {
     return (
-      <form className="w-full relative ">
-        {renderRadioBtn()}
-        <div className="flex w-full rounded-full border border-neutral-200 bg-white">
-          <LocationInput placeHolder="Flying from" desc="Where do you want to fly from?" className="flex-1" />
-          <div className="self-center border-r border-slate-200 h-8"></div>
-          <LocationInput
-            placeHolder="Flying to"
-            desc="Where you want to fly to?"
-            className="flex-1"
-            divHideVerticalLineClass=" -inset-x-0.5"
-          />
-          <div className="self-center border-r border-slate-200 h-8"></div>
-          <FlightDateRangeInput selectsRange={dropOffLocationType !== "oneWay"} className="flex-1" />
-        </div>
-      </form>
+      <div ref={ref}>
+        <form className="w-full relative ">
+          {renderRadioBtn()}
+          <div className="flex items-center w-full rounded-full border border-neutral-200 bg-white">
+            <LocationInput placeHolder="Flying from" desc="Where do you want to fly from?" className="flex-1" />
+            <div className="self-center border-r border-slate-200 h-8"></div>
+            <LocationInput placeHolder="Flying to" desc="Where you want to fly to?" className="flex-1" />
+            <div className="self-center border-r border-slate-200 h-8"></div>
+            <FlightDateRangeInput selectsRange={dropOffLocationType !== "oneWay"} className="flex-1" />
+            <div className="pr-2 xl:pr-4">
+              <ButtonSubmit href="#" />
+            </div>
+          </div>
+        </form>
+      </div>
     );
   };
 

@@ -11,8 +11,6 @@ function useOutsideClick(ref: React.RefObject<HTMLDivElement>, handleClickOutsid
     function handleClickOutside(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         handleClickOutsideCallback();
-        console.log(event.target);
-        console.log(ref.current);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
