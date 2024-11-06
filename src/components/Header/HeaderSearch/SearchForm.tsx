@@ -113,7 +113,7 @@ const SearchForm = () => {
   };
 
   const renderSelectClass = () => {
-    const [selectedKeys, setSelectedKeys] = React.useState(new Set(["Economy"]));
+    const [selectedKeys, setSelectedKeys] = useState(new Set(["Economy"]));
 
     return (
       <div>

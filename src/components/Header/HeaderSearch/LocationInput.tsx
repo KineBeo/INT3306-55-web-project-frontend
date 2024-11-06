@@ -14,7 +14,6 @@ export interface LocationInputProps {
   placeHolder?: string;
   desc?: string;
   className?: string;
-  divHideVerticalLineClass?: string;
   autoFocus?: boolean;
 }
 
@@ -24,7 +23,6 @@ const LocationInput: FC<LocationInputProps> = ({
   placeHolder = "Location",
   desc = "Where?",
   className = "nc-flex-1.5",
-  divHideVerticalLineClass = "left-10 -right-0.5",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
