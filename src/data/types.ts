@@ -1,5 +1,4 @@
 import { Route } from "@/routers/types";
-import { StaticImageData } from "next/image";
 
 //----CUSTOM LINK----
 export interface CustomLink {

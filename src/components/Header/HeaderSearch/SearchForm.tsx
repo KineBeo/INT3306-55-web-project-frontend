@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import LocationInput from "./LocationInput";
@@ -13,8 +13,6 @@ export interface GuestsObject {
   guestChildren: number;
   guestInfants: number;
 }
-
-export interface FlightSearchFormProps {}
 
 const flightClass = [
   {
@@ -31,7 +29,7 @@ const flightClass = [
   },
 ];
 
-const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
+const SearchForm = () => {
   const [dropOffLocationType, setDropOffLocationType] = useState<"roundTrip" | "oneWay" | "">("roundTrip");
   const [flightClassState, setFlightClassState] = useState("Economy");
   const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(2);
@@ -39,7 +37,7 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
   const [guestInfantsInputValue, setGuestInfantsInputValue] = useState(1);
 
   const handleChangeData = (value: number, type: keyof GuestsObject) => {
-    let newValue = {
+    const newValue = {
       guestAdults: guestAdultsInputValue,
       guestChildren: guestChildrenInputValue,
       guestInfants: guestInfantsInputValue,
@@ -155,7 +153,7 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
               ? "bg-black shadow-black/10 shadow-lg text-white"
               : "border border-neutral-300 hover:bg-gray-100"
           }`}
-          onClick={(e) => setDropOffLocationType("roundTrip")}>
+          onClick={() => setDropOffLocationType("roundTrip")}>
           Round-trip
         </div>
         <div
@@ -164,7 +162,7 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
               ? "bg-black text-white shadow-black/10 shadow-lg"
               : "border border-neutral-300 hover:bg-gray-100"
           }`}
-          onClick={(e) => setDropOffLocationType("oneWay")}>
+          onClick={() => setDropOffLocationType("oneWay")}>
           One-way
         </div>
 
@@ -199,4 +197,4 @@ const FlightSearchForm: FC<FlightSearchFormProps> = ({}) => {
   return renderForm();
 };
 
-export default FlightSearchForm;
+export default SearchForm;

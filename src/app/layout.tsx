@@ -11,7 +11,11 @@ const poppins = Poppins({
   display: "swap",
 });
 
-export default function RootLayout({ children, param }: { children: React.ReactNode; param: any }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en" className={poppins.className}>
       <body className="bg-white text-base theme-cyan-blueGrey">

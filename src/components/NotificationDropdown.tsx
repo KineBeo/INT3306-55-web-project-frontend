@@ -4,7 +4,7 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, DropdownSection 
 import { FC, useRef } from "react";
 import { BellIcon } from "@heroicons/react/24/outline";
 
-const notifications: any[] = ["abc", "def", "ghi"];
+const notifications: string[] = ["abc", "def", "ghi"];
 
 interface Props {
   className?: string;

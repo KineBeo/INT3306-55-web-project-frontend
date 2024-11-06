@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState, useCallback } from "react";
 import Logo from "@/shared/Logo";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import NotifyDropdown from "@/components/NotificationDropdown";
@@ -19,7 +19,7 @@ interface HeaderProps {
 
 let WIN_PREV_POSITION = 0;
 if (typeof window !== "undefined") {
-  WIN_PREV_POSITION = (window as any).pageYOffset;
+  WIN_PREV_POSITION = (window as Window).pageYOffset;
 }
 
 const Header: FC<HeaderProps> = ({ className = "" }) => {
@@ -28,29 +28,31 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
 
   const headerInnerRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick(headerInnerRef, () => {
-      setShowHeaderSearch(false);
-      setCurrentTab("Book");
-  });
+  const handleClickOutsideCallback = useCallback(() => {
+    setShowHeaderSearch(false);
+    setCurrentTab("Book");
+  }, []);
+
+  useOutsideClick(headerInnerRef, handleClickOutsideCallback);
 
   // handle scroll event
-  const handleEvent = () => {
+  const handleEvent = useCallback(() => {
     window.requestAnimationFrame(handleHideHeaderSearch);
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener("scroll", handleEvent);
     return () => {
       window.removeEventListener("scroll", handleEvent);
     };
-  }, []);
+  }, [handleEvent]);
 
   const handleHideHeaderSearch = () => {
     if (!document.querySelector("#nc-Header-anchor")) {
       return;
     }
 
-    let currentScrollPos = window.pageYOffset;
+    const currentScrollPos = window.pageYOffset;
     if (WIN_PREV_POSITION - currentScrollPos > 100 || WIN_PREV_POSITION - currentScrollPos < -100) {
       setShowHeaderSearch(false);
     } else {

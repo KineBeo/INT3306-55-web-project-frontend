@@ -7,7 +7,7 @@ import ClearDataButton from "@/shared/ClearDataButton";
 import { useRef } from "react";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { MapPinIcon } from "@heroicons/react/24/outline";
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+// import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 
 export interface LocationInputProps {
   onInputDone?: (value: string) => void;
@@ -32,14 +32,16 @@ const LocationInput: FC<LocationInputProps> = ({
   const [value, setValue] = useState("");
   const [showPopover, setShowPopover] = useState(autoFocus);
 
-  useEffect(() => {
-    setShowPopover(autoFocus);
-    if (autoFocus && !!inputRef.current) {
-      setTimeout(() => {
-        inputRef.current && inputRef.current.focus();
-      }, 200);
+useEffect(() => {
+  setShowPopover(autoFocus);
+  
+  const timeoutId = setTimeout(() => {
+    if (autoFocus && inputRef.current) {
+      inputRef.current.focus();
     }
-  }, [autoFocus]);
+  }, 200);
+  return () => clearTimeout(timeoutId);
+}, [autoFocus]);
 
   useOutsideClick(containerRef, () => {
     setShowPopover(false);
@@ -51,11 +53,15 @@ const LocationInput: FC<LocationInputProps> = ({
     }
   }, [showPopover]);
 
-  const handleSelectLocation = (item: string) => {
-    setValue(item);
-    onInputDone && onInputDone(item);
-    setShowPopover(false);
-  };
+const handleSelectLocation = (item: string) => {
+  setValue(item);
+  
+  if (onInputDone) {
+    onInputDone(item);
+  }
+
+  setShowPopover(false);
+};
 
   const testLocation = ["Ha Noi, Viet Nam", "Ho Chi Minh, Viet Nam", "Da Nang, Viet Nam", "Hue, Viet Nam"];
   const renderSearchValue = () => {
