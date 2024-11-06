@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.1.5",
+    "@nextui-org/calendar": "^2.0.12",
+    "@nextui-org/dropdown": "^2.1.31",
+    "@nextui-org/modal": "^2.0.41",
+    "@nextui-org/popover": "^2.1.29",
     "@nextui-org/react": "^2.4.8",
+    "@nextui-org/system": "^2.2.6",
+    "@nextui-org/theme": "^2.2.11",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",

@@ -17,6 +17,7 @@ const Logo: React.FC<LogoProps> = ({ img = logoImg, className = "w-16" }) => {
             src={img}
             alt="Logo"
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Add appropriate sizes based on your layout
             className="block"
           />
         ) : (

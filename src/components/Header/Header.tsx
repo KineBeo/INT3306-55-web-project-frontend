@@ -1,19 +1,17 @@
 "use client";
 
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState, useCallback } from "react";
 import Logo from "@/shared/Logo";
-import useOutsideAlerter from "@/hooks/useOutsideClick";
+import useOutsideClick from "@/hooks/useOutsideClick";
 import NotifyDropdown from "@/components/NotificationDropdown";
 import SignInButton from "@/shared/SignInButton";
 import MenuBar from "@/shared/MenuBar";
-import { usePathname } from "next/navigation";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import HeaderSearch from "./HeaderSearch/HeaderSearch";
 import Image from "next/image";
 import flightTakeOff from "@/images/flight-takeoff.svg";
 import flightRoster from "@/images/flight-roster.svg";
 import flightTicket from "@/images/flight-ticket.svg";
-import { set } from "react-datepicker/dist/date_utils";
 
 interface HeaderProps {
   className?: string;
@@ -21,44 +19,40 @@ interface HeaderProps {
 
 let WIN_PREV_POSITION = 0;
 if (typeof window !== "undefined") {
-  WIN_PREV_POSITION = (window as any).pageYOffset;
+  WIN_PREV_POSITION = (window as Window).pageYOffset;
 }
 
 const Header: FC<HeaderProps> = ({ className = "" }) => {
-  const headerInnerRef = useRef<HTMLDivElement>(null);
-
   const [showHeaderSearch, setShowHeaderSearch] = useState<boolean>(false);
   const [currentTab, setCurrentTab] = useState<"Book" | "Manage Booking" | "Online Check-in">("Book");
 
-  useOutsideAlerter(headerInnerRef, () => {
+  const headerInnerRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutsideCallback = useCallback(() => {
     setShowHeaderSearch(false);
     setCurrentTab("Book");
-  });
+  }, []);
 
-  let pathname = usePathname();
-
-  useEffect(() => {
-    setShowHeaderSearch(false);
-  }, [pathname]);
+  useOutsideClick(headerInnerRef, handleClickOutsideCallback);
 
   // handle scroll event
+  const handleEvent = useCallback(() => {
+    window.requestAnimationFrame(handleHideHeaderSearch);
+  }, []);
+
   useEffect(() => {
     window.addEventListener("scroll", handleEvent);
     return () => {
       window.removeEventListener("scroll", handleEvent);
     };
-  }, []);
-
-  const handleEvent = () => {
-    window.requestAnimationFrame(handleHideHeaderSearch);
-  };
+  }, [handleEvent]);
 
   const handleHideHeaderSearch = () => {
     if (!document.querySelector("#nc-Header-anchor")) {
       return;
     }
 
-    let currentScrollPos = window.pageYOffset;
+    const currentScrollPos = window.pageYOffset;
     if (WIN_PREV_POSITION - currentScrollPos > 100 || WIN_PREV_POSITION - currentScrollPos < -100) {
       setShowHeaderSearch(false);
     } else {
@@ -76,7 +70,10 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             : "-translate-x-0 -translate-y-[90px] scale-x-[0.395] scale-y-[0.6] opacity-0 invisible pointer-events-none"
         }`}>
         <div className={`w-full max-w-4xl mx-auto pb-6`}>
-          <HeaderSearch defaultTab={currentTab} onTabChange={setCurrentTab} />
+          <HeaderSearch
+            defaultTab={currentTab}
+            onTabChange={setCurrentTab}
+          />
         </div>
       </div>
     );
@@ -85,7 +82,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   const renderHeaderSearchBar = () => {
     return (
       <div
-        className={`w-full relative flex items-center justify-between border border-neutral-200 dark:border-neutral-6000 rounded-full shadow hover:shadow-md transition-all ${
+        className={`w-full relative flex items-center justify-between border border-neutral-200 rounded-full shadow hover:shadow-md transition-all ${
           showHeaderSearch
             ? "-translate-x-0 translate-y-20 scale-x-[2.55] scale-y-[1.8] opacity-0 pointer-events-none invisible"
             : "visible"
@@ -96,7 +93,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             <span className="block pl-2 pr-4 py-3">Book</span>
           </div>
 
-          <span className="h-5 w-[1px] bg-neutral-300 dark:bg-neutral-700"></span>
+          <span className="h-5 w-[1px] bg-neutral-300"></span>
 
           <div className="flex items-center cursor-pointer" onClick={() => setShowHeaderSearch(false)}>
             <Image src={flightRoster} alt="airplane" className="w-5 h-5 ml-4" />
@@ -110,7 +107,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             </span>
           </div>
 
-          <span className="h-5 w-[1px] bg-neutral-300 dark:bg-neutral-700"></span>
+          <span className="h-5 w-[1px] bg-neutral-300"></span>
 
           <div className="flex items-center cursor-pointer" onClick={() => setShowHeaderSearch(false)}>
             <Image src={flightTicket} alt="airplane" className="w-5 h-5 ml-4" />

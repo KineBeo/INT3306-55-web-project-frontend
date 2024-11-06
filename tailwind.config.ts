@@ -1,5 +1,5 @@
+import {nextui} from '@nextui-org/theme';
 import { Config } from "tailwindcss";
-import defaultTheme from "tailwindcss/defaultTheme";
 import typography from "@tailwindcss/typography";
 import forms from "@tailwindcss/forms";
 import aspectRatio from "@tailwindcss/aspect-ratio";
@@ -17,7 +17,10 @@ function customColors(cssVar: string) {
 }
 
 const config: Config = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+  ],
   theme: {
     container: {
       center: true,
@@ -67,7 +70,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [typography, forms, aspectRatio],
+  plugins: [typography,forms,aspectRatio,nextui()],
 };
 
 export default config;
