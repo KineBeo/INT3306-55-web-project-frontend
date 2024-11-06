@@ -112,7 +112,7 @@ const SearchForm = () => {
     );
   };
 
-  const renderSelectClass = () => {
+  const RenderSelectClass = () => {
     const [selectedKeys, setSelectedKeys] = useState(new Set(["Economy"]));
 
     return (
@@ -168,7 +168,7 @@ const SearchForm = () => {
 
         <div className=" border-r border-slate-200"></div>
 
-        <div className="border border-neutral-300 rounded-full">{renderSelectClass()}</div>
+        <div className="border border-neutral-300 rounded-full">{RenderSelectClass()}</div>
         <div className="border border-neutral-300 rounded-full">{renderGuest()}</div>
       </div>
     );

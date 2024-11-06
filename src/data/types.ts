@@ -1,4 +1,4 @@
-import { Route } from "@/routers/types";
+import { Route } from "next";
 
 //----CUSTOM LINK----
 export interface CustomLink {

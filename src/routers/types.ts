@@ -1,7 +1,7 @@
-import type { Route as NextRoute } from "next";
+import type { Route } from "next";
 import { ComponentType } from "react";
 
-export type PathName = NextRoute;
+export type PathName = Route<string>;
 
 export interface Page {
   path: PathName;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { FC } from "react";
 // import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import ClearDataButton from "@/shared/ClearDataButton";
