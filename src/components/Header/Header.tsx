@@ -134,18 +134,17 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   return (
     <>
       <div
-        className={`nc-Header nc-Header-3 fixed z-40 top-0 inset-0 bg-black/30 transition-opacity will-change-[opacity] ${
+        className={`nc-Header fixed z-40 top-0 inset-0 bg-black/30 transition-opacity will-change-[opacity] ${
           showHeaderSearch ? "visible" : "invisible opacity-0 pointer-events-none"
         }`}></div>
-      {showHeaderSearch && <div id="nc-Header-anchor"></div>}
-      <header ref={headerInnerRef} className={`sticky top-0 z-40 ${className}`}>
+      <header ref={headerInnerRef} className={`sticky top-0 z-40 shadow-sm nc-header-bg ${className}`}>
         <div
           className={`bg-white absolute h-full inset-x-0 top-0 transition-transform will-change-[transform,opacity]
           ${showHeaderSearch ? "duration-75 scale-y-[4.4]" : ""}`}></div>
         <div className="relative px-4 lg:container h-[88px] flex">
           <div className="flex-1 flex justify-between">
             <div className="relative z-10 hidden md:flex flex-1 items-center">
-              <Logo />
+              <Logo className="w-16"/>
             </div>
 
             <div className="flex flex-[2] lg:flex-none mx-auto">
@@ -156,7 +155,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             <div className="hidden md:flex relative z-10 flex-1 justify-end text-neutral-700 items-center">
               <div className="flex space-x-2">
                 <NotifyDropdown />
-                <SignInButton />
+                <SignInButton href="/auth/signin"/>
                 <MenuBar />
               </div>
             </div>

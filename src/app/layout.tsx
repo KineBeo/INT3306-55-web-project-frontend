@@ -18,6 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={poppins.className}>
+      <head>
+        <title>QAirline</title>
+      </head>
       <body className="bg-white text-base theme-cyan-blueGrey">
         <Header />
         {children}

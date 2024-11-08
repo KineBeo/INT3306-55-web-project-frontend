@@ -7,7 +7,6 @@ import ClearDataButton from "@/shared/ClearDataButton";
 import { useRef } from "react";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { MapPinIcon } from "@heroicons/react/24/outline";
-// import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 
 export interface LocationInputProps {
   onInputDone?: (value: string) => void;
@@ -30,16 +29,16 @@ const LocationInput: FC<LocationInputProps> = ({
   const [value, setValue] = useState("");
   const [showPopover, setShowPopover] = useState(autoFocus);
 
-useEffect(() => {
-  setShowPopover(autoFocus);
-  
-  const timeoutId = setTimeout(() => {
-    if (autoFocus && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, 200);
-  return () => clearTimeout(timeoutId);
-}, [autoFocus]);
+  useEffect(() => {
+    setShowPopover(autoFocus);
+
+    const timeoutId = setTimeout(() => {
+      if (autoFocus && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 200);
+    return () => clearTimeout(timeoutId);
+  }, [autoFocus]);
 
   useOutsideClick(containerRef, () => {
     setShowPopover(false);
@@ -51,15 +50,15 @@ useEffect(() => {
     }
   }, [showPopover]);
 
-const handleSelectLocation = (item: string) => {
-  setValue(item);
-  
-  if (onInputDone) {
-    onInputDone(item);
-  }
+  const handleSelectLocation = (item: string) => {
+    setValue(item);
 
-  setShowPopover(false);
-};
+    if (onInputDone) {
+      onInputDone(item);
+    }
+
+    setShowPopover(false);
+  };
 
   const testLocation = ["Ha Noi, Viet Nam", "Ho Chi Minh, Viet Nam", "Da Nang, Viet Nam", "Hue, Viet Nam"];
   const renderSearchValue = () => {
@@ -104,12 +103,7 @@ const handleSelectLocation = (item: string) => {
       </div>
 
       {showPopover && (
-        <div
-          className={`h-8 absolute self-center top-1/2 -translate-y-1/2 z-0 bg-white ${""}`}></div>
-      )}
-
-      {showPopover && (
-        <div className="absolute left-0 z-40 w-full min-w-[300px] sm:min-w-[400px] bg-white top-full mt-3 py-3 sm:py-5 rounded-3xl shadow-xl max-h-96 overflow-y-auto">
+        <div className="absolute left-1/2 -translate-x-1/2 z-40 w-full min-w-[300px] sm:min-w-[400px] bg-white top-full mt-3 py-3 sm:py-5 rounded-3xl shadow-xl max-h-96 overflow-y-auto">
           {renderSearchValue()}
         </div>
       )}
