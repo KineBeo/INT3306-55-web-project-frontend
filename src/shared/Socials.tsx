@@ -8,6 +8,7 @@ export interface SocialType {
 
 export interface SocialsProps {
   className?: string;
+  itemClassName?: string;
 }
 
 const socials: SocialType[] = [
@@ -17,11 +18,11 @@ const socials: SocialType[] = [
   { name: "Linkedin", icon: "lab la-linkedin", href: "#" },
 ];
 
-const Socials: FC<SocialsProps> = ({ className = "space-y-2.5" }) => {
+const Socials: FC<SocialsProps> = ({ className = "space-y-2.5", itemClassName = "text-neutral-700 hover:text-black" }) => {
   const renderItem = (item: SocialType, index: number) => (
     <a
       href={item.href}
-      className="flex items-center text-2xl text-neutral-700 hover:text-black leading-none space-x-2 group"
+      className={`flex items-center text-2xl leading-none space-x-2 group ${itemClassName}`}
       key={index}
     >
       <i className={item.icon}></i>

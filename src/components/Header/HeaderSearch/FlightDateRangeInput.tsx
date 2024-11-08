@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FC } from "react";
-// import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
+import CustomRangeDatePicker from "@/components/CustomRangeDatePicker";
+import CustomDatePicker from "@/components/CustomDatePicker";
+import useOutsideClick from "@/hooks/useOutsideClick";
+import { CalendarDate } from "@nextui-org/calendar";
 import ClearDataButton from "@/shared/ClearDataButton";
-// import { today, getLocalTimeZone } from "@internationalized/date";
-// import { RangeCalendar } from "@nextui-org/calendar";
 
 export interface FlightDateRangeInputProps {
   className?: string;
@@ -13,27 +14,54 @@ export interface FlightDateRangeInputProps {
 }
 
 const FlightDateRangeInput: FC<FlightDateRangeInputProps> = ({ className = "", selectsRange = true }) => {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<CalendarDate | null>(null);
+  const [endDate, setEndDate] = useState<CalendarDate | null>(null);
 
-  const onChangeRangeDate = (dates: [Date | null, Date | null]) => {
-    const [start, end] = dates;
+  const onChangeRangeDate = (start: CalendarDate | null, end: CalendarDate | null) => {
+    if (!start || !end) return;
     setStartDate(start);
     setEndDate(end);
   };
+
+  const onChangeDate = (date: CalendarDate | null) => {
+    if (!date) return;
+    setStartDate(date);
+  };
+
+  const clearData = () => {
+    setStartDate(null);
+    setEndDate(null);
+  };
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [showPopover, setShowPopover] = useState(false);
+
+  useOutsideClick(containerRef, () => {
+    setShowPopover(false);
+  });
+
+  useEffect(() => {
+    if (showPopover && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showPopover]);
 
   const renderInput = () => {
     return (
       <>
         <div className="flex-grow text-left">
           <span className="block xl:text-base font-semibold">
-            {startDate?.toLocaleDateString("en-US", {
-              month: "short",
-              day: "2-digit",
-            }) || "Add dates"}
+            {startDate
+              ? new Date(startDate.year, startDate.month - 1, startDate.day).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "2-digit",
+                })
+              : "Add dates"}
             {selectsRange && endDate
               ? " - " +
-                endDate?.toLocaleDateString("en-US", {
+                new Date(endDate.year, endDate.month - 1, endDate.day).toLocaleDateString("en-US", {
                   month: "short",
                   day: "2-digit",
                 })
@@ -46,32 +74,30 @@ const FlightDateRangeInput: FC<FlightDateRangeInputProps> = ({ className = "", s
       </>
     );
   };
-  //flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left ${
-  //   showPopover ? "nc-Header-field-focused--2" : ""
 
-  // const ref = useRef<HTMLDivElement>(null);
-
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <>
-      <div className={`relative flex ${className}`}>
+      <div className={`relative flex ${className}`} ref={containerRef}>
         <div
-          className={`flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left ${isOpen ? "nc-Header-field-focused--2" : ""}`}
-          onClick={() => setIsOpen(true)}>
+          onClick={() => setShowPopover(true)}
+          className={`flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left ${
+            showPopover ? "nc-Header-field-focused--2" : ""
+          }`}>
           <div className="flex-1 z-10 flex relative items-center space-x-3 focus:outline-none">
             {renderInput()}
-            {startDate && isOpen && <ClearDataButton onClick={() => onChangeRangeDate([null, null])} />}
+            {startDate && showPopover && <ClearDataButton onClick={clearData} />}
           </div>
         </div>
-        {isOpen && (
-          <div className="h-8 absolute self-center top-1/2 -translate-y-1/2 z-0 -left-0.5 right-10 bg-white"></div>
+        {showPopover && (
+          <div className="absolute left-1/2 -translate-x-1/2 z-40 top-full mt-3">
+            {selectsRange ? (
+              <CustomRangeDatePicker handleChange={onChangeRangeDate} currRange={{ start: startDate, end: endDate }} />
+            ) : (
+              <CustomDatePicker handleChange={onChangeDate} currDate={startDate} />
+            )}
+          </div>
         )}
       </div>
-      {/* <RangeCalendar
-          className="nextui-range-calendar"
-      aria-label="Date (Min Date Value)"
-      minValue={today(getLocalTimeZone())}
-    /> */}
     </>
   );
 };

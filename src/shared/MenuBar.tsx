@@ -27,7 +27,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
     <div ref={ref}>
       <button
         onClick={onOpen}
-        className={`self-center items-center focus:outline-none w-10 h-10 sm:w-12 sm:h-12 bg-white hover:bg-gray-100 rounded-full inline-flex ${className}`}>
+        className={`self-center items-center focus:outline-none w-10 h-10 sm:w-12 sm:h-12 hover:bg-gray-100 rounded-full inline-flex ${className}`}>
         <Bars3Icon className={iconClassName} />
       </button>
 

@@ -145,6 +145,10 @@
     rgba(17, 17, 26, 0.05) 0px 8px 32px;
 }
 
+.nc-header-bg {
+  @apply bg-white/80 backdrop-blur-2xl backdrop-filter;
+}
+
 .nc-flex-1 {
   flex: 1 0 0%;
 }

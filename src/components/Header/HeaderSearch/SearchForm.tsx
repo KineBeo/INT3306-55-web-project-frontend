@@ -180,9 +180,9 @@ const SearchForm = () => {
         <form className="w-full relative ">
           {renderRadioBtn()}
           <div className="flex items-center w-full rounded-full border border-neutral-200 bg-white">
-            <LocationInput placeHolder="Flying from" desc="Where do you want to fly from?" className="flex-1" />
+            <LocationInput placeHolder="Add Location" desc="Flying from" className="flex-1" />
             <div className="self-center border-r border-slate-200 h-8"></div>
-            <LocationInput placeHolder="Flying to" desc="Where you want to fly to?" className="flex-1" />
+            <LocationInput placeHolder="Add Location" desc="Flying to" className="flex-1" />
             <div className="self-center border-r border-slate-200 h-8"></div>
             <FlightDateRangeInput selectsRange={dropOffLocationType !== "oneWay"} className="flex-1" />
             <div className="pr-2 xl:pr-4">
