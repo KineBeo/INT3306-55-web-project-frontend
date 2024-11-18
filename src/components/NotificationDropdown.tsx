@@ -26,7 +26,7 @@ const NotificationDropdown: FC<Props> = ({ className = "" }) => {
             <button
               className={`self-center w-10 h-10 sm:w-12 sm:h-12 hover:bg-gray-100 rounded-full inline-flex items-center justify-center text-base font-medium focus:outline-none relative ${className}`}>
               <BellIcon className="h-6 w-6" />
-              <span className="w-2 h-2 bg-primary-6000 absolute top-2 right-2 rounded-full"></span>
+              <span className="w-2 h-2 bg-primary-500 absolute top-2 right-2 rounded-full"></span>
             </button>
           </DropdownTrigger>
 

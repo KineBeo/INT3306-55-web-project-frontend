@@ -123,7 +123,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
         </div>
 
         <div className="flex-shrink-0 ml-auto pr-2 cursor-pointer" onClick={() => setShowHeaderSearch(true)}>
-          <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-6000  text-white">
+          <span className="w-8 h-8 flex items-center justify-center rounded-full bg-primary-500  text-white">
             <MagnifyingGlassIcon className="w-5 h-5" />
           </span>
         </div>
@@ -148,7 +148,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             </div>
 
             <div className="flex flex-[2] lg:flex-none mx-auto">
-              <div className="flex-1 hidden lg:flex self-center">{renderHeaderSearchBar()}</div>
+              <div className="flex-1 overflow-hidden lg:flex self-center">{renderHeaderSearchBar()}</div>
               {renderHeaderSearch()}
             </div>
 

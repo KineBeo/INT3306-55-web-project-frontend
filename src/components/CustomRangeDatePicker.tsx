@@ -38,15 +38,15 @@ const CustomRangeDatePicker: FC<CustomRangeDatePickerProps> = ({ handleChange, c
         weekdayStyle="short"
         classNames={{
           content: "rounded-3xl",
-          nextButton: "text-grey-800 hover:text-primary-6000 text-lg primary-focus",
-          prevButton: "text-grey-800 hover:text-primary-6000 text-lg",
+          nextButton: "text-grey-800 hover:text-primary-500 text-lg primary-focus",
+          prevButton: "text-grey-800 hover:text-primary-500 text-lg",
           gridHeaderCell: "text-xs text-grey-600 p-5",
           title: "text-gray-800 font-semibold",
           headerWrapper: "pt-5",
           gridWrapper: "bg-white pb-5",
           gridBody: "bg-white",
           cellButton:
-            "data-[selection-start]:bg-primary-6000 data-[selection-end]:bg-primary-6000 data-[selection-start]:text-white data-[selection-end]:text-white hover:bg-gray-100 text-sm p-5",
+            "data-[selection-start]:bg-primary-500 data-[selection-end]:bg-primary-500 data-[selection-start]:text-white data-[selection-end]:text-white hover:bg-gray-100 text-sm p-5",
         }}
       />
     </div>
