@@ -8,7 +8,7 @@ export interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({ className = "w-24", textColor = "currentColor" }) => {
   return (
-    <Link href="/" className={`ttnc-logo inline-block text-primary-6000 focus:outline-none focus:ring-0 ${className}`}>
+    <Link href="/" className={`ttnc-logo inline-block text-primary-500 focus:outline-none focus:ring-0 ${className}`}>
       <svg
         id="Layer_1"
         data-name="Layer 1"

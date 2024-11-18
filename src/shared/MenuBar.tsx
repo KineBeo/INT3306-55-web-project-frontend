@@ -62,7 +62,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
       >
         <ModalContent>
           {(onClose) => (
-            <div className="overflow-y-auto w-full h-screen py-2 bg-white shadow-lg ring-1 divide-y-2 divide-neutral-100">
+            <div className="overflow-hidden w-full h-screen py-2 bg-white shadow-lg ring-1 divide-y-2 divide-neutral-100">
               <div className="py-6 px-5">
                 <Logo />
                 <div className="flex flex-col mt-5 text-neutral-700 text-sm">
