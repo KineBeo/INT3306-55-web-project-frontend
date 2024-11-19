@@ -20,7 +20,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [birthdate, setBirthdate] = useState("");
-  const [terms, setTerms] = useState(true);
+  const [terms, setTerms] = useState(false);
 
   // State for error messages
   const [errors, setErrors] = useState({
@@ -56,17 +56,19 @@ const SignUp = () => {
       case "terms":
         if (!value) error = "You must agree to the terms and conditions.";
         break;
+      default:
+        error = "";
     }
     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, checked } = e.target;
     if (name === "firstName") setFirstName(value);
     if (name === "lastName") setLastName(value);
     if (name === "email") setEmail(value);
     if (name === "phone") setPhone(value);
-    if (name === "terms") setTerms(e.target.checked);
+    if (name === "terms") setTerms(checked);
 
     validateInput(name, value);
   };
@@ -251,7 +253,7 @@ const SignUp = () => {
 
               <Checkbox
                 isSelected={terms}
-                onChange={(e) => handleInputChange(e as any)}
+                onChange={handleInputChange}
                 name="terms"
                 classNames={{ icon: "text-primary-6000" }}>
                 <div className="text-xs">
