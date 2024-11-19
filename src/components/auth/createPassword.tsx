@@ -8,6 +8,7 @@ import imgSignUp from "@/images/img-sign-up.png";
 import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
+import Logo from "@/shared/Logo";
 
 const CreatePassword = () => {
   const router = useRouter();
@@ -81,6 +82,7 @@ const CreatePassword = () => {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <Image src={bg1} loading="lazy" className="absolute inset-0 z-0 object-cover" fill alt="Background" />
+      <Logo className="absolute bottom-0 right-0 m-6 w-16 text-primary-6000" />
       <div className="flex w-full max-w-5xl shadow-2xl shadow-neutral-400 rounded-3xl bg-primary-500 overflow-hidden z-10">
         <div className="flex flex-1 flex-col items-center justify-center text-white p-8">
           <div className="flex flex-1 flex-col justify-center">
@@ -92,7 +94,7 @@ const CreatePassword = () => {
           <Image src={imgSignUp} alt="Sign up" loading="lazy" className="mt-8 w-full" />
         </div>
 
-        <div className="flex flex-1 flex-col px-20 py-8 bg-white rounded-l-3xl justify-center items-center">
+        <div className="flex flex-1 flex-col px-20 py-8 bg-white rounded-3xl justify-center items-center">
           <h2 className="text-2xl font-medium mb-6">Create an account</h2>
 
           <div className="flex items-center mb-6 relative w-full justify-between px-6">
@@ -178,7 +180,7 @@ const CreatePassword = () => {
           <p className="text-gray-500 mt-4 text-center">
             Already have an account?{" "}
             <Link href="/auth/signin" className="text-primary-6000 font-medium">
-              Log in
+              Sign in
             </Link>
           </p>
         </div>
