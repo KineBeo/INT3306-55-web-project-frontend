@@ -8,7 +8,6 @@ import imgSignUp from "@/images/img-sign-up.png";
 import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
-import Logo from "@/shared/Logo";
 
 const CreatePassword = () => {
   const router = useRouter();
@@ -80,22 +79,27 @@ const CreatePassword = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Image src={bg1} loading="lazy" className="absolute inset-0 z-0 object-cover" fill alt="Background" />
-      <Logo className="absolute bottom-0 right-0 m-6 w-16 text-primary-6000" />
-      <div className="flex w-full max-w-5xl shadow-2xl shadow-neutral-400 rounded-3xl bg-primary-500 overflow-hidden z-10">
-        <div className="flex flex-1 flex-col items-center justify-center text-white p-8">
-          <div className="flex flex-1 flex-col justify-center">
-            <ArrowLeftCircleIcon className="w-12 hover:text-gray-200 cursor-pointer mb-5" onClick={handleBack} />
-            <h2 className="text-4xl font-semibold mb-5">Fly with us</h2>
-            <p className="text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
+    <div className="relative flex flex-wrap min-h-screen items-center justify-center">
+        <Image
+          src={bg1}
+          alt="Background"
+          loading="lazy"
+          className="hidden md:block absolute inset-0 z-0 object-cover opacity-40"
+          fill
+        />
+      <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-primary-500 overflow-hidden z-10">
+          <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-white">
+
+              <ArrowLeftCircleIcon className="w-10 md:w-12 hover:text-gray-200 cursor-pointer mb-5" onClick={handleBack} />
+              <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
+              <p className="text-medium md:text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
+
+
+            <Image src={imgSignUp} alt="Sign up" loading="lazy" className="hidden md:block mt-8" />
           </div>
 
-          <Image src={imgSignUp} alt="Sign up" loading="lazy" className="mt-8 w-full" />
-        </div>
-
-        <div className="flex flex-1 flex-col px-20 py-8 bg-white rounded-3xl justify-center items-center">
-          <h2 className="text-2xl font-medium mb-6">Create an account</h2>
+        <div className="flex flex-1 flex-col px-10 md:px-20 py-8 bg-white md:rounded-3xl justify-center items-center">
+          <h2 className="text-xl md:text-2xl font-medium mb-6">Create an account</h2>
 
           <div className="flex items-center mb-6 relative w-full justify-between px-6">
             <div className="flex flex-col items-center z-10">
@@ -112,6 +116,8 @@ const CreatePassword = () => {
               <div className="text-primary-500 mt-2 text-xs">Create your password</div>
             </div>
           </div>
+
+          {/* Form Fields */}
           <form onSubmit={onFinish} className="w-full">
             <div className="flex flex-col gap-4 mb-4">
               <Input

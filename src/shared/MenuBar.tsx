@@ -40,15 +40,15 @@ const MenuBar: React.FC<MenuBarProps> = ({
         motionProps={{
           variants: {
             enter: {
-              x: 24,
+              scale: 1,
               opacity: 1,
               transition: {
-                duration: 0.3,
+                duration: 0.2,
                 ease: "easeOut",
               },
             },
             exit: {
-              x: 60,
+              scale: 1,
               opacity: 0,
               transition: {
                 duration: 0.2,
@@ -57,7 +57,7 @@ const MenuBar: React.FC<MenuBarProps> = ({
             },
           },
         }}
-        className="fixed right-0 rounded-l-2xl h-full w-auto max-w-sm"
+        className="fixed right-0 rounded-l-2xl h-full w-auto max-w-sm sm:m-0 m-0"
        portalContainer={ref.current as HTMLElement}
       >
         <ModalContent>

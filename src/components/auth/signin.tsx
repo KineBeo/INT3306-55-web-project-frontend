@@ -6,9 +6,8 @@ import { useRouter } from "next/navigation";
 import { Button, Input } from "@nextui-org/react";
 import Image from "next/image";
 import bg1 from "@/images/bg-1.png";
-import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import imgSignIn from "@/images/img-sign-in.png";
-import Logo from "@/shared/Logo";
 
 const SignIn = () => {
   const router = useRouter();
@@ -91,26 +90,34 @@ const SignIn = () => {
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center">
-        <Image src={bg1} loading="lazy" className="absolute inset-0 z-0 object-cover" fill alt="Background" />
-        <Logo className="absolute bottom-0 right-0 m-6 w-16 text-primary-6000" />
-        <div className="flex w-full max-w-5xl shadow-2xl shadow-neutral-400 rounded-3xl bg-white overflow-hidden z-10">
-          <div className="flex flex-1 flex-col items-center justify-center p-8">
-            <div className="flex flex-1 flex-col justify-center text-gray-600">
-              <ArrowLeftCircleIcon
-                className="w-12 text-primary-500 hover:text-gray-200 cursor-pointer mb-5"
-                onClick={handleBack}
-              />
-              <h2 className="text-4xl font-semibold mb-5">Fly with us</h2>
-              <p className="text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
-            </div>
-            <Image src={imgSignIn} alt="Sign up" loading="lazy" className="mt-16" />
+      <div className="relative flex flex-wrap min-h-screen items-center justify-center">
+        <Image
+          src={bg1}
+          alt="Background"
+          loading="lazy"
+          className="hidden md:block absolute inset-0 z-0 object-cover opacity-40"
+          fill
+        />
+        <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-white overflow-hidden z-10">
+          {/* Left section */}
+          <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-gray-700">
+            <ArrowLeftCircleIcon
+              className="w-10 md:w-12 text-primary-500 hover:text-gray-200 cursor-pointer mb-5"
+              onClick={handleBack}
+            />
+            <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
+            <p className="text-medium md:text-2xl opacity-80 font-light">
+              Discover incredible journeys around the globe
+            </p>
+            <Image src={imgSignIn} alt="Sign up" loading="lazy" className="hidden md:block mt-12" />
           </div>
 
-          <div className="flex flex-1 flex-col px-20 pb-8 bg-primary-500 rounded-3xl justify-center items-center">
-            <h2 className="text-2xl font-medium mb-2 text-white">Sign In</h2>
+          {/* Right section */}
+          <div className="flex flex-1 flex-col px-10 md:px-20 py-8 bg-primary-500 md:rounded-3xl justify-center items-center">
+            <h2 className="text-xl md:text-2xl font-medium mb-2 text-white">Sign In</h2>
             <div className="bg-gray-100 h-1 mb-6 w-2/5"></div>
-            {/* Form Fields */}
+
+            {/* Form */}
             <form onSubmit={onFinish} className="w-full">
               <Input
                 label="Phone number"
@@ -164,7 +171,6 @@ const SignIn = () => {
                 Sign In
               </Button>
             </form>
-
             <p className="text-gray-200 mt-4 text-center">
               {/*navigate to sign up*/}
               Don't have an account?{" "}
