@@ -12,7 +12,7 @@ const defaultSteps = [
   },
   {
     title: "Make a reservation",
-    description: "Fill in the information to make a reservation",
+    description: "Please fill in the information",
   },
 //   {
 //     title: "Payment",

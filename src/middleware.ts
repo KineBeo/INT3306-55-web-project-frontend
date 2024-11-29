@@ -9,12 +9,11 @@ export function middleware(req: NextRequest) {
         loginUrl.searchParams.set("redirect", req.nextUrl.pathname);
         return NextResponse.redirect(loginUrl);
     }
-
     return NextResponse.next();
 }
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico|auth|verify|$).*)',
+       '/((?! api|_next/static|_next/image|favicon.ico|auth|$).*)',
     ],
 }

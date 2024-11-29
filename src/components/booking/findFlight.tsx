@@ -20,33 +20,54 @@ const FindFlight = () => {
   const flightData = [
     {
       id: 1,
+      departureDate: "2022/12/01",
+      arrivalDate: "2022/12/01",
       departureTime: "08:00 AM",
       arrivalTime: "10:30 AM",
       totalTime: "2h 30m",
       sectors: ["New York", "London"],
-      fare: 2000000,
+      sectorsCode: ["JFK", "LHR"],
+      price: 2000000,
+      aircraftModel: "Boeing 747",
+      flightCode: "BA-123",
+      class: "Economy",
+      passengers: 2,
     },
     {
       id: 2,
+      departureDate: "2022/12/01",
+      arrivalDate: "2022/12/01",
       departureTime: "11:45 AM",
       arrivalTime: "16:15 PM",
       totalTime: "4h 30m",
       sectors: ["New York", "Paris", "London"],
-      fare: 2500000,
+      sectorsCode: ["JFK", "CDG", "LHR"],
+      price: 2500000,
+      aircraftModel: "Boeing 747",
+      flightCode: "BA-123",
+      class: "Economy",
+      passengers: 1,
     },
     {
       id: 3,
+      departureDate: "2022/12/01",
+      arrivalDate: "2022/12/01",
       departureTime: "14:20 PM",
       arrivalTime: "16:50 PM",
       totalTime: "2h 30m",
       sectors: ["New York", "London"],
-      fare: 3000000,
+      sectorsCode: ["JFK", "LHR"],
+      price: 3000000,
+      aircraftModel: "Boeing 747",
+      flightCode: "BA-123",
+      class: "Economy",
+      passengers: 3,
     },
   ];
 
   const sortedFlights = flightData
-    .filter((flight) => flight.fare <= priceRange)
-    .sort((a, b) => (sortOrder === "asc" ? a.fare - b.fare : b.fare - a.fare));
+    .filter((flight) => flight.price <= priceRange)
+    .sort((a, b) => (sortOrder === "asc" ? a.price - b.price : b.price - a.price));
 
   const searchFormRef = useRef<HTMLDivElement>(null);
 
@@ -82,7 +103,7 @@ const FindFlight = () => {
           </div>
 
           {/* stepper section */}
-          <div className="w-full px-20 z-10">
+          <div className="w-full md:px-20 z-10">
             <Stepper currentStep={1} />
           </div>
         </div>
@@ -105,10 +126,10 @@ const FindFlight = () => {
           <div className="absolute inset-0">
             <Image alt="sectionBackground" src={sectionBackground} fill className="object-cover" />
           </div>
-                  {sortedFlights.map((flight, index) => (
-              <div className="z-10" key={index}>
-                  <FlightCard key={flight.id} flight={flight} onClick={handleBookNow} />
-              </div>
+          {sortedFlights.map((flight, index) => (
+            <div className="z-10" key={index}>
+              <FlightCard key={flight.id} flight={flight} onClick={handleBookNow} />
+            </div>
           ))}
         </div>
       </div>

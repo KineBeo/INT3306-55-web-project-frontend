@@ -87,7 +87,8 @@ const SignIn = () => {
       // Proceed with form submission, such as fetching API
       const token = "fake-token";
       document.cookie = `token=${token}; path=/`;
-      router.push(redirectPath);
+      // router.replace(redirectPath);
+      window.location.href = redirectPath;
     }
   };
 
