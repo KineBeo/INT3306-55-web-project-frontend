@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const OverlayContext = createContext({
   isLoading: false,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setLoading: (loading: boolean) => {},
 });
 
@@ -20,7 +21,7 @@ export const OverlayProvider = ({ children }: { children: React.ReactNode }) => 
 
     // Cleanup khi pathname thay đổi
     return () => clearTimeout(timeout);
-  }, [pathname]); // Mỗi khi pathname thay đổi, sẽ chạy lại useEffect
+  }, [pathname]);
 
   return (
     <OverlayContext.Provider value={{ isLoading, setLoading: setIsLoading }}>

@@ -44,7 +44,7 @@ const SignIn = () => {
     let isValid = Object.values(errors).every((error) => error === "");
     isValid = isValid && Object.values({ phone, password }).every((value) => value);
     setIsFormValid(isValid);
-  }, [errors]);
+  }, [errors, phone, password]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -74,7 +74,11 @@ const SignIn = () => {
     }
   };
 
-  const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/";
+  const [redirectPath, setRedirectPath] = useState("/");
+  useEffect(() => {
+    const path = new URLSearchParams(window.location.search).get("redirect") || "/";
+    setRedirectPath(path);
+  }, []);
 
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -183,7 +187,7 @@ const SignIn = () => {
             </form>
             <p className="text-gray-200 mt-4 text-center">
               {/*navigate to sign up*/}
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link onClick={() => setLoading(true)} href="/auth/signup" className="text-white font-medium underline">
                 Sign up
               </Link>

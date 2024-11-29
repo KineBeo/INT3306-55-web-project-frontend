@@ -39,7 +39,7 @@ const Home = () => {
       setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 10000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   // Hàm cuộn đến SearchForm khi nút Book Now được nhấn
   const handleBookNow = () => {

@@ -66,7 +66,7 @@ const SignUp = () => {
     let isValid = Object.values(errors).every((error) => error === "");
     isValid = isValid && Object.values({ firstName, lastName, email, phone, birthdate, terms }).every((value) => value);
     setIsFormValid(isValid);
-  }, [errors]);
+  }, [errors, firstName, lastName, email, phone, birthdate, terms]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

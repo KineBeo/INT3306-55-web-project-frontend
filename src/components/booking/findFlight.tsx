@@ -1,7 +1,7 @@
 "use client";
 
 import SearchForm from "@/components/SearchForm";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
 import FlightCard from "@/components/FlightCard";
 import SortButton from "@/components/SortButton";
@@ -105,8 +105,8 @@ const FindFlight = () => {
           <div className="absolute inset-0">
             <Image alt="sectionBackground" src={sectionBackground} fill className="object-cover" />
           </div>
-                  {sortedFlights.map((flight) => (
-              <div className="z-10">
+                  {sortedFlights.map((flight, index) => (
+              <div className="z-10" key={index}>
                   <FlightCard key={flight.id} flight={flight} onClick={handleBookNow} />
               </div>
           ))}
