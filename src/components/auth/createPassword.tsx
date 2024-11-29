@@ -8,9 +8,11 @@ import imgSignUp from "@/images/img-sign-up.png";
 import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
+import { useOverlay } from "@/context/OverlayContext";
 
 const CreatePassword = () => {
   const router = useRouter();
+  const { setLoading } = useOverlay();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -66,8 +68,15 @@ const CreatePassword = () => {
     event.preventDefault();
 
     if (!isFormValid()) return;
-
-    router.push("/");
+    // call api here
+    try {
+      setLoading(true);
+      router.push("/");
+    } catch (error) {
+      console.error("API call failed", error);
+    } finally {
+      setTimeout(() => setLoading(false), 500);
+    }
   };
 
   const handleBack = () => {
@@ -80,23 +89,21 @@ const CreatePassword = () => {
 
   return (
     <div className="relative flex flex-wrap min-h-screen items-center justify-center">
-        <Image
-          src={bg1}
-          alt="Background"
-          loading="lazy"
-          className="hidden md:block absolute inset-0 z-0 object-cover opacity-40"
-          fill
-        />
+      <Image
+        src={bg1}
+        alt="Background"
+        loading="lazy"
+        className="hidden md:block absolute inset-0 z-0 object-cover opacity-40"
+        fill
+      />
       <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-primary-500 overflow-hidden z-10">
-          <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-white">
+        <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-white">
+          <ArrowLeftCircleIcon className="w-10 md:w-12 hover:text-gray-200 cursor-pointer mb-5" onClick={handleBack} />
+          <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
+          <p className="text-medium md:text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
 
-              <ArrowLeftCircleIcon className="w-10 md:w-12 hover:text-gray-200 cursor-pointer mb-5" onClick={handleBack} />
-              <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
-              <p className="text-medium md:text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
-
-
-            <Image src={imgSignUp} alt="Sign up" loading="lazy" className="hidden md:block mt-8" />
-          </div>
+          <Image src={imgSignUp} alt="Sign up" loading="lazy" className="hidden md:block mt-8" />
+        </div>
 
         <div className="flex flex-1 flex-col px-10 md:px-20 py-8 bg-white md:rounded-3xl justify-center items-center">
           <h2 className="text-xl md:text-2xl font-medium mb-6">Create an account</h2>
@@ -185,7 +192,7 @@ const CreatePassword = () => {
 
           <p className="text-gray-500 mt-4 text-center">
             Already have an account?{" "}
-            <Link href="/auth/signin" className="text-primary-6000 font-medium">
+            <Link onClick={() => setLoading(true)} href="/auth/signin" className="text-primary-6000 font-medium">
               Sign in
             </Link>
           </p>

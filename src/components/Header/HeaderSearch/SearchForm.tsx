@@ -7,6 +7,8 @@ import LocationInput from "./LocationInput";
 import InputNumber from "@/components/InputNumber";
 import FlightDateRangeInput from "./FlightDateRangeInput";
 import ButtonSubmit from "@/shared/ButtonSubmit";
+import { useRouter } from "next/navigation";
+import { useOverlay } from "@/context/OverlayContext";
 
 export interface GuestsObject {
   guestAdults: number;
@@ -30,6 +32,9 @@ const flightClass = [
 ];
 
 const SearchForm = () => {
+  const router = useRouter();
+  const { setLoading } = useOverlay();
+  
   const [dropOffLocationType, setDropOffLocationType] = useState<"roundTrip" | "oneWay" | "">("roundTrip");
   const [flightClassState, setFlightClassState] = useState("Economy");
   const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(2);
@@ -174,10 +179,27 @@ const SearchForm = () => {
     );
   };
 
+  const onFinish = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // Gọi API
+      router.push("/booking/find-flight");
+      //   if (result.success) {
+      //     router.push("/...");
+      //   }
+    } catch (error) {
+      console.error("API call failed", error);
+    } finally {
+      setTimeout(() => setLoading(false), 500);
+    }
+  };
+
   const renderForm = () => {
     return (
       <div ref={ref}>
-        <form className="w-full relative ">
+        <form onSubmit={onFinish} className="w-full relative ">
           {renderRadioBtn()}
           <div className="flex items-center w-full rounded-full border border-neutral-200 bg-white">
             <LocationInput placeHolder="Add Location" desc="Flying from" className="flex-1" />
@@ -186,7 +208,7 @@ const SearchForm = () => {
             <div className="self-center border-r border-slate-200 h-8"></div>
             <FlightDateRangeInput selectsRange={dropOffLocationType !== "oneWay"} className="flex-1" />
             <div className="pr-2 xl:pr-4">
-              <ButtonSubmit href="#" />
+              <ButtonSubmit />
             </div>
           </div>
         </form>

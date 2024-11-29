@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import SearchForm from "./SearchForm";
+import SearchForm from "@/components/SearchForm";
 import sectionBackground from "@/images/section-background.png";
 import becomeAnAuthorImg from "@/images/BecomeAnAuthorImg.png";
 import Image from "next/image";
 import { NewsData } from "@/data/types";
-import NewsCard from "./NewsCard";
+import NewsCard from "@/components/NewsCard";
 
 const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -86,8 +86,6 @@ const Home = () => {
       console.log(`News ${id} redeemed`);
     } catch (err) {
       console.error(err);
-    } finally {
-      setNewsLoading(false);
     }
   };
 
@@ -140,7 +138,7 @@ const Home = () => {
           {/* SearchForm */}
           <div
             ref={searchFormRef}
-            className="w-[70%] rounded-[2.5rem] shadow-xl px-10 py-8 bg-white mt-4 hidden md:block">
+            className="w-[70%] rounded-[2.5rem] shadow-xl px-10 py-8 bg-white mt-4 hidden md:block border-small">
             <h2 className="text-center text-3xl font-semibold mb-6 text-gray-900">
               Book Your Flight Ticket with Ease!
             </h2>
