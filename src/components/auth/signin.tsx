@@ -8,9 +8,11 @@ import Image from "next/image";
 import bg1 from "@/images/bg-1.png";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import imgSignIn from "@/images/img-sign-in.png";
+import { useOverlay } from "@/context/OverlayContext";
 
 const SignIn = () => {
   const router = useRouter();
+  const { setLoading } = useOverlay();
 
   // State for form fields
   const [phone, setPhone] = useState("");
@@ -42,7 +44,7 @@ const SignIn = () => {
     let isValid = Object.values(errors).every((error) => error === "");
     isValid = isValid && Object.values({ phone, password }).every((value) => value);
     setIsFormValid(isValid);
-  }, [errors]);
+  }, [errors, phone, password]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -72,11 +74,20 @@ const SignIn = () => {
     }
   };
 
+  const [redirectPath, setRedirectPath] = useState("/");
+  useEffect(() => {
+    const path = new URLSearchParams(window.location.search).get("redirect") || "/";
+    setRedirectPath(path);
+  }, []);
+
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormValid) {
+      setLoading(true);
       // Proceed with form submission, such as fetching API
-      router.push("/");
+      const token = "fake-token";
+      document.cookie = `token=${token}; path=/`;
+      router.push(redirectPath);
     }
   };
 
@@ -161,7 +172,10 @@ const SignIn = () => {
                 }}
               />
               <div className="flex justify-end">
-                <Link href="/auth/forgot-password" className="text-gray-100 text-xs italic underline">
+                <Link
+                  onClick={() => setLoading(true)}
+                  href="/auth/forgot-password"
+                  className="text-gray-100 text-xs italic underline">
                   Forget your password?
                 </Link>
               </div>
@@ -173,8 +187,8 @@ const SignIn = () => {
             </form>
             <p className="text-gray-200 mt-4 text-center">
               {/*navigate to sign up*/}
-              Don't have an account?{" "}
-              <Link href="/auth/signup" className="text-white font-medium underline">
+              Don&apos;t have an account?{" "}
+              <Link onClick={() => setLoading(true)} href="/auth/signup" className="text-white font-medium underline">
                 Sign up
               </Link>
             </p>

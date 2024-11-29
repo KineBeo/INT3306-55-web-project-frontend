@@ -1,14 +1,11 @@
 import React from "react";
-import Link from "next/link";
 interface SignInButtonProps {
   onClick?: () => void;
-  href?: string;
 }
 
-const SignInButton: React.FC<SignInButtonProps> = ({ onClick, href }) => {
+const SignInButton: React.FC<SignInButtonProps> = ({ onClick }) => {
   return (
-    <Link
-      href={href ? href : ""}
+    <button
       onClick={onClick}
       className="flex items-center px-4 py-2 border-2 border-gray-400 rounded-lg hover:bg-gray-100 focus:outline-none cursor:pointer">
       <span className="mr-2">
@@ -22,7 +19,7 @@ const SignInButton: React.FC<SignInButtonProps> = ({ onClick, href }) => {
         </svg>
       </span>
       <span className="text-black font-medium">Sign in</span>
-    </Link>
+    </button>
   );
 };
 

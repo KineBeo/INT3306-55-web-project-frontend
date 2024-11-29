@@ -12,6 +12,8 @@ import Image from "next/image";
 import flightTakeOff from "@/images/flight-takeoff.svg";
 import flightRoster from "@/images/flight-roster.svg";
 import flightTicket from "@/images/flight-ticket.svg";
+import { useOverlay } from "@/context/OverlayContext";
+import { useRouter } from "next/navigation";
 
 interface HeaderProps {
   className?: string;
@@ -23,6 +25,19 @@ if (typeof window !== "undefined") {
 }
 
 const Header: FC<HeaderProps> = ({ className = "" }) => {
+  const router = useRouter();
+  const { setLoading } = useOverlay();
+
+  const redirectToSignIn = () => {
+    setLoading(true);
+    try {
+      router.push("/auth/signin");
+      console.log("Redirect to sign in page");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const [showHeaderSearch, setShowHeaderSearch] = useState<boolean>(false);
   const [currentTab, setCurrentTab] = useState<"Book" | "Manage Booking" | "Online Check-in">("Book");
 
@@ -70,10 +85,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             : "-translate-x-0 -translate-y-[90px] scale-x-[0.395] scale-y-[0.6] opacity-0 invisible pointer-events-none"
         }`}>
         <div className={`w-full max-w-4xl mx-auto pb-6`}>
-          <HeaderSearch
-            defaultTab={currentTab}
-            onTabChange={setCurrentTab}
-          />
+          <HeaderSearch defaultTab={currentTab} onTabChange={setCurrentTab} />
         </div>
       </div>
     );
@@ -144,7 +156,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
         <div className="relative px-4 lg:container h-[88px] flex">
           <div className="flex-1 flex justify-between">
             <div className="relative z-10 hidden md:flex flex-1 items-center">
-              <Logo className="w-16"/>
+              <Logo className="w-16" />
             </div>
 
             <div className="flex flex-[2] lg:flex-none mx-auto">
@@ -155,7 +167,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             <div className="hidden md:flex relative z-10 flex-1 justify-end text-neutral-700 items-center">
               <div className="flex space-x-2">
                 <NotifyDropdown />
-                <SignInButton href="/auth/signin"/>
+                <SignInButton onClick={redirectToSignIn} />
                 <MenuBar />
               </div>
             </div>
