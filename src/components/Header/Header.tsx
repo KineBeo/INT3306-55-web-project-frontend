@@ -13,20 +13,21 @@ import flightTakeOff from "@/images/flight-takeoff.svg";
 import flightRoster from "@/images/flight-roster.svg";
 import flightTicket from "@/images/flight-ticket.svg";
 import { useOverlay } from "@/context/OverlayContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 interface HeaderProps {
   className?: string;
 }
 
-let WIN_PREV_POSITION = 0;
-if (typeof window !== "undefined") {
-  WIN_PREV_POSITION = (window as Window).pageYOffset;
-}
-
 const Header: FC<HeaderProps> = ({ className = "" }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { setLoading } = useOverlay();
+
+  useEffect(() => {
+    // Đặt showHeaderSearch thành false mỗi khi pathname thay đổi (route thay đổi)
+    setShowHeaderSearch(false);
+  }, [pathname]);
 
   const redirectToSignIn = () => {
     setLoading(true);
@@ -49,32 +50,6 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   }, []);
 
   useOutsideClick(headerInnerRef, handleClickOutsideCallback);
-
-  // handle scroll event
-  const handleEvent = useCallback(() => {
-    window.requestAnimationFrame(handleHideHeaderSearch);
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleEvent);
-    return () => {
-      window.removeEventListener("scroll", handleEvent);
-    };
-  }, [handleEvent]);
-
-  const handleHideHeaderSearch = () => {
-    if (!document.querySelector("#nc-Header-anchor")) {
-      return;
-    }
-
-    const currentScrollPos = window.pageYOffset;
-    if (WIN_PREV_POSITION - currentScrollPos > 100 || WIN_PREV_POSITION - currentScrollPos < -100) {
-      setShowHeaderSearch(false);
-    } else {
-      return;
-    }
-    WIN_PREV_POSITION = currentScrollPos;
-  };
 
   const renderHeaderSearch = () => {
     return (

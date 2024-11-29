@@ -9,7 +9,7 @@ interface SortButtonProps {
 const SortButton: React.FC<SortButtonProps> = ({ sortOrder, setSortOrder }) => (
   <button
     onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-    className="flex items-center bg-[#06B6D4] text-white px-3 md:px-6 py-2 md:py-4 rounded-xl hover:bg-cyan-700 transition-colors shadow-lg"
+    className="flex items-center bg-primary-500 md:text-md text-sm text-white px-3 md:px-6 py-2 md:py-4 rounded-xl hover:bg-primary-700 transition-colors shadow-lg"
   >
     {sortOrder === "asc" ? <FaSortAmountUp className="mr-2" /> : <FaSortAmountDown className="mr-2" />}
     Sort by Price

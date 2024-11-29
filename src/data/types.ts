@@ -13,3 +13,19 @@ export interface NewsData {
   description: string;
   image: string;
 }
+
+export interface Flight {
+  id: number;
+  departureDate: string;
+  arrivalDate: string;
+  departureTime: string;
+  arrivalTime: string;
+  totalTime: string;
+  sectors: string[];
+  sectorsCode: string[];
+  price: number;
+  aircraftModel: string;
+  flightCode: string;
+  class: string;
+  passengers: number;
+}

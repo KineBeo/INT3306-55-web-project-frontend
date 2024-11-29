@@ -86,13 +86,15 @@ const Home = () => {
       console.log(`News ${id} redeemed`);
     } catch (err) {
       console.error(err);
+    } finally {
+      setNewsLoading(false);
     }
   };
 
   return (
     <div>
       <div className="flex flex-col items-center justify-center bg-white md:px-10 md:py-5 px-5 py-2">
-        <div className="relative w-full md:h-[80vh] h-[50vh] overflow-hidden rounded-3xl">
+        <div className="relative w-full md:h-[80vh] h-[40vh] overflow-hidden rounded-3xl">
           {slides.map((slide, index) => (
             <motion.div
               key={slide.id}
@@ -103,7 +105,7 @@ const Home = () => {
               }}
               transition={{ duration: 0.7 }}
               className={`absolute w-full h-full ${index === activeSlide ? "z-20" : "z-10"}`}>
-              <img src={`${slide.image}`} alt={slide.title} className="w-full h-full object-cover" />
+              <Image src={slide.image} alt={slide.title} loading="lazy" fill className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent">
                 <div className="relative h-full flex items-center justify-start md:px-20 px-6 z-10">
                   <div className="text-white max-w-xl relative">
@@ -128,7 +130,7 @@ const Home = () => {
               <button
                 key={index}
                 onClick={() => setActiveSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
                   index === activeSlide ? "bg-white scale-125" : "bg-white/50 scale-100"
                 }`}
               />
@@ -144,20 +146,20 @@ const Home = () => {
             </h2>
             <SearchForm />
           </div>
-          <div className="flex flex-col justify-start w-full px-6 md:px-20 py-10 md:py-12 gap-1 md:gap-6">
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-900">Suggestions for discovery</h2>
-            <h4 className="text-gray-500 md:text-lg font-medium">Popular places to recommends for you</h4>
+          <div className="flex flex-col justify-start w-full py-10 md:py-12 gap-2 md:gap-6">
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 md:px-20">Suggestions for discovery</h2>
+            <h4 className="text-gray-500 md:text-lg font-medium md:px-20">Popular places to recommends for you</h4>
             {/* Cards */}
             <div></div>
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-900">News</h2>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 md:px-20">News</h2>
             {/* Cards */}
-            <div className="flex flex-wrap gap-6 justify-start">
+            <div className="flex gap-6 justify-start overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
               {newsData.map((news) => (
                 <NewsCard key={news.id} {...news} loading={newsLoading} handleRedeem={handleRedeem} />
               ))}
             </div>
             <div className="flex justify-center">
-              <button className="bg-gradient-to-r from-primary-6000 to-primary-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-gradient-to-r hover:from-primary-700 hover:to-primary-6000 hover:shadow-lg">
+              <button className="bg-gradient-to-r from-primary-6000 to-primary-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-gradient-to-r hover:from-primary-700 hover:to-primary-6000 hover:shadow-lg">
                 Show me more
               </button>
             </div>
