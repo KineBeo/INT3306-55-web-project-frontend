@@ -1,23 +1,19 @@
 import React from "react";
-import { FaPlane, FaUser, FaPlaneArrival, FaPlaneDeparture } from "react-icons/fa";
+import { FaPlane, FaUser, FaPlaneArrival, FaPlaneDeparture, FaChild } from "react-icons/fa";
 import { BsCashStack, BsAirplane } from "react-icons/bs";
 import { Flight } from "@/data/types";
+import formatCurrency from "@/utils/formatCurrency";
 
 interface FlightCardProps {
   flight: Flight;
   onClick?: () => void;
 }
 
-// Function to format numbers
-const formatCurrency = (value: number): string => {
-  return new Intl.NumberFormat("vi-VN").format(value);
-};
-
 const FlightCard: React.FC<FlightCardProps> = ({ flight, onClick }) => (
   <div
     key={flight.id}
-    className="flex flex-col md:flex-row bg-white rounded-2xl shadow-lg p-3 md:p-6 transition-all hover:shadow-xl">
-    <div className="flex-1 flex flex-col md:mr-16">
+    className="flex flex-col lg:flex-row bg-white rounded-2xl shadow-lg p-3 md:p-4 lg:p-6 transition-all hover:shadow-xl">
+    <div className="flex-1 flex flex-col lg:mr-16">
       <div className="flex justify-between items-start">
         <div className="flex items-center space-x-4">
           <div className="bg-primary-50 p-2 md:p-3 rounded-full">
@@ -64,7 +60,7 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onClick }) => (
       </div>
     </div>
 
-    <div className="w-full md:w-3/8 flex flex-col border-t-2 md:border-t-0 md:border-l-4 border-dashed border-gray-400 md:pl-16 md:gap-1">
+    <div className="flex flex-col border-t-2 lg:border-t-0 lg:border-l-4 border-dashed border-gray-400 lg:pl-16 md:gap-1">
       <p className="text-xl md:text-2xl lg:text-3xl font-bold text-primary-6000 text-right order-1 md:order-0">
         {formatCurrency(flight.price)} VND
       </p>
@@ -73,9 +69,19 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onClick }) => (
         <div className="flex items-center justify-end space-x-2">
           <FaUser className="text-gray-400" />
           <p className="text-gray-600">
-            {flight.passengers} {flight.passengers > 1 ? "Passengers" : "Passenger"}
+            {flight.adults} {flight.adults > 1 ? "Adults" : "Adult"}
           </p>
+          {flight.children > 0 && (
+            <div className="flex items-center justify-end space-x-2">
+              , 
+              <FaChild className="text-gray-400" />
+              <p className="text-gray-600">
+                {flight.children} {flight.children > 1 ? "Children" : "Child"}
+              </p>
+            </div>
+          )}
         </div>
+
         <div className="flex items-center justify-end space-x-2">
           <BsCashStack className="text-gray-400" />
           <p className="text-gray-600">{flight.class}</p>

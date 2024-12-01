@@ -3,7 +3,6 @@
 import React, { FC, useEffect, useRef, useState, useCallback } from "react";
 import Logo from "@/shared/Logo";
 import useOutsideClick from "@/hooks/useOutsideClick";
-import NotifyDropdown from "@/components/NotificationDropdown";
 import SignInButton from "@/shared/SignInButton";
 import MenuBar from "@/shared/MenuBar";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
@@ -141,7 +140,6 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
 
             <div className="hidden md:flex relative z-10 flex-1 justify-end text-neutral-700 items-center">
               <div className="flex space-x-2">
-                <NotifyDropdown />
                 <SignInButton onClick={redirectToSignIn} />
                 <MenuBar />
               </div>
