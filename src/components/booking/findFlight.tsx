@@ -10,6 +10,9 @@ import Stepper from "@/components/Stepper";
 import { useRouter } from "next/navigation";
 import { useOverlay } from "@/context/OverlayContext";
 import Image from "next/image";
+import { useAppDispatch } from "@/redux/hooks";
+import { setFlight } from "@/redux/flightSlice";
+import { Flight } from "@/data/types";
 
 const FindFlight = () => {
   const router = useRouter();
@@ -31,7 +34,8 @@ const FindFlight = () => {
       aircraftModel: "Boeing 747",
       flightCode: "BA-123",
       class: "Economy",
-      passengers: 2,
+      adults: 2,
+      children: 1,
     },
     {
       id: 2,
@@ -46,7 +50,8 @@ const FindFlight = () => {
       aircraftModel: "Boeing 747",
       flightCode: "BA-123",
       class: "Economy",
-      passengers: 1,
+      adults: 2,
+      children: 1,
     },
     {
       id: 3,
@@ -61,7 +66,8 @@ const FindFlight = () => {
       aircraftModel: "Boeing 747",
       flightCode: "BA-123",
       class: "Economy",
-      passengers: 3,
+      adults: 1,
+      children: 0,
     },
   ];
 
@@ -71,26 +77,22 @@ const FindFlight = () => {
 
   const searchFormRef = useRef<HTMLDivElement>(null);
 
-  const handleBookNow = async () => {
-    setLoading(true);
+  const dispatch = useAppDispatch();
 
-    // sleep 500ms
-    await new Promise((resolve) => setTimeout(resolve, 500));
+const handleBookNow = async (flight: Flight) => {
+  setLoading(true);
 
-    try {
-      // Gọi API
-      router.push("/booking/checking-ticket-info");
-      //   if (result.success) {
-      //     router.push("/...");
-      //   }
-    } catch (error) {
-      console.error("API call failed", error);
-    }
-  };
+  // Lưu flight vào Redux
+  dispatch(setFlight(flight));
+
+  // Chuyển trang
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  router.push("/booking/checking-ticket-info");
+};
 
   return (
     <div>
-      <div className="flex flex-col items-center justify-center bg-white md:px-32 md:py-5 px-5 py-4 w-full gap-4 md:gap-10">
+      <div className="flex flex-col items-center justify-center bg-white lg:px-32 md:px-12 md:py-5 px-5 py-4 w-full gap-4 md:gap-10">
         <div className="relative bg-gray-100 w-full flex flex-col items-center gap-4 md:gap-10 py-4 rounded-3xl">
           {/* Background image */}
           <div className="absolute inset-0">
@@ -121,14 +123,14 @@ const FindFlight = () => {
         </div>
 
         {/* Flight List Section */}
-        <div className="relative rounded-3xl md:px-20 px-6 md:py-12 py-10 bg-gray-100 w-full flex flex-col gap-6">
+        <div className="relative rounded-3xl lg:px-20 px-6 md:py-12 py-10 bg-gray-100 w-full flex flex-col gap-6">
           {/* Background image */}
           <div className="absolute inset-0">
             <Image alt="sectionBackground" src={sectionBackground} fill className="object-cover" />
           </div>
           {sortedFlights.map((flight, index) => (
             <div className="z-10" key={index}>
-              <FlightCard key={flight.id} flight={flight} onClick={handleBookNow} />
+              <FlightCard key={flight.id} flight={flight} onClick={() => handleBookNow(flight)} />
             </div>
           ))}
         </div>

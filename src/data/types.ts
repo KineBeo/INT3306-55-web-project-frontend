@@ -27,5 +27,23 @@ export interface Flight {
   aircraftModel: string;
   flightCode: string;
   class: string;
-  passengers: number;
+  adults: number;
+  children: number;
+}
+
+export interface Destination {
+  id: number;
+  city: string;
+  country: string;
+  code: string;
+  image: string;
+  description?: string;
+}
+
+export interface PassengerInfo {
+    firstName: string,
+    lastName: string,
+    phone: string,
+    gender: string;
+    dob: string
 }
