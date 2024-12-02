@@ -6,12 +6,12 @@ import SearchForm from "@/components/SearchForm";
 import sectionBackground from "@/images/section-background.png";
 import becomeAnAuthorImg from "@/images/BecomeAnAuthorImg.png";
 import Image from "next/image";
-import { NewsData } from "@/data/types";
 import NewsCard from "@/components/NewsCard";
 import DestinationCard from "@/components/DestinationCard";
 import { clearFlight } from "@/redux/flightSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { usePathname } from "next/navigation";
+import { slides, newsData, popularDestinations } from "@/data/fakeData";
 
 const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -27,33 +27,14 @@ const Home = () => {
     }
   }, [currentPath, dispatch]);
 
-  const slides = [
-    {
-      id: 1,
-      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
-      title: "Explore The World",
-      description: "Book your dream vacation today",
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1556388158-158ea5ccacbd",
-      title: "Amazing Destinations",
-      description: "Discover new places and create memories",
-    },
-    {
-      id: 3,
-      image: "https://images.unsplash.com/photo-1570710891163-6d3b5c47248b",
-      title: "Luxury Travel",
-      description: "Experience comfort at its finest",
-    },
-  ];
+  
 
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 10000);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, []);
 
   // Hàm cuộn đến SearchForm khi nút Book Now được nhấn
   const handleBookNow = () => {
@@ -66,32 +47,7 @@ const Home = () => {
   };
 
   const [newsLoading, setNewsLoading] = useState(false);
-  const newsData: NewsData[] = [
-    {
-      id: 1,
-      title: "Holiday Special",
-      description: "Get 25% off on your next purchase",
-      image: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1",
-    },
-    {
-      id: 2,
-      title: "Weekend Deal",
-      description: "Save $50 on orders above $200",
-      image: "https://images.unsplash.com/photo-1556742111-a301076d9d18",
-    },
-    {
-      id: 3,
-      title: "Flash Sale",
-      description: "Buy one get one free",
-      image: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49",
-    },
-    {
-      id: 4,
-      title: "First Time User",
-      description: "Get 30% off on your first order",
-      image: "https://images.unsplash.com/photo-1556742044-3c52d6e88c62",
-    },
-  ];
+  
 
   const handleRedeem = async (id: number) => {
     setNewsLoading(true);
@@ -104,33 +60,6 @@ const Home = () => {
       setNewsLoading(false);
     }
   };
-
-  const popularDestinations = [
-    {
-      id: 1,
-      city: "Paris",
-      country: "France",
-      code: "CDG",
-      description: "Experience the city of love and lights",
-      image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34",
-    },
-    {
-      id: 2,
-      city: "Tokyo",
-      country: "Japan",
-      code: "HND",
-      description: "Immerse in culture and modern technology",
-      image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf",
-    },
-    {
-      id: 3,
-      city: "Dubai",
-      country: "UAE",
-      code: "DXB",
-      description: "Luxury and adventure in the desert",
-      image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c",
-    },
-  ];
 
   return (
     <div>

@@ -13,63 +13,13 @@ import Image from "next/image";
 import { useAppDispatch } from "@/redux/hooks";
 import { setFlight } from "@/redux/flightSlice";
 import { Flight } from "@/data/types";
+import { flightData } from "@/data/fakeData";
 
 const FindFlight = () => {
   const router = useRouter();
   const [priceRange, setPriceRange] = useState<number>(5000000);
   const [sortOrder, setSortOrder] = useState<string>("asc");
   const { setLoading } = useOverlay();
-
-  const flightData = [
-    {
-      id: 1,
-      departureDate: "2022/12/01",
-      arrivalDate: "2022/12/01",
-      departureTime: "08:00 AM",
-      arrivalTime: "10:30 AM",
-      totalTime: "2h 30m",
-      sectors: ["New York", "London"],
-      sectorsCode: ["JFK", "LHR"],
-      price: 2000000,
-      aircraftModel: "Boeing 747",
-      flightCode: "BA-123",
-      class: "Economy",
-      adults: 2,
-      children: 1,
-    },
-    {
-      id: 2,
-      departureDate: "2022/12/01",
-      arrivalDate: "2022/12/01",
-      departureTime: "11:45 AM",
-      arrivalTime: "16:15 PM",
-      totalTime: "4h 30m",
-      sectors: ["New York", "Paris", "London"],
-      sectorsCode: ["JFK", "CDG", "LHR"],
-      price: 2500000,
-      aircraftModel: "Boeing 747",
-      flightCode: "BA-123",
-      class: "Economy",
-      adults: 2,
-      children: 1,
-    },
-    {
-      id: 3,
-      departureDate: "2022/12/01",
-      arrivalDate: "2022/12/01",
-      departureTime: "14:20 PM",
-      arrivalTime: "16:50 PM",
-      totalTime: "2h 30m",
-      sectors: ["New York", "London"],
-      sectorsCode: ["JFK", "LHR"],
-      price: 3000000,
-      aircraftModel: "Boeing 747",
-      flightCode: "BA-123",
-      class: "Economy",
-      adults: 1,
-      children: 0,
-    },
-  ];
 
   const sortedFlights = flightData
     .filter((flight) => flight.price <= priceRange)
@@ -79,16 +29,16 @@ const FindFlight = () => {
 
   const dispatch = useAppDispatch();
 
-const handleBookNow = async (flight: Flight) => {
-  setLoading(true);
+  const handleBookNow = async (flight: Flight) => {
+    setLoading(true);
 
-  // Lưu flight vào Redux
-  dispatch(setFlight(flight));
+    // Lưu flight vào Redux
+    dispatch(setFlight(flight));
 
-  // Chuyển trang
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  router.push("/booking/checking-ticket-info");
-};
+    // Chuyển trang
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    router.push("/booking/checking-ticket-info");
+  };
 
   return (
     <div>

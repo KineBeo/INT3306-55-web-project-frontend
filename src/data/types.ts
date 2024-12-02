@@ -47,3 +47,10 @@ export interface PassengerInfo {
     gender: string;
     dob: string
 }
+
+export interface FlightTicket {
+  id: number;
+  flight: Flight;
+  passengers: PassengerInfo[];
+  status: "Pending" | "Confirmed" | "Cancelled";
+}
