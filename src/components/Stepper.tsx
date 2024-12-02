@@ -44,7 +44,7 @@ const Stepper: React.FC<StepperProps> = ({ steps = defaultSteps, currentStep = 1
                     ? "bg-primary-400 text-white"
                     : isCompleted
                     ? "bg-primary-6000 text-white"
-                    : "bg-gray-300 text-gray-400"
+                    : "bg-gray-300 text-neutral-400"
                 } rounded-full`}>
                 {isCompleted ? (
                   <span className="text-sm font-bold">✔</span>
@@ -55,8 +55,8 @@ const Stepper: React.FC<StepperProps> = ({ steps = defaultSteps, currentStep = 1
 
               {/* Step Text */}
               <div className="text-center flex flex-col gap-2 mt-2">
-                <p className={`text-sm font-medium ${isActive ? "text-gray-800" : "text-gray-500"}`}>{step.title}</p>
-                <p className={`text-xs ${isActive ? "text-gray-600" : "text-gray-400"}`}>{step.description}</p>
+                <p className={`text-sm font-medium ${isActive ? "text-neutral-800" : "text-neutral-500"}`}>{step.title}</p>
+                <p className={`text-xs ${isActive ? "text-neutral-600" : "text-neutral-400"}`}>{step.description}</p>
               </div>
             </div>
           );

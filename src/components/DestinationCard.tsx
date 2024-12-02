@@ -30,7 +30,7 @@ const DestinationCard: React.FC<DestinationCardProps> = ({ destination, onClick 
       </div>
       {/* Description Section */}
       <div className="p-3 md:p-6">
-        <p className="text-sm md:text-md text-gray-600 mb-2 md:mb-4">{destination.description}</p>
+        <p className="text-sm md:text-md text-neutral-600 mb-2 md:mb-4">{destination.description}</p>
         <div className="flex justify-end items-center">
           <button onClick={onClick} className="text-sm md:text-md flex items-center text-primary-6000 hover:text-primary-700 transition-colors">
             Book Now

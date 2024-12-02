@@ -42,37 +42,37 @@ const ListBooking = ({ flightTickets, status, showFilter = true, title = "My Boo
   return (
     <div>
       <div className="flex flex-col items-center justify-center bg-white lg:px-32 md:px-12 md:py-8 px-5 py-4 w-full gap-4 md:gap-10">
-        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 w-full text-start">{title}</h2>
+        <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-neutral-800 w-full text-start">{title}</h2>
         {/* Filter Section */}
         {showFilter && (
-          <div className="flex space-x-4 w-full">
+          <div className="flex overflow-x-auto flex-nowrap space-x-2 md:space-x-4 w-full text-sm md:text-base">
             <button
               onClick={() => setFilterStatus("All")}
-              className={`px-4 py-2 rounded-lg ${
-                filterStatus === "All" ? "bg-cyan-600 text-white" : "bg-white text-gray-600 border border-gray-200"
+              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap ${
+                filterStatus === "All" ? "bg-cyan-600 text-white" : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               All Tickets
             </button>
             <button
               onClick={() => setFilterStatus("Confirmed")}
-              className={`px-4 py-2 rounded-lg ${
+              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap${
                 filterStatus === "Confirmed"
                   ? "bg-green-600 text-white"
-                  : "bg-white text-gray-600 border border-gray-200"
+                  : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               Confirmed
             </button>
             <button
               onClick={() => setFilterStatus("Pending")}
-              className={`px-4 py-2 rounded-lg ${
-                filterStatus === "Pending" ? "bg-[#ec9543] text-white" : "bg-white text-gray-600 border border-gray-200"
+              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap${
+                filterStatus === "Pending" ? "bg-[#ec9543] text-white" : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               Pending
             </button>
             <button
               onClick={() => setFilterStatus("Cancelled")}
-              className={`px-4 py-2 rounded-lg ${
-                filterStatus === "Cancelled" ? "bg-red-600 text-white" : "bg-white text-gray-600 border border-gray-200"
+              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap${
+                filterStatus === "Cancelled" ? "bg-red-600 text-white" : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               Cancelled
             </button>

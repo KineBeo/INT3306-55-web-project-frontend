@@ -50,15 +50,14 @@ const FlightDateRangeInput: FC<FlightDateRangeInputProps> = ({ className = "", s
 
   const renderInput = () => {
     return (
-      <>
-        <div className="flex-grow text-left">
-          <span className="block xl:text-base font-semibold">
+        <div className="flex-1 flex lg:flex-col">
+          <span className="flex-1 lg:order-0 order-1 text-right lg:text-left w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-400 text-xs md:text-base font-semibold placeholder-neutral-800 truncate">
             {startDate
               ? new Date(startDate.year, startDate.month - 1, startDate.day).toLocaleDateString("en-US", {
                   month: "short",
                   day: "2-digit",
                 })
-              : "Add dates"}
+              : "Add Dates"}
             {selectsRange && endDate
               ? " - " +
                 new Date(endDate.year, endDate.month - 1, endDate.day).toLocaleDateString("en-US", {
@@ -67,29 +66,28 @@ const FlightDateRangeInput: FC<FlightDateRangeInputProps> = ({ className = "", s
                 })
               : ""}
           </span>
-          <span className="block mt-1 text-sm text-neutral-400 leading-none font-light">
+          <span className="lg:order-1 order-0 mt-0.5 text-xs md:text-sm text-neutral-400 font-light">
             {selectsRange ? "Pick up - Drop off" : "Pick up date"}
           </span>
         </div>
-      </>
     );
   };
 
   return (
     <>
-      <div className={`relative flex ${className}`} ref={containerRef}>
+      <div className={`relative flex flex-col ${className}`} ref={containerRef}>
         <div
-          onClick={() => setShowPopover(true)}
-          className={`flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left ${
+          onClick={() => setShowPopover(!showPopover)}
+          className={`flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left rounded-full border-1 lg:border-0 border-neutral-200 ${
             showPopover ? "nc-Header-field-focused--2" : ""
           }`}>
-          <div className="flex-1 z-10 flex relative items-center space-x-3 focus:outline-none">
+          <div className="flex-1 flex items-center">
             {renderInput()}
             {startDate && showPopover && <ClearDataButton onClick={clearData} />}
           </div>
         </div>
         {showPopover && (
-          <div className="absolute left-1/2 -translate-x-1/2 z-40 top-full mt-3">
+          <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2 lg:text-center text-right z-40 top-full mt-3">
             {selectsRange ? (
               <CustomRangeDatePicker handleChange={onChangeRangeDate} currRange={{ start: startDate, end: endDate }} />
             ) : (

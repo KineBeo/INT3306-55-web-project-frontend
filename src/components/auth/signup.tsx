@@ -142,7 +142,7 @@ const SignUp = () => {
         <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-primary-500 overflow-hidden z-10">
           <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-white">
             <ArrowLeftCircleIcon
-              className="w-10 md:w-12 hover:text-gray-200 cursor-pointer mb-5"
+              className="w-10 md:w-12 hover:text-neutral-200 cursor-pointer mb-5"
               onClick={handleBack}
             />
             <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
@@ -168,7 +168,7 @@ const SignUp = () => {
                 <div className="w-5 h-5 flex items-center justify-center bg-gray-400 text-white rounded-full text-xs">
                   2
                 </div>
-                <div className="text-gray-400 mt-2 text-xs">Create your password</div>
+                <div className="text-neutral-400 mt-2 text-xs">Create your password</div>
               </div>
             </div>
 
@@ -189,7 +189,7 @@ const SignUp = () => {
                   classNames={{
                     input: "border-0 focus:ring-0",
                     label:
-                      " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                      " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                   }}
                 />
                 <Input
@@ -206,7 +206,7 @@ const SignUp = () => {
                   classNames={{
                     input: "border-0 focus:ring-0",
                     label:
-                      " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                      " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                   }}
                 />
               </div>
@@ -226,7 +226,7 @@ const SignUp = () => {
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:
-                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                 }}
               />
 
@@ -245,7 +245,7 @@ const SignUp = () => {
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:
-                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                 }}
                 maxLength={10}
                 onKeyDown={handleKeyDown}
@@ -266,7 +266,7 @@ const SignUp = () => {
                 endContent={
                   <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                 }
-                classNames={{ label: "ml-3 text-xs text-gray-500" }}
+                classNames={{ label: "ml-3 text-xs text-neutral-500" }}
               />
 
               <Checkbox
@@ -295,7 +295,7 @@ const SignUp = () => {
               </Button>
             </form>
 
-            <p className="text-gray-500 mt-4 text-center">
+            <p className="text-neutral-500 mt-4 text-center">
               Already have an account?{" "}
               <Link onClick={() => setLoading(true)} href="/auth/signin" className="text-primary-6000 font-medium">
                 Sign in

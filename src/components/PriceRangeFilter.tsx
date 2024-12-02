@@ -23,7 +23,7 @@ const PriceRangeFilter: React.FC<PriceRangeFilterProps> = ({
     <BsCashStack className="text-cyan-600 text-xl mr-4" />
     <div className="flex flex-col w-64">
       <div className="flex justify-between mb-2">
-        <span className="text-sm text-gray-600">Budget Range</span>
+        <span className="text-sm text-neutral-600">Budget Range</span>
         <span className="text-sm font-medium text-cyan-600">{formatCurrency(priceRange)} VND</span>
       </div>
       <input
@@ -34,7 +34,7 @@ const PriceRangeFilter: React.FC<PriceRangeFilterProps> = ({
         onChange={(e) => setPriceRange(Number(e.target.value))}
         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-cyan-600"
       />
-      <div className="flex justify-between mt-2 text-xs text-gray-500">
+      <div className="flex justify-between mt-2 text-xs text-neutral-500">
         <span>{formatCurrency(min)} VND</span>
         <span>{formatCurrency(max)} VND</span>
       </div>
