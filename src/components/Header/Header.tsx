@@ -60,6 +60,9 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   const redirectToSignIn = () => {
     setLoading(true);
     try {
+      if (pathname.includes("/auth/signin")) {
+        setLoading(false);        
+      }
       router.push("/auth/signin");
       console.log("Redirect to sign in page");
     } catch (error) {
