@@ -14,6 +14,7 @@ import { TiTicket } from "react-icons/ti";
 import { GoChecklist } from "react-icons/go";
 import HeaderSearch2Mobile from "@/components/Header/HeaderSearch/(Mobile)/HeaderSearch2Mobile";
 import SearchForm2Mobile from "@/components/Header/HeaderSearch/(Mobile)/SearchForm2Mobile";
+import eventBus from "@/utils/eventBus";
 
 interface HeaderProps {
   className?: string;
@@ -41,6 +42,20 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
     }
     setShowHeaderSearch(false);
   }, [pathname]);
+
+  useEffect(() => {
+    const handleAction = () => {
+      if (window.innerWidth < 1024) {
+        setShowHeaderSearch(true);
+      }
+    };
+
+    eventBus.on("bookNowClicked", handleAction);
+
+    return () => {
+      eventBus.off("bookNowClicked", handleAction);
+    };
+  }, []);
 
   const redirectToSignIn = () => {
     setLoading(true);
@@ -148,14 +163,12 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
     return (
       <div
         className={`w-full relative transition-all will-change-[transform,opacity] z-40 rounded-full ${
-          showHeaderSearch
-            ? "bg-neutral-100 shadow-lg"
-            : "bg-white"
+          showHeaderSearch ? "bg-neutral-100 shadow-lg" : "bg-white"
         }`}>
         <HeaderSearch2Mobile onClickSearch={() => setShowHeaderSearch(!showHeaderSearch)} />
       </div>
     );
-  }
+  };
 
   return (
     <>
