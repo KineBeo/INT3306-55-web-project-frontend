@@ -3,12 +3,13 @@
 import React, { useState, useRef } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import LocationInput from "./LocationInput";
+import LocationInput from "../LocationInput";
 import InputNumber from "@/components/InputNumber";
-import FlightDateRangeInput from "./FlightDateRangeInput";
+import FlightDateRangeInput from "../FlightDateRangeInput";
 import ButtonSubmit from "@/shared/ButtonSubmit";
 import { useRouter } from "next/navigation";
 import { useOverlay } from "@/context/OverlayContext";
+import useOutsideClick from "@/hooks/useOutsideClick";
 
 export interface GuestsObject {
   guestAdults: number;
@@ -31,7 +32,7 @@ const flightClass = [
   },
 ];
 
-const SearchForm = () => {
+const SearchForm2Mobile = () => {
   const router = useRouter();
   const { setLoading } = useOverlay();
   
@@ -40,7 +41,7 @@ const SearchForm = () => {
   const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(2);
   const [guestChildrenInputValue, setGuestChildrenInputValue] = useState(1);
   const [guestInfantsInputValue, setGuestInfantsInputValue] = useState(1);
-
+  
   const handleChangeData = (value: number, type: keyof GuestsObject) => {
     const newValue = {
       guestAdults: guestAdultsInputValue,
@@ -64,11 +65,15 @@ const SearchForm = () => {
   const totalGuests = guestChildrenInputValue + guestAdultsInputValue + guestInfantsInputValue;
 
   const ref = useRef<HTMLDivElement>(null);
+  const [showRadio, setShowRadio] = useState(false);
+  useOutsideClick(ref, () => {
+    setShowRadio(false);
+  });
 
   const renderGuest = () => {
     return (
       <div>
-        <Dropdown portalContainer={ref.current as HTMLElement}>
+        <Dropdown portalContainer={ref.current as HTMLElement} placement="bottom-start">
           <DropdownTrigger>
             <button
               className={`px-4 py-1.5 rounded-md inline-flex items-center font-medium hover:text-opacity-100 focus:outline-none text-xs`}>
@@ -117,12 +122,12 @@ const SearchForm = () => {
     );
   };
 
-  const RenderSelectClass = () => {
-    const [selectedKeys, setSelectedKeys] = useState(new Set(["Economy"]));
+  const [selectedKeys, setSelectedKeys] = useState(new Set(["Economy"]));
 
+  const renderSelectClass = () => {
     return (
       <div>
-        <Dropdown portalContainer={ref.current as HTMLElement}>
+        <Dropdown portalContainer={ref.current as HTMLElement} placement="bottom-start">
           <DropdownTrigger>
             <button
               className={`px-4 py-1.5 rounded-md inline-flex items-center font-medium hover:bg-gray-100 focus:outline-none text-xs`}>
@@ -151,9 +156,9 @@ const SearchForm = () => {
 
   const renderRadioBtn = () => {
     return (
-      <div className="pb-3 flex justify-center space-x-3">
+      <div className="flex justify-start space-x-3">
         <div
-          className={`py-1.5 px-4 flex items-center rounded-full font-medium text-xs cursor-pointer select-none ${
+          className={`py-1.5 px-4 flex items-center rounded-full text-xs cursor-pointer select-none ${
             dropOffLocationType === "Round-trip"
               ? "bg-black shadow-black/10 shadow-lg text-white"
               : "border border-neutral-300 hover:bg-gray-100"
@@ -162,7 +167,7 @@ const SearchForm = () => {
           Round-trip
         </div>
         <div
-          className={`py-1.5 px-4 flex items-center rounded-full font-medium text-xs cursor-pointer select-none ${
+          className={`py-1.5 px-4 flex items-center rounded-full text-xs cursor-pointer select-none ${
             dropOffLocationType === "One-way"
               ? "bg-black text-white shadow-black/10 shadow-lg"
               : "border border-neutral-300 hover:bg-gray-100"
@@ -170,11 +175,34 @@ const SearchForm = () => {
           onClick={() => setDropOffLocationType("One-way")}>
           One-way
         </div>
-
-        <div className=" border-r border-slate-200"></div>
-
-        <div className="border border-neutral-300 rounded-full">{RenderSelectClass()}</div>
-        <div className="border border-neutral-300 rounded-full">{renderGuest()}</div>
+      </div>
+    );
+  };
+  const renderFlightType = () => {
+    return (
+      <div className="flex flex-col w-full" ref={ref}>
+        <div
+          onClick={() => setShowRadio(!showRadio)}
+          className={`flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left rounded-full border-1 lg:border-0 border-neutral-200 ${
+            showRadio ? "nc-Header-field-focused--2" : ""
+          }`}>
+          <span className="mt-0.5 text-xs md:text-sm text-neutral-400 font-light ">Flight type</span>
+          <span
+            className={`flex-1 text-right lg:text-left w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-400 text-xs md:text-base font-semibold placeholder-neutral-800 truncate`}>
+            {dropOffLocationType}, {flightClassState}, {totalGuests} Guests
+            </span>
+        </div>
+        {showRadio && (
+          <div className="text-xs md:text-base z-40 flex flex-col gap-2 w-full min-w-[300px] bg-white top-full mt-3 py-3 sm:py-5 px-4 md:px-7 rounded-3xl border-1 border-neutral-200 shadow-xl overflow-y-auto">
+            <h4 className="font-semibold mb-1">Flight type:</h4>
+            {renderRadioBtn()}
+            <h4 className="font-semibold mb-1">Ticket class:</h4>
+            <div className="flex justify-start gap-3">
+            <div className="border border-neutral-300 rounded-full">{renderSelectClass()}</div>
+            <div className="border border-neutral-300 rounded-full">{renderGuest()}</div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -198,17 +226,15 @@ const SearchForm = () => {
 
   const renderForm = () => {
     return (
-      <div ref={ref}>
+      <div>
         <form onSubmit={onFinish} className="w-full relative ">
-          {renderRadioBtn()}
-          <div className="flex items-center w-full rounded-full border border-neutral-200 bg-white">
-            <LocationInput placeHolder="Add Location" desc="Flying from" className="flex-1" />
-            <div className="self-center border-r border-slate-200 h-8"></div>
-            <LocationInput placeHolder="Add Location" desc="Flying to" className="flex-1" />
-            <div className="self-center border-r border-slate-200 h-8"></div>
-            <FlightDateRangeInput selectsRange={dropOffLocationType !== "One-way"} className="flex-1" />
-            <div className="pr-2 xl:pr-4">
-              <ButtonSubmit />
+          <div className="flex flex-col items-center gap-4 w-full px-6 md:px-20 py-2 md:py-4 bg-white overflow-scroll">
+            {renderFlightType()}
+            <LocationInput placeHolder="Add Location" desc="Flying from" className="flex-1 w-full" />
+            <LocationInput placeHolder="Add Location" desc="Flying to" className="flex-1 w-full" />
+            <FlightDateRangeInput selectsRange={dropOffLocationType !== "One-way"} className="flex-1 w-full" />
+            <div className="flex self-end rounded-2xl bg-primary-500 text-white items-center text-sm md:text-base">
+              <ButtonSubmit className="w-8 md:w-14 pl-2 md:pl-0" /> <p className="pr-2 md:pr-4">Search</p>
             </div>
           </div>
         </form>
@@ -219,4 +245,4 @@ const SearchForm = () => {
   return renderForm();
 };
 
-export default SearchForm;
+export default SearchForm2Mobile;

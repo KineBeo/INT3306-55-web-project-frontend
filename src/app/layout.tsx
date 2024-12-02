@@ -6,6 +6,7 @@ import "@/styles/index.scss";
 import "@/fonts/line-awesome-1.3.0/css/line-awesome.min.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
+import FooterNav from "@/components/Footer/FooterNav";
 import { OverlayProvider, useOverlay } from "@/context/OverlayContext";
 import LoadingOverlay from "@/shared/LoadingOverlay";
 import { NotificationProvider } from "@/context/NotificationContext";
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Overlay />
               <Header />
               {children}
+              <FooterNav />
               <Footer />
             </NotificationProvider>
           </body>

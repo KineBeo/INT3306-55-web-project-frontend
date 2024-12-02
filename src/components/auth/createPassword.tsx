@@ -98,7 +98,7 @@ const CreatePassword = () => {
       />
       <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-primary-500 overflow-hidden z-10">
         <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-white">
-          <ArrowLeftCircleIcon className="w-10 md:w-12 hover:text-gray-200 cursor-pointer mb-5" onClick={handleBack} />
+          <ArrowLeftCircleIcon className="w-10 md:w-12 hover:text-neutral-200 cursor-pointer mb-5" onClick={handleBack} />
           <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
           <p className="text-medium md:text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
 
@@ -140,7 +140,7 @@ const CreatePassword = () => {
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:
-                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                 }}
               />
 
@@ -157,25 +157,25 @@ const CreatePassword = () => {
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:
-                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                    " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                 }}
               />
             </div>
 
             <ul className="list-disc flex flex-col gap-4 ml-6">
-              <li className={`text-xs ${requirements.length ? "text-primary-500" : "text-gray-6000"}`}>
+              <li className={`text-xs ${requirements.length ? "text-primary-500" : "text-neutral-6000"}`}>
                 At least 8 characters
               </li>
-              <li className={`text-xs ${requirements.number ? "text-primary-500" : "text-gray-6000"}`}>
+              <li className={`text-xs ${requirements.number ? "text-primary-500" : "text-neutral-6000"}`}>
                 At least one number
               </li>
-              <li className={`text-xs ${requirements.lowercase ? "text-primary-500" : "text-gray-6000"}`}>
+              <li className={`text-xs ${requirements.lowercase ? "text-primary-500" : "text-neutral-6000"}`}>
                 Lowercase letter
               </li>
-              <li className={`text-xs ${requirements.uppercase ? "text-primary-500" : "text-gray-6000"}`}>
+              <li className={`text-xs ${requirements.uppercase ? "text-primary-500" : "text-neutral-6000"}`}>
                 Uppercase letter
               </li>
-              <li className={`text-xs ${requirements.specialChar ? "text-primary-500" : "text-gray-6000"}`}>
+              <li className={`text-xs ${requirements.specialChar ? "text-primary-500" : "text-neutral-6000"}`}>
                 Special character
               </li>
             </ul>
@@ -183,14 +183,14 @@ const CreatePassword = () => {
             <Button
               type="submit"
               className={`w-full mt-6 rounded-full ${
-                isFormValid() ? "bg-primary-500 text-white" : "bg-gray-300 text-gray-500"
+                isFormValid() ? "bg-primary-500 text-white" : "bg-gray-300 text-neutral-500"
               }`}
               disabled={!isFormValid()}>
               Sign up
             </Button>
           </form>
 
-          <p className="text-gray-500 mt-4 text-center">
+          <p className="text-neutral-500 mt-4 text-center">
             Already have an account?{" "}
             <Link onClick={() => setLoading(true)} href="/auth/signin" className="text-primary-6000 font-medium">
               Sign in

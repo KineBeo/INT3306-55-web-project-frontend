@@ -112,9 +112,9 @@ const SignIn = () => {
         />
         <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-white overflow-hidden z-10">
           {/* Left section */}
-          <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-gray-700">
+          <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-neutral-700">
             <ArrowLeftCircleIcon
-              className="w-10 md:w-12 text-primary-500 hover:text-gray-200 cursor-pointer mb-5"
+              className="w-10 md:w-12 text-primary-500 hover:text-neutral-200 cursor-pointer mb-5"
               onClick={handleBack}
             />
             <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
@@ -147,7 +147,7 @@ const SignIn = () => {
                   inputWrapper: "py-6 bg-gray-100 group-data-[focus=true]:border-primary-800",
                   input: "border-0 focus:ring-0",
                   label:
-                    "group-data-[filled-within=true]:text-gray-200 group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs",
+                    "group-data-[filled-within=true]:text-neutral-200 group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs",
                 }}
                 maxLength={10}
                 onKeyDown={handleKeyDown}
@@ -169,24 +169,24 @@ const SignIn = () => {
                   inputWrapper: "py-6 bg-gray-100 group-data-[focus=true]:border-primary-800",
                   input: "border-0 focus:ring-0",
                   label:
-                    "group-data-[filled-within=true]:text-gray-200 group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs",
+                    "group-data-[filled-within=true]:text-neutral-200 group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs",
                 }}
               />
               <div className="flex justify-end">
                 <Link
                   onClick={() => setLoading(true)}
                   href="/auth/forgot-password"
-                  className="text-gray-100 text-xs italic underline">
+                  className="text-neutral-100 text-xs italic underline">
                   Forget your password?
                 </Link>
               </div>
               <Button
                 type="submit"
-                className={`w-full mt-6 rounded-full ${isFormValid ? "bg-primary-700 text-gray-100" : "bg-gray-300"}`}>
+                className={`w-full mt-6 rounded-full ${isFormValid ? "bg-primary-700 text-neutral-100" : "bg-gray-300"}`}>
                 Sign In
               </Button>
             </form>
-            <p className="text-gray-200 mt-4 text-center">
+            <p className="text-neutral-200 mt-4 text-center">
               {/*navigate to sign up*/}
               Don&apos;t have an account?{" "}
               <Link onClick={() => setLoading(true)} href="/auth/signup" className="text-white font-medium underline">

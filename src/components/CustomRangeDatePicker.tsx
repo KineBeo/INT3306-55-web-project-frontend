@@ -41,7 +41,7 @@ const CustomRangeDatePicker: FC<CustomRangeDatePickerProps> = ({ handleChange, c
           nextButton: "text-grey-800 hover:text-primary-500 text-lg primary-focus",
           prevButton: "text-grey-800 hover:text-primary-500 text-lg",
           gridHeaderCell: "text-xs text-grey-600 p-5",
-          title: "text-gray-800 font-semibold",
+          title: "text-neutral-800 font-semibold",
           headerWrapper: "pt-5",
           gridWrapper: "bg-white pb-5",
           gridBody: "bg-white",

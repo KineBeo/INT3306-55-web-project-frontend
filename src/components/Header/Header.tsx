@@ -12,6 +12,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { FaPlaneDeparture } from "react-icons/fa";
 import { TiTicket } from "react-icons/ti";
 import { GoChecklist } from "react-icons/go";
+import HeaderSearch2Mobile from "@/components/Header/HeaderSearch/(Mobile)/HeaderSearch2Mobile";
+import SearchForm2Mobile from "@/components/Header/HeaderSearch/(Mobile)/SearchForm2Mobile";
 
 interface HeaderProps {
   className?: string;
@@ -75,13 +77,16 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   const renderHeaderSearch = () => {
     return (
       <div
-        className={`absolute inset-x-0 top-0 transition-all will-change-[transform,opacity] ${
+        className={`absolute bg-white inset-x-0 top-0 transition-all will-change-[transform,opacity] ${
           showHeaderSearch
             ? "visible"
             : "-translate-x-0 -translate-y-[90px] scale-x-[0.395] scale-y-[0.6] opacity-0 invisible pointer-events-none"
         }`}>
-        <div className={`w-full max-w-4xl mx-auto pb-6`}>
+        <div className={`w-full hidden lg:block max-w-4xl mx-auto pb-6`}>
           <HeaderSearch defaultTab={currentTab} onTabChange={handleTabChange} />
+        </div>
+        <div className={`w-full block lg:hidden max-w-4xl mx-auto pb-6 pt-28 `}>
+          <SearchForm2Mobile />
         </div>
       </div>
     );
@@ -139,6 +144,19 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
     );
   };
 
+  const renderHeaderSearchButton2Mobile = () => {
+    return (
+      <div
+        className={`w-full relative transition-all will-change-[transform,opacity] z-40 rounded-full ${
+          showHeaderSearch
+            ? "bg-neutral-100 shadow-lg"
+            : "bg-white"
+        }`}>
+        <HeaderSearch2Mobile onClickSearch={() => setShowHeaderSearch(!showHeaderSearch)} />
+      </div>
+    );
+  }
+
   return (
     <>
       <div
@@ -147,7 +165,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
         }`}></div>
       <header
         ref={headerInnerRef}
-        className={`sticky top-0 z-40 shadow-sm border-b border-gray-100 nc-header-bg ${className}`}>
+        className={`sticky top-0 z-40 shadow-sm border-b border-neutral-100 nc-header-bg ${className}`}>
         <div
           className={`bg-white absolute h-full inset-x-0 top-0 transition-transform will-change-[transform,opacity]
           ${showHeaderSearch ? "duration-75 scale-y-[4.4]" : ""}`}></div>
@@ -158,11 +176,14 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
             </div>
 
             <div className="flex flex-[2] lg:flex-none mx-auto">
-              <div className="flex-1 overflow-hidden lg:flex self-center">{renderHeaderNavBar()}</div>
+              <div className="flex-1 hidden lg:flex self-center">{renderHeaderNavBar()}</div>
+              <div className="self-center flex-1 lg:hidden w-full max-w-lg mx-auto">
+                {renderHeaderSearchButton2Mobile()}
+              </div>
               {renderHeaderSearch()}
             </div>
 
-            <div className="hidden md:flex relative z-10 flex-1 justify-end text-neutral-700 items-center">
+            <div className="hidden md:flex relative z-40 flex-1 justify-end text-neutral-700 items-center">
               <div className="flex space-x-2">
                 <SignInButton onClick={redirectToSignIn} />
                 <MenuBar />

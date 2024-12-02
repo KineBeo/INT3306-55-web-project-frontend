@@ -32,10 +32,10 @@ const NewsCard = ({ id, title, description, image, loading, handleRedeem }: News
 
         <div className="p-3 md:p-6">
           {/* Title - Force to one line and truncate if too long */}
-          <h3 className="text-md md:text-xl font-bold text-gray-900 md:mb-2 truncate">{title}</h3>
+          <h3 className="text-md md:text-xl font-bold text-neutral-900 md:mb-2 truncate">{title}</h3>
 
           {/* Description - Force to one line and truncate if too long */}
-          <p className="text-sm md:text-md text-gray-600 mb-2 md:mb-4 truncate">{description}</p>
+          <p className="text-sm md:text-md text-neutral-600 mb-2 md:mb-4 truncate">{description}</p>
 
           <button
             onClick={() => handleRedeem(id)}

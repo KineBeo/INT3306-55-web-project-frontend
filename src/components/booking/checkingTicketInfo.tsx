@@ -151,7 +151,7 @@ const CheckingTicketInfo = () => {
                         <Input
                           label="First name"
                           labelPlacement="outside"
-                          startContent={<FaUser className="text-gray-400" />}
+                          startContent={<FaUser className="text-neutral-400" />}
                           type="text"
                           variant="bordered"
                           name="firstName"
@@ -162,14 +162,14 @@ const CheckingTicketInfo = () => {
                           classNames={{
                             input: "border-0 focus:ring-0",
                             label:
-                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                           }}
                         />
 
                         <Input
                           label="Last name"
                           labelPlacement="outside"
-                          startContent={<FaUser className="text-gray-400" />}
+                          startContent={<FaUser className="text-neutral-400" />}
                           type="text"
                           variant="bordered"
                           name="lastName"
@@ -180,7 +180,7 @@ const CheckingTicketInfo = () => {
                           classNames={{
                             input: "border-0 focus:ring-0",
                             label:
-                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                           }}
                         />
                       </div>
@@ -188,7 +188,7 @@ const CheckingTicketInfo = () => {
                         <Input
                           label="Phone"
                           labelPlacement="outside"
-                          startContent={<FaPhone className="text-gray-400" />}
+                          startContent={<FaPhone className="text-neutral-400" />}
                           type="tel"
                           variant="bordered"
                           name="phone"
@@ -200,7 +200,7 @@ const CheckingTicketInfo = () => {
                           classNames={{
                             input: "border-0 focus:ring-0",
                             label:
-                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                           }}
                         />
 
@@ -208,7 +208,7 @@ const CheckingTicketInfo = () => {
                           defaultSelectedKeys={["Male"]}
                           label="Gender"
                           labelPlacement="outside"
-                          startContent={<BsGenderAmbiguous className="text-gray-400" />}
+                          startContent={<BsGenderAmbiguous className="text-neutral-400" />}
                           variant="bordered"
                           name="gender"
                           isRequired
@@ -218,7 +218,7 @@ const CheckingTicketInfo = () => {
                           classNames={{
                             base: "border-0 focus:ring-0",
                             label:
-                              " group-data-[filled=true]:ml-3 group-data-[filled=true]:text-xs group-data-[filled=true]:text-gray-500",
+                              " group-data-[filled=true]:ml-3 group-data-[filled=true]:text-xs group-data-[filled=true]:text-neutral-500",
                           }}>
                           {["Male", "Female"].map((gender) => (
                             <SelectItem key={gender}>{gender}</SelectItem>
@@ -236,8 +236,8 @@ const CheckingTicketInfo = () => {
                           isInvalid={!!errors[i].dob}
                           errorMessage={errors[i].gender}
                           isRequired
-                          startContent={<BsCalendar className="text-gray-400" />}
-                          classNames={{ label: "ml-3 text-xs text-gray-500" }}
+                          startContent={<BsCalendar className="text-neutral-400" />}
+                          classNames={{ label: "ml-3 text-xs text-neutral-500" }}
                         />
                       </div>
                     </div>
@@ -252,7 +252,7 @@ const CheckingTicketInfo = () => {
                           <Input
                             label="First name"
                             labelPlacement="outside"
-                            startContent={<FaUser className="text-gray-400" />}
+                            startContent={<FaUser className="text-neutral-400" />}
                             type="text"
                             variant="bordered"
                             name="firstName"
@@ -263,14 +263,14 @@ const CheckingTicketInfo = () => {
                             classNames={{
                               input: "border-0 focus:ring-0",
                               label:
-                                " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                                " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                             }}
                           />
 
                           <Input
                             label="Last name"
                             labelPlacement="outside"
-                            startContent={<FaUser className="text-gray-400" />}
+                            startContent={<FaUser className="text-neutral-400" />}
                             type="text"
                             variant="bordered"
                             name="lastName"
@@ -281,7 +281,7 @@ const CheckingTicketInfo = () => {
                             classNames={{
                               input: "border-0 focus:ring-0",
                               label:
-                                " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-gray-500",
+                                " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                             }}
                           />
                         </div>
@@ -290,7 +290,7 @@ const CheckingTicketInfo = () => {
                             defaultSelectedKeys={["Male"]}
                             label="Gender"
                             labelPlacement="outside"
-                            startContent={<BsGenderAmbiguous className="text-gray-400" />}
+                            startContent={<BsGenderAmbiguous className="text-neutral-400" />}
                             variant="bordered"
                             name="gender"
                             isRequired
@@ -300,7 +300,7 @@ const CheckingTicketInfo = () => {
                             classNames={{
                               base: "border-0 focus:ring-0",
                               label:
-                                " group-data-[filled=true]:ml-3 group-data-[filled=true]:text-xs group-data-[filled=true]:text-gray-500",
+                                " group-data-[filled=true]:ml-3 group-data-[filled=true]:text-xs group-data-[filled=true]:text-neutral-500",
                             }}>
                             {["Male", "Female"].map((gender) => (
                               <SelectItem key={gender}>{gender}</SelectItem>
@@ -318,8 +318,8 @@ const CheckingTicketInfo = () => {
                             isInvalid={!!errors[flight.adults + i].dob}
                             errorMessage={errors[flight.adults + i].dob}
                             isRequired
-                            startContent={<BsCalendar className="text-gray-400" />}
-                            classNames={{ label: "ml-3 text-xs text-gray-500" }}
+                            startContent={<BsCalendar className="text-neutral-400" />}
+                            classNames={{ label: "ml-3 text-xs text-neutral-500" }}
                           />
                         </div>
                       </div>
@@ -329,48 +329,48 @@ const CheckingTicketInfo = () => {
               <div className="flex flex-col w-full md:w-2/3 gap-6">
                 <div className="flex flex-col w-full p-4 md:p-8 gap-2 md:gap-4 bg-white rounded-2xl shadow-lg">
                   <h3 className="text-lg md:text-2xl font-bold">Booking Summary</h3>
-                  <span className="text-gray-600 italic md:text-md text-sm">
+                  <span className="text-neutral-600 italic md:text-md text-sm">
                     {flight.departureDate} &#45; {flight.arrivalDate}
                   </span>
-                  <div className=" border-t-2 border-dashed border-gray-300"></div>
+                  <div className=" border-t-2 border-dashed border-neutral-300"></div>
                   <div className="flex justify-between">
-                    <div className="text-gray-600">Flight</div>
+                    <div className="text-neutral-600">Flight</div>
                     <div className="flex font-semibold">
                       {flight.sectors.map((sector, index) => (
                         <span key={index} className="flex items-center">
                           {sector}
-                          {index < flight.sectors.length - 1 && <BsArrowRight className="text-gray-600 mx-2" />}
+                          {index < flight.sectors.length - 1 && <BsArrowRight className="text-neutral-600 mx-2" />}
                         </span>
                       ))}
                     </div>
                   </div>
                   <div className="flex justify-between">
-                    <div className="text-gray-600">Departure</div>
+                    <div className="text-neutral-600">Departure</div>
                     <div className="font-semibold">{flight.departureTime}</div>
                   </div>
                   <div className="flex justify-between">
-                    <div className="text-gray-600">Arrival</div>
+                    <div className="text-neutral-600">Arrival</div>
                     <div className="font-semibold">{flight.arrivalTime}</div>
                   </div>
                   <div className="flex justify-between">
-                    <div className="text-gray-600">Duration</div>
+                    <div className="text-neutral-600">Duration</div>
                     <div className="font-semibold">{flight.totalTime}</div>
                   </div>
                   <div className="flex justify-between">
-                    <div className="text-gray-600">Adult</div>
+                    <div className="text-neutral-600">Adult</div>
                     <div className="font-semibold flex items-center gap-1">
-                      {flight.adults} x <FaUser className="text-gray-600 pb-0.5" />{" "}
+                      {flight.adults} x <FaUser className="text-neutral-600 pb-0.5" />{" "}
                     </div>
                   </div>
                   {flight.children > 0 && (
                     <div className="flex justify-between">
-                      <div className="text-gray-600">Child</div>
+                      <div className="text-neutral-600">Child</div>
                       <div className="font-semibold flex items-center gap-1">
-                        {flight.children} x <FaChild className="text-gray-600 pb-0.5" />{" "}
+                        {flight.children} x <FaChild className="text-neutral-600 pb-0.5" />{" "}
                       </div>
                     </div>
                   )}
-                  <div className=" border-t-2 border-dashed border-gray-300"></div>
+                  <div className=" border-t-2 border-dashed border-neutral-300"></div>
 
                   <div className="flex justify-between">
                     <h3 className="text-lg md:text-2xl font-bold">Total Price</h3>
