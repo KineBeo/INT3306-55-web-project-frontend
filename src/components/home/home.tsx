@@ -12,6 +12,7 @@ import { clearFlight } from "@/redux/flightSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { usePathname } from "next/navigation";
 import { slides, newsData, popularDestinations } from "@/data/fakeData";
+import eventBus from "@/utils/eventBus";
 
 const Home = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -21,13 +22,11 @@ const Home = () => {
 
   useEffect(() => {
     // Kiểm tra khi route đã thay đổi
-    if (currentPath === '/') {
+    if (currentPath === "/") {
       // Dispatch action clearFlight khi navigation hoàn tất
       dispatch(clearFlight());
     }
   }, [currentPath, dispatch]);
-
-  
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -44,10 +43,10 @@ const Home = () => {
         block: "center",
       });
     }
+    eventBus.emit("bookNowClicked");
   };
 
   const [newsLoading, setNewsLoading] = useState(false);
-  
 
   const handleRedeem = async (id: number) => {
     setNewsLoading(true);
@@ -117,8 +116,12 @@ const Home = () => {
             <SearchForm />
           </div>
           <div className="flex flex-col justify-start w-full py-10 md:py-12 gap-2 md:gap-6">
-            <h2 className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20">Suggestions for discovery</h2>
-            <h4 className="text-neutral-500 text-sm md:text-lg font-medium md:px-12 lg:px-20">Popular places to recommends for you</h4>
+            <h2 className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20">
+              Suggestions for discovery
+            </h2>
+            <h4 className="text-neutral-500 text-sm md:text-lg font-medium md:px-12 lg:px-20">
+              Popular places to recommends for you
+            </h4>
             {/* Cards */}
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
               {popularDestinations.map((dest) => (
