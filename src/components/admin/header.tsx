@@ -1,6 +1,3 @@
-"use client";
-
-import React, { FC, useEffect, useRef, useState, useCallback } from "react";
 import Logo from "@/shared/Logo";
 import Link from "next/link";
 
