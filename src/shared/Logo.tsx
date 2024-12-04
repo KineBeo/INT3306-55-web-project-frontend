@@ -4,11 +4,12 @@ import Link from "next/link";
 export interface LogoProps {
   className?: string;
   textColor?: string;
+  href?: string;
 };
 
-const Logo: React.FC<LogoProps> = ({ className = "w-24", textColor = "currentColor" }) => {
+const Logo: React.FC<LogoProps> = ({ className = "w-24", textColor = "currentColor", href = "/" }) => {
   return (
-    <Link href="/" className={`ttnc-logo inline-block text-primary-500 focus:outline-none focus:ring-0 ${className}`}>
+    <Link href={href} className={`ttnc-logo inline-block text-primary-500 focus:outline-none focus:ring-0 ${className}`}>
       <svg
         id="Layer_1"
         data-name="Layer 1"

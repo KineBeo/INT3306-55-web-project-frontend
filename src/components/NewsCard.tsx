@@ -1,15 +1,13 @@
 import { BsGift } from "react-icons/bs";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Image from "next/image";
 import { NewsData } from "@/data/types";
 import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 
 interface NewsProps {
   news: NewsData;
-  loading: boolean;
 }
 
-const NewsCard = ({ news, loading }: NewsProps) => {
+const NewsCard = ({ news }: NewsProps) => {
   const { id, title, description, image } = news;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
@@ -28,10 +26,9 @@ const NewsCard = ({ news, loading }: NewsProps) => {
 
           <button
             onClick={onOpen}
-            disabled={loading}
             className="text-sm md:text-md w-full bg-primary-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
-            {loading ? <AiOutlineLoading3Quarters className="animate-spin mr-2" /> : <BsGift className="mr-2" />}
-            {loading ? "Waiting..." : "View Details"}
+            <BsGift className="mr-2" />
+            "View Details"
           </button>
           <Modal
             backdrop="opaque"

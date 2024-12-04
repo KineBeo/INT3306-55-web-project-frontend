@@ -46,8 +46,6 @@ const Home = () => {
     eventBus.emit("bookNowClicked");
   };
 
-  const [newsLoading, setNewsLoading] = useState(false);
-
   return (
     <div>
       <div className="flex flex-col items-center justify-center bg-white md:px-10 md:py-5 px-5 py-2">
@@ -123,7 +121,7 @@ const Home = () => {
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
               {newsData.map((news) => (
                 <div key={news.id}>
-                  <NewsCard news={news} loading={newsLoading} />
+                  <NewsCard news={news} />
                 </div>
               ))}
             </div>
