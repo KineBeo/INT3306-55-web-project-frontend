@@ -1,4 +1,4 @@
-import { FlightTicket, Flight, NewsData, Destination } from "@/data/types";
+import { FlightTicket, Flight, Article, Destination } from "@/data/types";
 
 export const slides = [
     {
@@ -21,7 +21,7 @@ export const slides = [
     },
 ];
   
-export const newsData: NewsData[] = [
+export const articles: Article[] = [
     {
       id: 1,
       title: "Holiday Special",

@@ -7,7 +7,7 @@ export interface CustomLink {
   targetBlank?: boolean;
 }
 
-export interface NewsData {
+export interface Article {
   id: number;
   title: string;
   description: string;

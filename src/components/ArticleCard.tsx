@@ -1,17 +1,17 @@
 import { BsGift } from "react-icons/bs";
 import Image from "next/image";
-import { NewsData } from "@/data/types";
+import { Article } from "@/data/types";
 import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 
-interface NewsProps {
-  news: NewsData;
+interface ArticleProps {
+  article: Article;
 }
 
-const NewsCard = ({ news }: NewsProps) => {
-  const { id, title, description, image } = news;
+const ArticleCard = ({ article }: ArticleProps) => {
+  const { id, title, description, image } = article;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
-    <div key={id} className="flex-none w-60 md:w-72 snap-start" role="article" aria-label={`${title} news`}>
+    <div key={id} className="flex-none w-60 md:w-72 snap-start" role="article" aria-label={`${title} article`}>
       <div className="bg-white rounded-xl border-2 shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500">
         <div className="relative md:h-48 h-40 overflow-hidden">
           <Image src={image} alt={title} loading="lazy" fill className="w-full h-full object-cover" />
@@ -94,4 +94,4 @@ const NewsCard = ({ news }: NewsProps) => {
   );
 };
 
-export default NewsCard;
+export default ArticleCard;

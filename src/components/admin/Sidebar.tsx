@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper, FaBars } from "react-icons/fa";
+import { useState, useRef } from "react";
+import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper } from "react-icons/fa";
+import { HiMenuAlt1 } from "react-icons/hi";
+import useOutsideClick from "@/hooks/useOutsideClick";
 
 const Sidebar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,17 +20,25 @@ const Sidebar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  const ref = useRef<HTMLDivElement>(null);
+  useOutsideClick(ref, () => {
+    if (window.innerWidth < 1280) {
+      setIsMenuOpen(false);
+    }
+  });
+
   return (
-    <>
+    <div ref={ref} className="xl:w-64 w-0">
       <button
-        className="md:hidden fixed top-1 left-3 z-50 p-2 rounded-md text-neutral-300 hover:bg-neutral-50 focus:outline-none"
+        className="xl:hidden fixed top-1 left-3 z-50 p-2 rounded-md text-neutral-300 hover:bg-neutral-50 focus:outline-none"
         onClick={toggleMenu}
         aria-label="Toggle navigation menu">
-        <FaBars className="h-6 w-6" />
+        <HiMenuAlt1 className="h-6 w-6" />
       </button>
       <nav
         className={`min-h-screen w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          isMenuOpen ? "translate-x-0" : "-translate-x-full xl:translate-x-0"
         }`}>
         {/* Mobile menu button */}
 
@@ -56,7 +66,7 @@ const Sidebar = () => {
           </ul>
         </div>
       </nav>
-    </>
+    </div>
   );
 };
 
