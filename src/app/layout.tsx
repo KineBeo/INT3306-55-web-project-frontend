@@ -4,7 +4,7 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import "@/styles/index.scss";
 import "@/fonts/line-awesome-1.3.0/css/line-awesome.min.css";
-import Header from "@/components/Header/Header";
+import SiteHeader from "@/components/SiteHeader/SiteHeader";
 import Footer from "@/components/Footer/Footer";
 import FooterNav from "@/components/Footer/FooterNav";
 import { OverlayProvider, useOverlay } from "@/context/OverlayContext";
@@ -46,7 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <body className="bg-white text-base theme-cyan-blueGrey relative">
             <NotificationProvider>
               <Overlay />
-              <Header />
+              <SiteHeader />
               {children}
               <FooterNav />
               <Footer />

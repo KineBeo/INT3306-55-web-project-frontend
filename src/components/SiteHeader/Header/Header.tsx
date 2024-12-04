@@ -12,8 +12,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { FaPlaneDeparture } from "react-icons/fa";
 import { TiTicket } from "react-icons/ti";
 import { GoChecklist } from "react-icons/go";
-import HeaderSearch2Mobile from "@/components/Header/HeaderSearch/(Mobile)/HeaderSearch2Mobile";
-import SearchForm2Mobile from "@/components/Header/HeaderSearch/(Mobile)/SearchForm2Mobile";
+import HeaderSearch2Mobile from "./HeaderSearch/(Mobile)/HeaderSearch2Mobile";
+import SearchForm2Mobile from "./HeaderSearch/(Mobile)/SearchForm2Mobile";
 import eventBus from "@/utils/eventBus";
 
 interface HeaderProps {

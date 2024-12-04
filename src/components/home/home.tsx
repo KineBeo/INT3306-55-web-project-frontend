@@ -48,18 +48,6 @@ const Home = () => {
 
   const [newsLoading, setNewsLoading] = useState(false);
 
-  const handleRedeem = async (id: number) => {
-    setNewsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log(`News ${id} redeemed`);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setNewsLoading(false);
-    }
-  };
-
   return (
     <div>
       <div className="flex flex-col items-center justify-center bg-white md:px-10 md:py-5 px-5 py-2">
@@ -135,7 +123,7 @@ const Home = () => {
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
               {newsData.map((news) => (
                 <div key={news.id}>
-                  <NewsCard key={news.id} {...news} loading={newsLoading} handleRedeem={handleRedeem} />
+                  <NewsCard news={news} loading={newsLoading} />
                 </div>
               ))}
             </div>

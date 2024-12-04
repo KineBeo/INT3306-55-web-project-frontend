@@ -37,7 +37,7 @@ const FindFlight = () => {
 
     // Chuyển trang
     await new Promise((resolve) => setTimeout(resolve, 500));
-    router.push("/booking/checking-ticket-info");
+    router.push(`/booking/checking-ticket-info/${flight.id}`);
   };
 
   return (

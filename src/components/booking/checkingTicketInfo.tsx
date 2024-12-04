@@ -6,7 +6,7 @@ import Stepper from "@/components/Stepper";
 import sectionBackground from "@/images/section-background.png";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams, notFound } from "next/navigation";
 import formatCurrency from "@/utils/formatCurrency";
 import { BsArrowRight } from "react-icons/bs";
 import { FaChild, FaUser, FaPhone } from "react-icons/fa";
@@ -29,9 +29,11 @@ const CheckingTicketInfo = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }[]>([]);
   const [valueDate, setValueDate] = useState<(CalendarDate | null)[]>([]);
 
+  const { id } = useParams();
+
   useEffect(() => {
-    if (!flight) {
-      router.push("/not-found");
+    if (!flight || flight.id.toString() !== id) {
+      notFound();  
     } else {
       const totalPassengers = flight.adults + flight.children;
       const initialPassengers = Array(totalPassengers).fill({
