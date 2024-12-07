@@ -1,19 +1,17 @@
 import { BsGift } from "react-icons/bs";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Image from "next/image";
-import { NewsData } from "@/data/types";
+import { Article } from "@/data/types";
 import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 
-interface NewsProps {
-  news: NewsData;
-  loading: boolean;
+interface ArticleProps {
+  article: Article;
 }
 
-const NewsCard = ({ news, loading }: NewsProps) => {
-  const { id, title, description, image } = news;
+const ArticleCard = ({ article }: ArticleProps) => {
+  const { id, title, description, image } = article;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
-    <div key={id} className="flex-none w-60 md:w-72 snap-start" role="article" aria-label={`${title} news`}>
+    <div key={id} className="flex-none w-60 md:w-72 snap-start" role="article" aria-label={`${title} article`}>
       <div className="bg-white rounded-xl border-2 shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500">
         <div className="relative md:h-48 h-40 overflow-hidden">
           <Image src={image} alt={title} loading="lazy" fill className="w-full h-full object-cover" />
@@ -28,10 +26,9 @@ const NewsCard = ({ news, loading }: NewsProps) => {
 
           <button
             onClick={onOpen}
-            disabled={loading}
             className="text-sm md:text-md w-full bg-primary-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
-            {loading ? <AiOutlineLoading3Quarters className="animate-spin mr-2" /> : <BsGift className="mr-2" />}
-            {loading ? "Waiting..." : "View Details"}
+            <BsGift className="mr-2" />
+            View Details
           </button>
           <Modal
             backdrop="opaque"
@@ -97,4 +94,4 @@ const NewsCard = ({ news, loading }: NewsProps) => {
   );
 };
 
-export default NewsCard;
+export default ArticleCard;

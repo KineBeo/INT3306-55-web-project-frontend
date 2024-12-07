@@ -6,12 +6,12 @@ import SearchForm from "@/components/SearchForm";
 import sectionBackground from "@/images/section-background.png";
 import becomeAnAuthorImg from "@/images/BecomeAnAuthorImg.png";
 import Image from "next/image";
-import NewsCard from "@/components/NewsCard";
+import ArticleCard from "@/components/ArticleCard";
 import DestinationCard from "@/components/DestinationCard";
 import { clearFlight } from "@/redux/flightSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { usePathname } from "next/navigation";
-import { slides, newsData, popularDestinations } from "@/data/fakeData";
+import { slides, articles, popularDestinations } from "@/data/fakeData";
 import eventBus from "@/utils/eventBus";
 
 const Home = () => {
@@ -45,8 +45,6 @@ const Home = () => {
     }
     eventBus.emit("bookNowClicked");
   };
-
-  const [newsLoading, setNewsLoading] = useState(false);
 
   return (
     <div>
@@ -118,12 +116,12 @@ const Home = () => {
                 </div>
               ))}
             </div>
-            <h2 className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20 mt-6">News</h2>
+            <h2 className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20 mt-6">Articles</h2>
             {/* Cards */}
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
-              {newsData.map((news) => (
-                <div key={news.id}>
-                  <NewsCard news={news} loading={newsLoading} />
+              {articles.map((article) => (
+                <div key={article.id}>
+                  <ArticleCard article={article} />
                 </div>
               ))}
             </div>

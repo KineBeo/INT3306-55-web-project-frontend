@@ -55,7 +55,7 @@ const CheckingTicketInfo = () => {
       );
       setValueDate(Array(flight.adults + flight.children).fill(null));
     }
-  }, [flight, router]);
+  }, [flight, router, id]);
 
   if (!flight) {
     return null;

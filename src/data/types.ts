@@ -7,12 +7,6 @@ export interface CustomLink {
   targetBlank?: boolean;
 }
 
-export interface NewsData {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-}
 
 export interface Flight {
   id: number;
@@ -54,3 +48,37 @@ export interface FlightTicket {
   passengers: PassengerInfo[];
   status: "Pending" | "Confirmed" | "Cancelled";
 }
+
+
+//----AIRPLANE----
+export interface Airplane {
+  id: number;
+  modelName: string;
+  manufacturer: string;
+  serialNumber: string;
+  registrationNumber: string;
+  capacity: number;
+  economySeats: number;
+  businessSeats: number;
+  firstClassSeats: number;
+}
+
+//----AIRPORT----
+export interface Airport {
+  id: number;
+  code: string;
+  city: string;
+  country: string;
+  name: string;
+}
+
+
+//----ARTICLE----
+export interface Article {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+}
+
+

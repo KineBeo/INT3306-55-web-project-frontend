@@ -4,9 +4,8 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import "@/styles/index.scss";
 import "@/fonts/line-awesome-1.3.0/css/line-awesome.min.css";
-import SiteHeader from "@/components/SiteHeader/SiteHeader";
-import Footer from "@/components/Footer/Footer";
-import FooterNav from "@/components/Footer/FooterNav";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import { OverlayProvider, useOverlay } from "@/context/OverlayContext";
 import LoadingOverlay from "@/shared/LoadingOverlay";
 import { NotificationProvider } from "@/context/NotificationContext";
@@ -33,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "/auth/signin": "Sign In",
       "/auth/signup": "Sign Up",
       "/not-found": "Page Not Found",
+      "/dashboard": "Dashboard",
     };
 
     const title = routeTitles[pathname] || "QAirline";
@@ -48,8 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Overlay />
               <SiteHeader />
               {children}
-              <FooterNav />
-              <Footer />
+              <SiteFooter />
             </NotificationProvider>
           </body>
         </Provider>
