@@ -9,10 +9,15 @@ import bg1 from "@/images/bg-1.png";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import imgSignIn from "@/images/img-sign-in.png";
 import { useOverlay } from "@/context/OverlayContext";
+import { useAuth } from "@/hooks/useAuth";
+import { useNotification } from "@/context/NotificationContext";
+import axios from "axios";
 
 const SignIn = () => {
   const router = useRouter();
   const { setLoading } = useOverlay();
+  const { showNotification } = useNotification();
+  const { login } = useAuth();
 
   // State for form fields
   const [phone, setPhone] = useState("");
@@ -25,6 +30,8 @@ const SignIn = () => {
     phone: "",
     password: "",
   });
+
+  const [loginError, setLoginError] = useState<string[]>([]);
 
   // Validate each input when it changes
   const validateInput = (name: string, value: string) => {
@@ -83,12 +90,29 @@ const SignIn = () => {
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormValid) {
-      setLoading(true);
-      // Proceed with form submission, such as fetching API
-      const token = "fake-token";
-      document.cookie = `token=${token}; path=/`;
-      // router.replace(redirectPath);
-      window.location.href = redirectPath;
+      // Call login function from AuthContext
+      try {
+        setLoading(true);
+        await login(phone, password);
+        setLoginError([]);
+        showNotification("Login successfully!");
+        setLoading(false);
+        window.location.href = redirectPath;
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response && error.response.data) {
+          const errorMessage = error.response.data.message || "Login failed.";
+          console.log(errorMessage);
+          if (Array.isArray(errorMessage)) {
+            setLoginError(errorMessage);
+          } else {
+            setLoginError([errorMessage]);
+          }
+        } else {
+          console.error("Login error:", error);
+        }
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -173,16 +197,22 @@ const SignIn = () => {
                 }}
               />
               <div className="flex justify-end">
-                <Link
-                  onClick={() => setLoading(true)}
-                  href="/auth/forgot-password"
-                  className="text-neutral-100 text-xs italic underline">
+                <Link href="#" className="text-neutral-100 text-xs italic underline">
                   Forget your password?
                 </Link>
               </div>
+              {loginError.length > 0 && (
+                <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                  {loginError.map((error, index) => (
+                    <span key={index}>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
+                  ))}
+                </div>
+              )}
               <Button
                 type="submit"
-                className={`w-full mt-6 rounded-full ${isFormValid ? "bg-primary-700 text-neutral-100" : "bg-gray-300"}`}>
+                className={`w-full mt-6 rounded-full ${
+                  isFormValid ? "bg-primary-700 text-neutral-100" : "bg-gray-300"
+                }`}>
                 Sign In
               </Button>
             </form>

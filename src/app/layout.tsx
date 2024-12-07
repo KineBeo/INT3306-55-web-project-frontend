@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import store from "@/redux/store";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { AuthProvider } from "@/context/AuthContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "/booking/checking-ticket-info": "Checking Ticket Info",
       "/auth/signin": "Sign In",
       "/auth/signup": "Sign Up",
+      "/account": "My Account",
       "/not-found": "Page Not Found",
       "/dashboard": "Dashboard",
     };
@@ -44,12 +46,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <html lang="en" className={poppins.className}>
         <Provider store={store}>
           <body className="bg-white text-base theme-cyan-blueGrey relative">
-            <NotificationProvider>
-              <Overlay />
-              <SiteHeader />
-              {children}
-              <SiteFooter />
-            </NotificationProvider>
+            <AuthProvider>
+              <NotificationProvider>
+                <Overlay />
+                <SiteHeader />
+                {children}
+                <SiteFooter />
+              </NotificationProvider>
+            </AuthProvider>
           </body>
         </Provider>
       </html>

@@ -11,6 +11,8 @@ import bg1 from "@/images/bg-1.png";
 import { CalendarBoldIcon } from "@nextui-org/shared-icons";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
 import { useOverlay } from "@/context/OverlayContext";
+import { Select, SelectItem } from "@nextui-org/select";
+import { BsGenderAmbiguous } from "react-icons/bs";
 
 const SignUp = () => {
   const router = useRouter();
@@ -21,6 +23,7 @@ const SignUp = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("MALE");
   const [birthdate, setBirthdate] = useState("");
   const [terms, setTerms] = useState(false);
 
@@ -30,12 +33,25 @@ const SignUp = () => {
     lastName: "",
     email: "",
     phone: "",
+    gender: "",
     birthdate: "",
     terms: "",
   });
-
   // State for form validity
   const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("basicInfo");
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      setFirstName(data.firstName);
+      setLastName(data.lastName);
+      setEmail(data.email);
+      setPhone(data.phone);
+      setGender(data.gender);
+      setBirthdate(data.birthdate);
+    }
+  }, []);
 
   // Validate each input when it changes
   const validateInput = (name: string, value: string) => {
@@ -52,6 +68,9 @@ const SignUp = () => {
       case "phone":
         if (!value) error = "Phone number is required.";
         break;
+      case "gender":
+        if (!value) error = "Gender is required.";
+        break;
       case "birthdate":
         if (!value) error = "Birthdate is required.";
         break;
@@ -64,9 +83,10 @@ const SignUp = () => {
 
   useEffect(() => {
     let isValid = Object.values(errors).every((error) => error === "");
-    isValid = isValid && Object.values({ firstName, lastName, email, phone, birthdate, terms }).every((value) => value);
+    isValid =
+      isValid && Object.values({ firstName, lastName, email, phone, gender, birthdate, terms }).every((value) => value);
     setIsFormValid(isValid);
-  }, [errors, firstName, lastName, email, phone, birthdate, terms]);
+  }, [errors, firstName, lastName, email, phone, gender, birthdate, terms]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -77,6 +97,12 @@ const SignUp = () => {
     if (name === "phone") setPhone(value);
     if (name === "terms") setTerms(!terms);
 
+    validateInput(name, value);
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (name === "gender") setGender(value);
     validateInput(name, value);
   };
 
@@ -116,6 +142,8 @@ const SignUp = () => {
     event.preventDefault();
     if (isFormValid) {
       setLoading(true);
+      // send data to password page
+      localStorage.setItem("basicInfo", JSON.stringify({ firstName, lastName, email, phone, gender, birthdate }));
       // Proceed with form submission, such as fetching API
       router.push("/auth/signup/create-password");
     }
@@ -251,23 +279,50 @@ const SignUp = () => {
                 onKeyDown={handleKeyDown}
               />
 
-              <DateInput
-                label="Birthdate"
-                labelPlacement="outside"
-                variant="bordered"
-                name="birthdate"
-                value={valueDate}
-                onChange={handleDateChange}
-                onKeyUp={() => validateInput("birthdate", birthdate)}
-                isInvalid={errors.birthdate ? true : false}
-                errorMessage={errors.birthdate}
-                isRequired
-                className="mb-8"
-                endContent={
-                  <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                }
-                classNames={{ label: "ml-3 text-xs text-neutral-500" }}
-              />
+              <div className="flex gap-4 mb-10">
+                <Select
+                  defaultSelectedKeys={["MALE"]}
+                  label="Gender"
+                  labelPlacement="outside"
+                  startContent={<BsGenderAmbiguous className="text-neutral-400" />}
+                  variant="bordered"
+                  name="gender"
+                  isRequired
+                  value={gender}
+                  onChange={handleSelectChange}
+                  isInvalid={errors.gender ? true : false}
+                  errorMessage={errors.gender}
+                  className="self-start"
+                  classNames={{
+                    base: "border-0 focus:ring-0",
+                    label:
+                      " group-data-[filled=true]:ml-3 group-data-[filled=true]:text-xs group-data-[filled=true]:text-neutral-500",
+                  }}>
+                  {["MALE", "FEMALE"].map((gender) => (
+                    <SelectItem key={gender}>
+                      {gender}
+                    </SelectItem>
+                  ))}
+                </Select>
+
+                <DateInput
+                  label="Birthdate"
+                  labelPlacement="outside"
+                  variant="bordered"
+                  name="birthdate"
+                  value={valueDate}
+                  onChange={handleDateChange}
+                  onKeyUp={() => validateInput("birthdate", birthdate)}
+                  isInvalid={errors.birthdate ? true : false}
+                  errorMessage={errors.birthdate}
+                  isRequired
+                  className="mt-0.5"
+                  endContent={
+                    <CalendarBoldIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                  }
+                  classNames={{ label: "ml-3 text-xs text-neutral-500" }}
+                />
+              </div>
 
               <Checkbox
                 isSelected={terms}

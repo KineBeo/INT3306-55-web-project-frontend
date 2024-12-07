@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import bg1 from "@/images/bg-1.png";
@@ -9,14 +9,48 @@ import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
 import { useOverlay } from "@/context/OverlayContext";
+import { useNotification } from "@/context/NotificationContext";
+import { register } from "@/services/authService";
+import { components } from "@/types/api";
+import axios from "axios";
+
+type CreateUserDto = components["schemas"]["CreateUserDto"];
 
 const CreatePassword = () => {
   const router = useRouter();
   const { setLoading } = useOverlay();
+  const { showNotification } = useNotification();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({ password: "", confirmPassword: "" });
+  const [formData, setFormData] = useState<CreateUserDto>({
+    fullname: "",
+    email: "",
+    phone_number: "",
+    password_hash: "",
+    role: "USER",
+    birthday: "01/01/2000",
+    gender: "MALE",
+  });
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("basicInfo");
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      setFormData({
+        fullname: data.firstName + " " + data.lastName,
+        email: data.email,
+        phone_number: data.phone,
+        password_hash: "",
+        role: "USER",
+        birthday: data.birthdate,
+        gender: data.gender,
+      });
+    } else {
+      router.push("/auth/signup");
+    }
+  }, [router]);
 
   const [requirements, setRequirements] = useState({
     length: false,
@@ -64,6 +98,8 @@ const CreatePassword = () => {
     return Object.values(requirements).every((req) => req) && password === confirmPassword && password.length > 0;
   };
 
+  const [registerError, setRegisterError] = useState<string[]>([]);
+
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -71,11 +107,25 @@ const CreatePassword = () => {
     // call api here
     try {
       setLoading(true);
-      router.push("/");
-    } catch (error) {
-      console.error("API call failed", error);
+      await register({ ...formData, password_hash: password });
+      localStorage.removeItem("basicInfo");
+      setLoading(false);
+      showNotification("Account created successfully!");
+      router.push("/auth/signin");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response && error.response.data) {
+        const errorMessage = error.response.data.message || "Login failed.";
+        console.log(errorMessage);
+        if (Array.isArray(errorMessage)) {
+          setRegisterError(errorMessage);
+        } else {
+          setRegisterError([errorMessage]);
+        }
+      } else {
+        console.error("Login error:", error);
+      }
     } finally {
-      setTimeout(() => setLoading(false), 500);
+      setLoading(false);
     }
   };
 
@@ -98,7 +148,10 @@ const CreatePassword = () => {
       />
       <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-primary-500 overflow-hidden z-10">
         <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-white">
-          <ArrowLeftCircleIcon className="w-10 md:w-12 hover:text-neutral-200 cursor-pointer mb-5" onClick={handleBack} />
+          <ArrowLeftCircleIcon
+            className="w-10 md:w-12 hover:text-neutral-200 cursor-pointer mb-5"
+            onClick={handleBack}
+          />
           <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
           <p className="text-medium md:text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
 
@@ -179,6 +232,14 @@ const CreatePassword = () => {
                 Special character
               </li>
             </ul>
+
+            {registerError.length > 0 && (
+              <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                {registerError.map((error, index) => (
+                  <span key={index}>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
+                ))}
+              </div>
+            )}
 
             <Button
               type="submit"

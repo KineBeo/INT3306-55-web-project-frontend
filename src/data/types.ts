@@ -82,3 +82,12 @@ export interface Article {
 }
 
 
+
+export interface UserInfo {
+  id: number;
+  fullname: string;
+  phone_number: string;
+  email: string;
+  role: "USER" | "ADMIN";
+  birthdate: string;
+}

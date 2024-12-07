@@ -15,6 +15,10 @@ import { GoChecklist } from "react-icons/go";
 import HeaderSearch2Mobile from "./HeaderSearch/(Mobile)/HeaderSearch2Mobile";
 import SearchForm2Mobile from "./HeaderSearch/(Mobile)/SearchForm2Mobile";
 import eventBus from "@/utils/eventBus";
+import { User, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { UserInfo } from "@/data/types";
+import { getUserInfo, authMe } from "@/services/authService";
+import { useAuth } from "@/hooks/useAuth";
 
 interface HeaderProps {
   className?: string;
@@ -24,6 +28,30 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { setLoading } = useOverlay();
+
+  const { logout } = useAuth();
+
+  const [user, setUser] = useState<UserInfo | null>(null);
+
+  useEffect(() => {
+    const refresh_token = localStorage.getItem("refresh_token");
+    if (refresh_token) {
+      authMe().then((res) => {
+        if (res) {
+          getUserInfo(res.sub).then((res) => {
+            setUser({
+              id: res.id,
+              fullname: res.fullname,
+              email: res.email,
+              phone_number: res.phone_number,
+              role: res.role,
+              birthdate: res.birthday,
+            });
+          });
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     // Đặt showHeaderSearch thành false mỗi khi pathname thay đổi (route thay đổi)
@@ -61,7 +89,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
     setLoading(true);
     try {
       if (pathname.includes("/auth/signin")) {
-        setLoading(false);        
+        setLoading(false);
       }
       router.push("/auth/signin");
       console.log("Redirect to sign in page");
@@ -201,7 +229,43 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
 
             <div className="hidden md:flex relative z-40 flex-1 justify-end text-neutral-700 items-center">
               <div className="flex space-x-2">
-                <SignInButton onClick={redirectToSignIn} />
+                {user ? (
+                  <Dropdown placement="bottom-start">
+                    <DropdownTrigger>
+                      <User
+                        as="button"
+                        avatarProps={{
+                          isBordered: true,
+                          src: "https://www.svgrepo.com/show/492675/avatar-girl.svg",
+                        }}
+                        name={user.fullname}
+                        classNames={{
+                          name: "ml-1 text-sm",
+                        }}
+                      />
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="User Actions" variant="flat">
+                      <DropdownItem
+                        key="account"
+                        onClick={() => {
+                          router.push("/account");
+                        }}>
+                        My Account
+                      </DropdownItem>
+                      <DropdownItem
+                        key="logout"
+                        color="danger"
+                        onClick={() => {
+                          logout();
+                          window.location.reload();
+                        }}>
+                        Log Out
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                ) : (
+                  <SignInButton onClick={redirectToSignIn} />
+                )}
                 <MenuBar />
               </div>
             </div>
