@@ -1,4 +1,4 @@
-import { FlightTicket, Flight, Article, Destination } from "@/data/types";
+import { FlightTicket, Flight, Article, Destination, Airplane } from "@/data/types";
 
 export const slides = [
     {
@@ -229,4 +229,30 @@ export const flightData: Flight[] = [
       adults: 1,
       children: 0,
     },
-  ];
+];
+  
+
+export const airplanes: Airplane[] = [
+    {
+      id: 1,
+      modelName: "Boeing 747",
+      manufacturer: "Boeing",
+      serialNumber: "BOE747-001",
+      registrationNumber: "N123BA",
+      capacity: 400,
+      economySeats: 300,
+      businessSeats: 70,
+      firstClassSeats: 30
+    },
+    {
+      id: 2,
+      modelName: "Airbus A380",
+      manufacturer: "Airbus",
+      serialNumber: "AIR380-002",
+      registrationNumber: "N456AA",
+      capacity: 550,
+      economySeats: 420,
+      businessSeats: 90,
+      firstClassSeats: 40
+    }
+]

@@ -5,6 +5,10 @@ import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from "@nex
 import { FaUpload, FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import { Article } from "@/data/types";
+import { articles } from "@/data/fakeData";
+// import { components } from "@/types/api";
+
+// type A = components['schemas']['Article'];
 
 const Articles = () => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
@@ -21,26 +25,7 @@ const Articles = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Sample articles data
-  const [articles, setArticles] = useState([
-    {
-      id: 1,
-      title: "Top 10 Travel Destinations",
-      image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e",
-      description: "Discover the most beautiful places to visit in 2024.",
-    },
-    {
-      id: 2,
-      title: "Travel Safety Tips",
-      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
-      description: "Essential safety guidelines for your next journey.",
-    },
-    {
-      id: 3,
-      title: "Budget Travel Guide",
-      image: "https://images.unsplash.com/photo-1452421822248-d4c2b47f0c81",
-      description: "How to travel the world without breaking the bank.",
-    },
-  ]);
+  const [articleList, setArticleList] = useState(articles);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -53,7 +38,7 @@ const Articles = () => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredArticles = articles.filter(
+  const filteredArticles = articleList.filter(
     (article) =>
       article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -79,17 +64,17 @@ const Articles = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isEditing) {
-      const updatedArticles = articles.map((article) =>
+      const updatedArticles = articleList.map((article) =>
         article.id === editingArticle.id ? { ...formData, id: article.id } : article
       );
-      setArticles(updatedArticles);
+      setArticleList(updatedArticles);
       setIsEditing(false);
     } else {
       const newArticle = {
-        id: articles.length + 1,
+        id: articleList.length + 1,
         ...formData,
       };
-      setArticles([...articles, newArticle]);
+      setArticleList([...articleList, newArticle]);
     }
     setFormData({ title: "", image: "", description: "" });
     setSelectedFile(null);
@@ -99,7 +84,7 @@ const Articles = () => {
   };
 
   const handleDeleteArticle = (id: number) => {
-    setArticles(articles.filter((article) => article.id !== id));
+    setArticleList(articleList.filter((article) => article.id !== id));
   };
 
   const handleEditArticle = (article: Article) => {
@@ -244,7 +229,7 @@ const Articles = () => {
           <ModalBody>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Title</label>
+                <label className="block text-neutral-700 mb-2">Title</label>
                 <input
                   type="text"
                   name="title"
@@ -256,7 +241,7 @@ const Articles = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Image URL</label>
+                <label className="block text-neutral-700 mb-2">Image URL</label>
                 <input
                   type="url"
                   name="image"
@@ -265,9 +250,9 @@ const Articles = () => {
                   className="w-full p-2 border rounded-lg mb-2 text-sm md:text-base"
                 />
                 <div className="- or -">
-                  <p className="text-center text-gray-500 my-2">OR</p>
+                  <p className="text-center text-neutral-500 my-2">OR</p>
                 </div>
-                <label className="flex items-center justify-center w-full p-2 border rounded-lg cursor-pointer hover:bg-gray-50">
+                <label className="flex items-center justify-center w-full p-2 border rounded-lg cursor-pointer hover:bg-neutral-50">
                   <FaUpload className="mr-2 text-sm md:text-base" />
                   Upload Image
                   <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
@@ -286,7 +271,7 @@ const Articles = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Description</label>
+                <label className="block text-neutral-700 mb-2">Description</label>
                 <textarea
                   name="description"
                   value={formData.description}
@@ -304,12 +289,12 @@ const Articles = () => {
                     setFormData({ title: "", image: "", description: "" });
                     onClose();
                   }}
-                  className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100 text-sm md:text-base">
+                  className="px-4 py-2 text-neutral-600 rounded-lg hover:bg-neutral-100 text-sm md:text-base">
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 text-sm md:text-base">
+                  className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 text-sm md:text-base">
                   {isEditing ? "Update" : "Submit"}
                 </button>
               </div>
