@@ -1,7 +1,7 @@
 import AccountDetails from "@/components/account/accountDetails";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-const AccountPage = () => {
+const AdminAccountPage = () => {
   return (
     <ProtectedRoute>
       <AccountDetails />
@@ -9,4 +9,4 @@ const AccountPage = () => {
   );
 };
 
-export default AccountPage;
+export default AdminAccountPage;

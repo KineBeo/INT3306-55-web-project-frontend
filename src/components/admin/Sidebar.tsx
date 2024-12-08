@@ -31,7 +31,7 @@ const Sidebar = () => {
   return (
     <div ref={ref} className="xl:w-64 w-0">
       <button
-        className="xl:hidden fixed top-1 left-3 z-50 p-2 rounded-md text-neutral-300 hover:bg-neutral-50 focus:outline-none"
+        className="xl:hidden fixed top-2.5 md:top-5 left-3 z-50 p-2 rounded-md text-neutral-300 hover:bg-neutral-50 focus:outline-none"
         onClick={toggleMenu}
         aria-label="Toggle navigation menu">
         <HiMenuAlt1 className="h-6 w-6" />

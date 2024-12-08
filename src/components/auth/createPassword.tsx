@@ -10,9 +10,8 @@ import Link from "next/link";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
 import { useOverlay } from "@/context/OverlayContext";
 import { useNotification } from "@/context/NotificationContext";
-import { register } from "@/services/authService";
 import { components } from "@/types/api";
-import axios from "axios";
+import api from "@/services/apiClient";
 
 type CreateUserDto = components["schemas"]["CreateUserDto"];
 
@@ -98,7 +97,7 @@ const CreatePassword = () => {
     return Object.values(requirements).every((req) => req) && password === confirmPassword && password.length > 0;
   };
 
-  const [registerError, setRegisterError] = useState<string[]>([]);
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -107,23 +106,13 @@ const CreatePassword = () => {
     // call api here
     try {
       setLoading(true);
-      await register({ ...formData, password_hash: password });
+      await await api.post('/auth/register', { ...formData, password_hash: password });
       localStorage.removeItem("basicInfo");
       setLoading(false);
       showNotification("Account created successfully!");
       router.push("/auth/signin");
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response && error.response.data) {
-        const errorMessage = error.response.data.message || "Login failed.";
-        console.log(errorMessage);
-        if (Array.isArray(errorMessage)) {
-          setRegisterError(errorMessage);
-        } else {
-          setRegisterError([errorMessage]);
-        }
-      } else {
-        console.error("Login error:", error);
-      }
+    } catch (error: any) {
+      setRegisterError(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -232,13 +221,20 @@ const CreatePassword = () => {
                 Special character
               </li>
             </ul>
-
-            {registerError.length > 0 && (
-              <div className="text-danger-500 text-sm mt-3 flex flex-col">
-                {registerError.map((error, index) => (
-                  <span key={index}>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
-                ))}
-              </div>
+            {registerError ? (
+              Array.isArray(registerError) ? (
+                <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                  {registerError.map((err, index) => (
+                    <span key={index}>{err.charAt(0).toUpperCase() + err.slice(1)}</span>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                  <span>{registerError.charAt(0).toUpperCase() + registerError.slice(1)}</span>
+                </div>
+              )
+            ) : (
+              <></>
             )}
 
             <Button

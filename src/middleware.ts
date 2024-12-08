@@ -15,6 +15,7 @@ export function middleware(req: NextRequest) {
     "/booking/online-check-in",
     "/dashboard",
     "/dashboard/signin",
+    "/dashboard/account",
   ];
   
   const pathname = req.nextUrl.pathname;

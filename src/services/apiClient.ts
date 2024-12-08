@@ -43,8 +43,9 @@ api.interceptors.response.use(
 
             return api(originalRequest); // Gửi lại request ban đầu
           } catch (refreshError) {
-            console.error("Refresh token failed:", refreshError);
-            window.location.href = "/login";
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            window.location.href = "/auth/signin";
             return Promise.reject(refreshError);
           }
         }

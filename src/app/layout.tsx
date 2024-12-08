@@ -10,10 +10,10 @@ import { OverlayProvider, useOverlay } from "@/context/OverlayContext";
 import LoadingOverlay from "@/shared/LoadingOverlay";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { Provider } from "react-redux";
-import store from "@/redux/store";
+import { store, persistor } from "@/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { AuthProvider } from "@/context/AuthContext";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -35,6 +35,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "/account": "My Account",
       "/not-found": "Page Not Found",
       "/dashboard": "Dashboard",
+      "/dashboard/account": "My Account",
+      "/dashboard/signin": "Admin Sign",
     };
 
     const title = routeTitles[pathname] || "QAirline";
@@ -42,22 +44,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }, [pathname]);
 
   return (
-    <OverlayProvider>
-      <html lang="en" className={poppins.className}>
+    <html lang="en" className={poppins.className}>
+      <body className="bg-white text-base theme-cyan-blueGrey relative">
         <Provider store={store}>
-          <body className="bg-white text-base theme-cyan-blueGrey relative">
-            <AuthProvider>
+          <PersistGate loading={<Overlay />} persistor={persistor}>
+            <OverlayProvider>
               <NotificationProvider>
                 <Overlay />
                 <SiteHeader />
                 {children}
                 <SiteFooter />
               </NotificationProvider>
-            </AuthProvider>
-          </body>
+            </OverlayProvider>
+          </PersistGate>
         </Provider>
-      </html>
-    </OverlayProvider>
+      </body>
+    </html>
   );
 }
 

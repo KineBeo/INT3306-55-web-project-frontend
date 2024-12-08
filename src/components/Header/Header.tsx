@@ -15,10 +15,9 @@ import { GoChecklist } from "react-icons/go";
 import HeaderSearch2Mobile from "./HeaderSearch/(Mobile)/HeaderSearch2Mobile";
 import SearchForm2Mobile from "./HeaderSearch/(Mobile)/SearchForm2Mobile";
 import eventBus from "@/utils/eventBus";
-import { User, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
-import { UserInfo } from "@/data/types";
-import { getUserInfo, authMe } from "@/services/authService";
-import { useAuth } from "@/hooks/useAuth";
+import { User as UserButton, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logout } from "@/redux/auth/authSlice";
 
 interface HeaderProps {
   className?: string;
@@ -29,29 +28,8 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   const pathname = usePathname();
   const { setLoading } = useOverlay();
 
-  const { logout } = useAuth();
-
-  const [user, setUser] = useState<UserInfo | null>(null);
-
-  useEffect(() => {
-    const refresh_token = localStorage.getItem("refresh_token");
-    if (refresh_token) {
-      authMe().then((res) => {
-        if (res) {
-          getUserInfo(res.sub).then((res) => {
-            setUser({
-              id: res.id,
-              fullname: res.fullname,
-              email: res.email,
-              phone_number: res.phone_number,
-              role: res.role,
-              birthdate: res.birthday,
-            });
-          });
-        }
-      });
-    }
-  }, []);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.persistedReducer.auth);
 
   useEffect(() => {
     // Đặt showHeaderSearch thành false mỗi khi pathname thay đổi (route thay đổi)
@@ -232,15 +210,17 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
                 {user ? (
                   <Dropdown placement="bottom-start">
                     <DropdownTrigger>
-                      <User
+                      <UserButton
                         as="button"
                         avatarProps={{
                           isBordered: true,
                           src: "https://www.svgrepo.com/show/492675/avatar-girl.svg",
                         }}
                         name={user.fullname}
+                        description={user.role}
                         classNames={{
                           name: "ml-1 text-sm",
+                          description: "ml-1 text-xs",
                         }}
                       />
                     </DropdownTrigger>
@@ -256,8 +236,8 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
                         key="logout"
                         color="danger"
                         onClick={() => {
-                          logout();
-                          window.location.reload();
+                          dispatch(logout());
+                          router.push("/");
                         }}>
                         Log Out
                       </DropdownItem>

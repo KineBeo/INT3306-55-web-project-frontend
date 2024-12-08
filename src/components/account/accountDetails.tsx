@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { FiPhone, FiMail, FiCalendar, FiUser } from "react-icons/fi";
 import { UserInfo } from "@/data/types";
-import { authMe, getUserInfo } from "@/services/authService";
+import { useAppSelector } from "@/redux/hooks";
+import api from "@/services/apiClient";
 
 function formatDateToDDMMYYYY(dateString: string): string {
   const date = new Date(dateString);
@@ -15,35 +16,29 @@ function formatDateToDDMMYYYY(dateString: string): string {
 }
 
 const AccountDetails = () => {
+  const { user } = useAppSelector((state) => state.persistedReducer.auth);
   const [userData, setUserData] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    const refresh_token = localStorage.getItem("refresh_token");
-
-    if (refresh_token) {
-      authMe().then((res) => {
-        if (res) {
-          getUserInfo(res.sub).then((res) => {
+    console.log(user);
+          api.get('/user/id/' + user?.id).then((res) => {
             setUserData({
-              id: res.id,
-              fullname: res.fullname,
-              email: res.email,
-              phone_number: res.phone_number,
-              role: res.role,
-              birthdate: res.birthday,
+              id: res.data.id,
+              fullname: res.data.fullname,
+              email: res.data.email,
+              phone_number: res.data.phone_number,
+              role: res.data.role,
+              birthdate: res.data.birthday,
             });
           });
-        }
-      });
-    }
-  }, []);
+  }, [user]);
 
   if (!userData) {
     return null;
   }
 
   return (
-    <div className="bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="px-4 py-5 sm:px-6">

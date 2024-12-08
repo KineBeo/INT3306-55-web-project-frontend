@@ -9,15 +9,16 @@ import bg1 from "@/images/bg-1.png";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import imgSignIn from "@/images/img-sign-in.png";
 import { useOverlay } from "@/context/OverlayContext";
-import { useAuth } from "@/hooks/useAuth";
 import { useNotification } from "@/context/NotificationContext";
-import axios from "axios";
+import { login } from "@/redux/auth/thunks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 const SignIn = () => {
   const router = useRouter();
   const { setLoading } = useOverlay();
   const { showNotification } = useNotification();
-  const { login } = useAuth();
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.persistedReducer.auth);
 
   // State for form fields
   const [phone, setPhone] = useState("");
@@ -30,8 +31,6 @@ const SignIn = () => {
     phone: "",
     password: "",
   });
-
-  const [loginError, setLoginError] = useState<string[]>([]);
 
   // Validate each input when it changes
   const validateInput = (name: string, value: string) => {
@@ -87,31 +86,22 @@ const SignIn = () => {
     setRedirectPath(path);
   }, []);
 
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading, setLoading]);
+
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormValid) {
       // Call login function from AuthContext
       try {
-        setLoading(true);
-        await login(phone, password);
-        setLoginError([]);
-        showNotification("Login successfully!");
-        setLoading(false);
-        window.location.href = redirectPath;
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error) && error.response && error.response.data) {
-          const errorMessage = error.response.data.message || "Login failed.";
-          console.log(errorMessage);
-          if (Array.isArray(errorMessage)) {
-            setLoginError(errorMessage);
-          } else {
-            setLoginError([errorMessage]);
-          }
-        } else {
-          console.error("Login error:", error);
+        await dispatch(login({ phone_number: phone, password: password }));
+        if (!error) {
+          showNotification("Login successfully!");
+          router.push(redirectPath);
         }
-      } finally {
-        setLoading(false);
+      } catch (err) {
+        console.error(err);
       }
     }
   };
@@ -201,12 +191,20 @@ const SignIn = () => {
                   Forget your password?
                 </Link>
               </div>
-              {loginError.length > 0 && (
-                <div className="text-danger-500 text-sm mt-3 flex flex-col">
-                  {loginError.map((error, index) => (
-                    <span key={index}>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
-                  ))}
-                </div>
+              {error ? (
+                Array.isArray(error) ? (
+                  <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                    {error.map((err, index) => (
+                      <span key={index}>{err.charAt(0).toUpperCase() + err.slice(1)}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                    <span>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
+                  </div>
+                )
+              ) : (
+                <></>
               )}
               <Button
                 type="submit"

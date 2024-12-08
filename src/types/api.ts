@@ -1458,15 +1458,8 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Returns all tickets belonging to the specified user. */
+            /** @description Get all tickets belonging to a user operation completed successfully. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description No tickets found for this user. */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1622,34 +1615,6 @@ export interface operations {
         responses: {
             /** @description The ticket-passenger has been successfully created. */
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Bad Request. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Unauthorized. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Forbidden. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Internal Server Error. */
-            500: {
                 headers: {
                     [name: string]: unknown;
                 };
