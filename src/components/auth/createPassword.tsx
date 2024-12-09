@@ -12,6 +12,7 @@ import { useOverlay } from "@/context/OverlayContext";
 import { useNotification } from "@/context/NotificationContext";
 import { components } from "@/types/api";
 import api from "@/services/apiClient";
+import { GoEyeClosed, GoEye } from "react-icons/go";
 
 type CreateUserDto = components["schemas"]["CreateUserDto"];
 
@@ -106,12 +107,12 @@ const CreatePassword = () => {
     // call api here
     try {
       setLoading(true);
-      await await api.post('/auth/register', { ...formData, password_hash: password });
+      await api.post("/auth/register", { ...formData, password_hash: password });
       localStorage.removeItem("basicInfo");
       setLoading(false);
       showNotification("Account created successfully!");
       router.push("/auth/signin");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setRegisterError(error.response.data.message);
     } finally {
@@ -126,6 +127,9 @@ const CreatePassword = () => {
       router.push("/"); // Redirect đến Home nếu không thể back
     }
   };
+
+  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
+  const [isVisibleConfirmPassword, setIsVisibleConfirmPassword] = useState(false);
 
   return (
     <div className="relative flex flex-wrap min-h-screen items-center justify-center">
@@ -171,7 +175,7 @@ const CreatePassword = () => {
           <form onSubmit={onFinish} className="w-full">
             <div className="flex flex-col gap-4 mb-4">
               <Input
-                type="password"
+                type={isVisiblePassword ? "text" : "password"}
                 label="Password"
                 labelPlacement="outside"
                 value={password}
@@ -180,6 +184,19 @@ const CreatePassword = () => {
                 errorMessage={errors.password}
                 isRequired
                 variant="bordered"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setIsVisiblePassword(!isVisiblePassword)}>
+                    {isVisiblePassword ? (
+                      <GoEye className="text-xl text-neutral-400 pointer-events-none" />
+                    ) : (
+                      <GoEyeClosed className="text-xl text-neutral-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:
@@ -188,7 +205,7 @@ const CreatePassword = () => {
               />
 
               <Input
-                type="password"
+                type={isVisibleConfirmPassword ? "text" : "password"}
                 label="Confirm password"
                 labelPlacement="outside"
                 value={confirmPassword}
@@ -197,6 +214,19 @@ const CreatePassword = () => {
                 errorMessage={errors.confirmPassword}
                 isRequired
                 variant="bordered"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setIsVisibleConfirmPassword(!isVisibleConfirmPassword)}>
+                    {isVisiblePassword ? (
+                      <GoEye className="text-xl text-neutral-400 pointer-events-none" />
+                    ) : (
+                      <GoEyeClosed className="text-xl text-neutral-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:

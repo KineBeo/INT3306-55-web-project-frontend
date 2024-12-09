@@ -1,21 +1,35 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper } from "react-icons/fa";
 import { HiMenuAlt1 } from "react-icons/hi";
 import useOutsideClick from "@/hooks/useOutsideClick";
+import { usePathname } from "next/navigation";
 
 const Sidebar = () => {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("");
 
-  const menuItems = [
-    { id: "tickets", label: "Tickets", icon: <FaTicketAlt />, href: "/dashboard/tickets" },
-    { id: "airplanes", label: "Airplanes", icon: <FaPlane />, href: "/dashboard/airplanes" },
-    { id: "flights", label: "Flights", icon: <FaPlaneDeparture />, href: "/dashboard/flights" },
-    { id: "articles", label: "Articles", icon: <FaNewspaper />, href: "/dashboard/articles" },
-  ];
+  const menuItems = useMemo(
+    () => [
+      { id: "tickets", label: "Tickets", icon: <FaTicketAlt />, href: "/dashboard/tickets" },
+      { id: "airplanes", label: "Airplanes", icon: <FaPlane />, href: "/dashboard/airplanes" },
+      { id: "flights", label: "Flights", icon: <FaPlaneDeparture />, href: "/dashboard/flights" },
+      { id: "articles", label: "Articles", icon: <FaNewspaper />, href: "/dashboard/articles" },
+    ],
+    []
+  );
+
+  useEffect(() => {
+    const active = menuItems.find((item) => pathname.startsWith(item.href));
+    if (active) {
+      setActiveSection(active.id);
+    } else {
+      setActiveSection("");
+    }
+  }, [pathname, menuItems, setActiveSection]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -23,25 +37,21 @@ const Sidebar = () => {
 
   const ref = useRef<HTMLDivElement>(null);
   useOutsideClick(ref, () => {
-    if (window.innerWidth < 1280) {
-      setIsMenuOpen(false);
-    }
+    setIsMenuOpen(false);
   });
 
   return (
-    <div ref={ref} className="xl:w-64 w-0">
+    <div ref={ref}>
       <button
-        className="xl:hidden fixed top-2.5 md:top-5 left-3 z-50 p-2 rounded-md text-neutral-300 hover:bg-neutral-50 focus:outline-none"
+        className="fixed top-2.5 md:top-[18px] left-3 z-50 p-2 rounded-md text-neutral-400 hover:bg-neutral-50 focus:outline-none"
         onClick={toggleMenu}
         aria-label="Toggle navigation menu">
         <HiMenuAlt1 className="h-6 w-6" />
       </button>
       <nav
-        className={`min-h-screen w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full xl:translate-x-0"
+        className={`fixed z-[9999] min-h-screen w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}>
-        {/* Mobile menu button */}
-
         <div className="p-6">
           <ul className="space-y-4">
             {menuItems.map((item) => (
@@ -66,6 +76,10 @@ const Sidebar = () => {
           </ul>
         </div>
       </nav>
+      {/* overlay */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-30" onClick={() => setIsMenuOpen(false)}></div>
+      )}
     </div>
   );
 };

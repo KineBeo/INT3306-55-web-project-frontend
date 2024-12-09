@@ -5,15 +5,7 @@ import { FiPhone, FiMail, FiCalendar, FiUser } from "react-icons/fi";
 import { UserInfo } from "@/data/types";
 import { useAppSelector } from "@/redux/hooks";
 import api from "@/services/apiClient";
-
-function formatDateToDDMMYYYY(dateString: string): string {
-  const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear().toString();
-
-  return `${day}/${month}/${year}`;
-}
+import { formatDateToDDMMYYYY } from "@/utils/formatDate";
 
 const AccountDetails = () => {
   const { user } = useAppSelector((state) => state.persistedReducer.auth);

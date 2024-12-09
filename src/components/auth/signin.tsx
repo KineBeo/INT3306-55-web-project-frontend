@@ -12,6 +12,7 @@ import { useOverlay } from "@/context/OverlayContext";
 import { useNotification } from "@/context/NotificationContext";
 import { login } from "@/redux/auth/thunks";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { GoEyeClosed, GoEye } from "react-icons/go";
 
 const SignIn = () => {
   const router = useRouter();
@@ -38,6 +39,7 @@ const SignIn = () => {
     switch (name) {
       case "phone":
         if (!value) error = "Phone number is required.";
+        else if (!/^[0-9]+$/.test(value)) error = "Phone number must contain only numbers.";
         break;
       case "password":
         if (!value) error = "Password is required.";
@@ -59,25 +61,6 @@ const SignIn = () => {
     if (name === "password") setPassword(value);
 
     validateInput(name, value);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const key = e.key;
-    if (
-      (e.ctrlKey && key === "a") ||
-      key === "Backspace" ||
-      key === "Delete" ||
-      key === "ArrowLeft" ||
-      key === "ArrowRight" ||
-      key === "ArrowUp" ||
-      key === "ArrowDown" ||
-      key === "Tab"
-    ) {
-      return;
-    }
-    if (!/[\d]/.test(key)) {
-      e.preventDefault();
-    }
   };
 
   const [redirectPath, setRedirectPath] = useState("/");
@@ -113,6 +96,9 @@ const SignIn = () => {
       router.push("/"); // Redirect đến Home nếu không thể back
     }
   };
+
+  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
+  const toggleVisibility = () => setIsVisiblePassword(!isVisiblePassword);
 
   return (
     <>
@@ -164,11 +150,10 @@ const SignIn = () => {
                     "group-data-[filled-within=true]:text-neutral-200 group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs",
                 }}
                 maxLength={10}
-                onKeyDown={handleKeyDown}
               />
 
               <Input
-                type="password"
+                type={isVisiblePassword ? "text" : "password"}
                 label="Password"
                 labelPlacement="outside"
                 value={password}
@@ -179,6 +164,19 @@ const SignIn = () => {
                 variant="bordered"
                 className="mb-4 no-focus"
                 name="password"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}>
+                    {isVisiblePassword ? (
+                      <GoEye className="text-xl text-neutral-400 pointer-events-none" />
+                    ) : (
+                      <GoEyeClosed className="text-xl text-neutral-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
                 classNames={{
                   inputWrapper: "py-6 bg-gray-100 group-data-[focus=true]:border-primary-800",
                   input: "border-0 focus:ring-0",

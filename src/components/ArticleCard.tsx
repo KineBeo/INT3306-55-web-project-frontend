@@ -1,6 +1,6 @@
 import { BsGift } from "react-icons/bs";
 import Image from "next/image";
-import { Article } from "@/data/types";
+import { Article } from "@/data/article";
 import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 
 interface ArticleProps {
@@ -8,13 +8,13 @@ interface ArticleProps {
 }
 
 const ArticleCard = ({ article }: ArticleProps) => {
-  const { id, title, description, image } = article;
+  const { id, title, description, content, image_url, created_at } = article;
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <div key={id} className="flex-none w-60 md:w-72 snap-start" role="article" aria-label={`${title} article`}>
       <div className="bg-white rounded-xl border-2 shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500">
         <div className="relative md:h-48 h-40 overflow-hidden">
-          <Image src={image} alt={title} loading="lazy" fill className="w-full h-full object-cover" />
+          <Image src={image_url} alt={title} loading="lazy" fill className="w-full h-full object-cover" />
         </div>
 
         <div className="p-3 md:p-6">
@@ -64,7 +64,7 @@ const ArticleCard = ({ article }: ArticleProps) => {
                 <>
                   <ModalHeader>
                     <div className="relative w-full md:h-[200px] h-[150px]">
-                      <Image src={image} alt={title} loading="lazy" fill className="w-full object-cover rounded-xl" />
+                      <Image src={image_url} alt={title} loading="lazy" fill className="w-full object-cover rounded-xl" />
                     </div>
                   </ModalHeader>
                   <ModalBody>
@@ -73,7 +73,13 @@ const ArticleCard = ({ article }: ArticleProps) => {
                         {title}
                       </p>
                       <p className="text-sm text-neutral-600">
-                        {description}
+                        &ldquo;{description}&#34;
+                      </p>
+                      <p className="text-base text-neutral-600 mt-4">
+                        {content}
+                      </p>
+                      <p className="text-sm text-neutral-600 mt-4">
+                        Create at: {created_at}
                       </p>
                     </div>
                   </ModalBody>

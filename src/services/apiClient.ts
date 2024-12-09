@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://int3306-55-web-project-backend.onrender.com",
+  baseURL: "https://int3306-55-web-project-backend-vumt.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },
@@ -41,11 +41,15 @@ api.interceptors.response.use(
 
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-            return api(originalRequest); // Gửi lại request ban đầu
+            return api(originalRequest);
           } catch (refreshError) {
             localStorage.removeItem("access_token");
             localStorage.removeItem("refresh_token");
-            window.location.href = "/auth/signin";
+            if (window.location.pathname.startsWith("/dashboard")) {
+              window.location.href = "/dashboard/signin";
+            } else {
+              window.location.href = "/auth/signin";
+            }
             return Promise.reject(refreshError);
           }
         }

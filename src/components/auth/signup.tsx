@@ -67,6 +67,7 @@ const SignUp = () => {
         break;
       case "phone":
         if (!value) error = "Phone number is required.";
+        else if (!/^[0-9]+$/.test(value)) error = "Phone number must contain only numbers.";
         break;
       case "gender":
         if (!value) error = "Gender is required.";
@@ -117,25 +118,6 @@ const SignUp = () => {
       formattedDate = `${day}-${month}-${year}`;
     }
     setBirthdate(formattedDate);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const key = e.key;
-    if (
-      (e.ctrlKey && key === "a") ||
-      key === "Backspace" ||
-      key === "Delete" ||
-      key === "ArrowLeft" ||
-      key === "ArrowRight" ||
-      key === "ArrowUp" ||
-      key === "ArrowDown" ||
-      key === "Tab"
-    ) {
-      return;
-    }
-    if (!/[\d]/.test(key)) {
-      e.preventDefault();
-    }
   };
 
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
@@ -276,7 +258,6 @@ const SignUp = () => {
                     " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                 }}
                 maxLength={10}
-                onKeyDown={handleKeyDown}
               />
 
               <div className="flex gap-4 mb-10">

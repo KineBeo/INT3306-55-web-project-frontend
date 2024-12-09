@@ -1,4 +1,5 @@
-import { FlightTicket, Flight, Article, Destination, Airplane } from "@/data/types";
+import { FlightTicket, Flight, Destination, Airplane } from "@/data/types";
+import { Article } from "./article";
 
 export const slides = [
     {
@@ -25,26 +26,38 @@ export const articles: Article[] = [
     {
       id: 1,
       title: "Holiday Special",
-      description: "Get 25% off on your next purchase",
-      image: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1",
+    description: "Get 25% off on your next purchase",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies aliquet, nunc purus ultricies nunc, nec ultricies nunc purus nec nunc. Nullam auctor, nisl eget ultricies aliquet, nunc purus ultricies nunc, nec ultricies nunc purus nec nunc.",
+    image_url: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1",
+    status: "PUBLISHED",
+      created_at: "01/06/2021",
     },
     {
       id: 2,
       title: "Weekend Deal",
       description: "Save $50 on orders above $200",
-      image: "https://images.unsplash.com/photo-1556742111-a301076d9d18",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies",
+      image_url: "https://images.unsplash.com/photo-1556742111-a301076d9d18",
+      status: "PUBLISHED",
+      created_at: "01/06/2021",
     },
     {
       id: 3,
       title: "Flash Sale",
       description: "Buy one get one free",
-      image: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies",
+      image_url: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49",
+      status: "DRAFT",
+      created_at: "01/06/2021",
     },
     {
       id: 4,
       title: "First Time User",
       description: "Get 30% off on your first order",
-      image: "https://images.unsplash.com/photo-1556742044-3c52d6e88c62",
+      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies",
+      image_url: "https://images.unsplash.com/photo-1556742044-3c52d6e88c62",
+      status: "PUBLISHED",
+      created_at: "01/06/2021",
     },
 ];
   

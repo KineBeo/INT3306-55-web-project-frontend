@@ -11,10 +11,15 @@ import DestinationCard from "@/components/DestinationCard";
 import { clearFlight } from "@/redux/flightSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { usePathname } from "next/navigation";
-import { slides, articles, popularDestinations } from "@/data/fakeData";
+import { slides, popularDestinations } from "@/data/fakeData";
+import { Article } from "@/data/article";
 import eventBus from "@/utils/eventBus";
+import { formatDateToDDMMYYYY } from "@/utils/formatDate";
+import { useOverlay } from "@/context/OverlayContext";
+import api from "@/services/apiClient";
 
 const Home = () => {
+  const { setLoading } = useOverlay();
   const [activeSlide, setActiveSlide] = useState(0);
   const searchFormRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
@@ -34,6 +39,35 @@ const Home = () => {
     }, 10000);
     return () => clearInterval(timer);
   }, []);
+
+  const [articleList, setArticleList] = useState<Article[]>([]);
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  useEffect(() => {
+    setLoading(true);
+    api.get("/article/published").then((response) => {
+      const articles = response.data.map((article: Article) => ({
+        id: article.id,
+        title: article.title,
+        description: article.description,
+        content: article.content,
+        image_url: article.image_url,
+        status: article.status,
+        created_at: formatDateToDDMMYYYY(article.created_at),
+      }));
+      setArticleList(articles.sort((a: Article, b: Article) => a.id - b.id));
+      setLoading(false);
+    });
+  }, [setLoading, setArticleList]);
+
+  const handleShowMore = () => {
+    setVisibleCount((prevCount) => {
+      if (prevCount >= articleList.length) {
+        return 4;
+      }
+      return prevCount + 4;
+    });
+  };
 
   // Hàm cuộn đến SearchForm khi nút Book Now được nhấn
   const handleBookNow = () => {
@@ -119,15 +153,17 @@ const Home = () => {
             <h2 className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20 mt-6">Articles</h2>
             {/* Cards */}
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
-              {articles.map((article) => (
+              {articleList.slice(0, visibleCount).map((article) => (
                 <div key={article.id}>
                   <ArticleCard article={article} />
                 </div>
               ))}
             </div>
             <div className="flex justify-center">
-              <button className="bg-gradient-to-r from-primary-6000 to-primary-500 text-white text-sm md:text-base px-8 py-3 rounded-full font-semibold hover:bg-gradient-to-r hover:from-primary-700 hover:to-primary-6000 hover:shadow-lg">
-                Show me more
+              <button
+                onClick={handleShowMore}
+                className="bg-gradient-to-r from-primary-6000 to-primary-500 text-white text-sm md:text-base px-8 py-3 rounded-full font-semibold hover:bg-gradient-to-r hover:from-primary-700 hover:to-primary-6000 hover:shadow-lg">
+                {visibleCount < articleList.length ? "Show me more" : "Hide"}
               </button>
             </div>
           </div>

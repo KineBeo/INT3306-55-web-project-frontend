@@ -15,7 +15,7 @@ const AdminHeader = () => {
   return (
     <>
       <header className={`sticky top-0 z-40 py-3 md:py-0 shadow-sm border-1 border-neutral-50 bg-white`}>
-        <div className="flex flex-row items-center xl:px-8 pl-16 pr-4">
+        <div className="flex flex-row items-center xl:pr-8 pl-16 pr-4">
           <Link href="/dashboard">
             <h1 className="text-base md:text-2xl font-bold text-primary-500">
               <span className="text-neutral-800">Admin</span> Dashboard
