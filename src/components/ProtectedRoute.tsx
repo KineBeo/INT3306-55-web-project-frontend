@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     if (!isAuthenticated) {
       router.push(`/auth/signin?redirect=${pathname}`);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, pathname]);
 
   return <>{isAuthenticated ? children : null}</>;
 };

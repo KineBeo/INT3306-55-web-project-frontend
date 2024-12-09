@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { login as loginService, refreshAccessToken } from "@/services/authService";
 import { loginStart, loginSuccess, loginFailure, refreshTokenSuccess } from "./authSlice";
 import api from "@/services/apiClient";
 

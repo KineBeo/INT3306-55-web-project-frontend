@@ -111,6 +111,7 @@ const CreatePassword = () => {
       setLoading(false);
       showNotification("Account created successfully!");
       router.push("/auth/signin");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setRegisterError(error.response.data.message);
     } finally {
