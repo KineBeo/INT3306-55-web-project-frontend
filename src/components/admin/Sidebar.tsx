@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper } from "react-icons/fa";
+import { MdLocalAirport } from "react-icons/md";
 import { HiMenuAlt1 } from "react-icons/hi";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { usePathname } from "next/navigation";
@@ -15,6 +16,7 @@ const Sidebar = () => {
   const menuItems = useMemo(
     () => [
       { id: "tickets", label: "Tickets", icon: <FaTicketAlt />, href: "/dashboard/tickets" },
+      { id: "airports", label: "Airports", icon: <MdLocalAirport />, href: "/dashboard/airports" },
       { id: "airplanes", label: "Airplanes", icon: <FaPlane />, href: "/dashboard/airplanes" },
       { id: "flights", label: "Flights", icon: <FaPlaneDeparture />, href: "/dashboard/flights" },
       { id: "articles", label: "Articles", icon: <FaNewspaper />, href: "/dashboard/articles" },

@@ -2,9 +2,9 @@ import Sidebar from "@/components/admin/Sidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-row w-screen min-h-screen bg-neutral-50 overflow-hidden">
+    <div className="flex flex-col w-screen min-h-screen bg-neutral-50 overflow-hidden">
       <Sidebar />
-      <div className="flex-1 w-full">{children}</div>
+      <div className="max-w-full self-center">{children}</div>
     </div>
   );
 }
