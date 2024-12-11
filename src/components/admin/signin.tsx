@@ -14,7 +14,7 @@ const SignIn = () => {
   const { setLoading } = useOverlay();
   const { showNotification } = useNotification();
   const dispatch = useAppDispatch();
-  const { loading, error, user } = useAppSelector((state) => state.auth);
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   // State for form fields
   const [phone, setPhone] = useState("");

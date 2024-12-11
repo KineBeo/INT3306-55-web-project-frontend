@@ -8,7 +8,7 @@ import { RootState } from "@/redux/store";
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated } = useSelector((state: RootState) => state.persistedReducer.auth);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (!isAuthenticated) {

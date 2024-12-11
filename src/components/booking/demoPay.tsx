@@ -4,7 +4,7 @@ import { forwardRef, useImperativeHandle, useState } from "react";
 import { FaCreditCard, FaPaypal } from "react-icons/fa";
 import { Input } from "@nextui-org/react";
 
-type ChildProps = {};
+type ChildProps = object;
 
 export type HandlePay = {
   validate: () => boolean;
@@ -23,6 +23,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
     expiryDate: null,
     cvv: null,
   });
+
   // Expose functions to parent using `useImperativeHandle`
   useImperativeHandle(ref, () => ({
     validate() {
@@ -75,13 +76,10 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                 placeholder="xxxx - xxxx - xxxx - xxxx"
                 errorMessage={errorsPayment.cardNumber}
                 isInvalid={!!errorsPayment.cardNumber}
-                onInput={(e: any) => {
-                  let value = e.target.value.replace(/[^\d]/g, ""); // Chỉ giữ số
-                  if (value.length > 16) value = value.slice(0, 16); // Giới hạn 16 số
-                  const formatted =
-                    value
-                      .match(/.{1,4}/g) // Nhóm 4 ký tự
-                      ?.join(" - ") || ""; // Thêm dấu gạch ngang giữa các nhóm
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  let value = e.target.value.replace(/[^\d]/g, "");
+                  if (value.length > 16) value = value.slice(0, 16);
+                  const formatted = value.match(/.{1,4}/g)?.join(" - ") || "";
                   e.target.value = formatted;
                   if (formatted.length === 0) {
                     setErrorsPayment((prev) => ({ ...prev, cardNumber: "This field is required" }));
@@ -108,7 +106,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                 placeholder="NGUYEN VAN A"
                 errorMessage={errorsPayment.cardHolder}
                 isInvalid={!!errorsPayment.cardHolder}
-                onInput={(e: any) => {
+                onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                   const value = e.target.value;
                   const formatted = value.toUpperCase();
                   e.target.value = formatted;
@@ -143,7 +141,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                       "group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
                   }}
                   pattern="(?:0[1-9]|1[0-2])\/\d{2}"
-                  onInput={(e: any) => {
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const value = e.target.value.replace(/[^\d]/g, "");
                     const formatted = value.length >= 3 ? `${value.slice(0, 2)}/${value.slice(2, 4)}` : value;
                     e.target.value = formatted;
@@ -167,7 +165,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                   maxLength={3}
                   errorMessage={errorsPayment.cvv}
                   isInvalid={!!errorsPayment.cvv}
-                  onInput={(e: any) => {
+                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const value = e.target.value.replace(/[^\d]/g, "");
                     if (value.length === 0) {
                       setErrorsPayment((prev) => ({ ...prev, cvv: "This field is required" }));
@@ -192,5 +190,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
     </div>
   );
 });
+
+DemoPay.displayName = "DemoPay";
 
 export default DemoPay;

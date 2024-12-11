@@ -50,7 +50,7 @@ const FindFlight = () => {
           </div>
           <div
             ref={searchFormRef}
-            className="w-[80%] rounded-[2.5rem] shadow-xl px-10 py-8 bg-white hidden md:block border-small z-10">
+            className="w-[80%] rounded-[2.5rem] shadow-xl px-10 py-8 bg-white hidden lg:block border-small z-40">
             <SearchForm align="start" />
           </div>
 

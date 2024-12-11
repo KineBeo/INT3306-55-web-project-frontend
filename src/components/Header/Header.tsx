@@ -182,12 +182,12 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   return (
     <>
       <div
-        className={`nc-Header fixed z-40 top-0 inset-0 bg-black/40 transition-opacity will-change-[opacity] ${
+        className={`nc-Header fixed z-[100] top-0 inset-0 bg-black/40 transition-opacity will-change-[opacity] ${
           showHeaderSearch ? "visible" : "invisible opacity-0 pointer-events-none"
         }`}></div>
       <header
         ref={headerInnerRef}
-        className={`sticky top-0 z-40 shadow-md border-b border-neutral-200 nc-header-bg ${className}`}>
+        className={`sticky top-0 z-[9999] shadow-md border-b border-neutral-200 nc-header-bg ${className}`}>
         <div
           className={`bg-white absolute h-full inset-x-0 top-0 transition-transform will-change-[transform,opacity]
           ${showHeaderSearch ? "duration-75 scale-y-[4.4]" : "bg-opacity-40"}`}></div>

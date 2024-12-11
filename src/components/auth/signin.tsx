@@ -19,7 +19,7 @@ const SignIn = () => {
   const { setLoading } = useOverlay();
   const { showNotification } = useNotification();
   const dispatch = useAppDispatch();
-  const { loading, error, user } = useAppSelector((state) => state.auth);
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   // State for form fields
   const [phone, setPhone] = useState("");
@@ -107,7 +107,7 @@ const SignIn = () => {
 
   return (
     <>
-      <div className="relative flex flex-wrap min-h-screen items-center justify-center">
+      <div className="relative flex flex-wrap md:min-h-screen items-center justify-center">
         <Image
           src={bg1}
           alt="Background"

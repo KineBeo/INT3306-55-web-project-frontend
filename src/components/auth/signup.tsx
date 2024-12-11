@@ -141,7 +141,7 @@ const SignUp = () => {
 
   return (
     <>
-      <div className="relative flex flex-wrap min-h-screen items-center justify-center">
+      <div className="relative flex flex-wrap md:min-h-screen items-center justify-center">
         <Image
           src={bg1}
           alt="Background"

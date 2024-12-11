@@ -31,6 +31,8 @@ const CheckingTicketInfo = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }[]>([]);
   const [valueDate, setValueDate] = useState<(CalendarDate | null)[]>([]);
 
+  const payRef = useRef<HandlePay>(null);
+  
   const { id } = useParams();
 
   useEffect(() => {
@@ -112,8 +114,6 @@ const CheckingTicketInfo = () => {
     setErrors(newErrors);
     return newErrors.every((error) => Object.values(error).every((message) => message === ""));
   };
-
-  const payRef = useRef<HandlePay>(null);
 
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

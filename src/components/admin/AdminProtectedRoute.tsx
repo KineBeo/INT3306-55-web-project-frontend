@@ -9,7 +9,7 @@ import { FaLock } from "react-icons/fa";
 const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, user } = useSelector((state: RootState) => state.persistedReducer.auth);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (!isAuthenticated) {

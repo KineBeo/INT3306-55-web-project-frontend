@@ -6,7 +6,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import LocationInput from "../LocationInput";
 import InputNumber from "@/components/InputNumber";
 import FlightDateRangeInput from "../FlightDateRangeInput";
-import ButtonSubmit from "@/shared/ButtonSubmit";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { useOverlay } from "@/context/OverlayContext";
 import useOutsideClick from "@/hooks/useOutsideClick";
@@ -233,9 +233,10 @@ const SearchForm2Mobile = () => {
             <LocationInput placeHolder="Add Location" desc="Flying from" className="flex-1 w-full" />
             <LocationInput placeHolder="Add Location" desc="Flying to" className="flex-1 w-full" />
             <FlightDateRangeInput selectsRange={dropOffLocationType !== "One-way"} className="flex-1 w-full" />
-            <div className="flex self-end rounded-2xl bg-primary-500 text-white items-center text-sm md:text-base">
-              <ButtonSubmit className="w-8 md:w-14 pl-2 md:pl-0" /> <p className="pr-2 md:pr-4">Search</p>
-            </div>
+            <button type="submit" className="p-2 flex self-end rounded-2xl bg-primary-500 text-white items-center text-sm md:text-base hover:bg-primary-6000">
+              <MagnifyingGlassIcon className="w-8 h-8" />
+              <span className="pl-2">Search</span>
+            </button>
           </div>
         </form>
       </div>

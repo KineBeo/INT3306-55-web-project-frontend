@@ -130,7 +130,7 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onClick }) => {
       </Modal>
       <div
         key={flight.id}
-        className="flex flex-col lg:flex-row bg-white rounded-2xl shadow-lg p-3 md:p-4 lg:p-6 transition-all hover:shadow-xl">
+        className="shine-effect-container relative flex overflow-hidden flex-col lg:flex-row bg-white rounded-2xl shadow-lg p-3 md:p-4 lg:p-6 transition-all hover:shadow-xl">
         <div className="flex-1 flex flex-col lg:mr-16">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-4">

@@ -1,5 +1,4 @@
-import { FlightTicket, Flight, Destination, Airplane } from "@/data/types";
-import { Article } from "./article";
+import { FlightTicket, Flight, Destination } from "@/data/types";
 
 export const slides = [
     {
