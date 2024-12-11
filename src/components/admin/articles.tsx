@@ -4,29 +4,22 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { Article } from "@/data/article";
+import { CreateArticle, UpdateArticle, Article } from "@/data/article";
 import api from "@/services/apiClient";
 import { formatDateToDDMMYYYY } from "@/utils/formatDate";
 
 const Articles = () => {
   const { setLoading } = useOverlay();
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingArticle, setEditingArticle] = useState<Article | null>();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [formData, setFormData] = useState<Article>({
-    id: 0,
+  const [editNumber, setEditNumber] = useState(-1);
+  const [editingArticle, setEditingArticle] = useState<UpdateArticle | null>(null);
+  const [createArticle, setCreateArticle] = useState<CreateArticle>({
     title: "",
     description: "",
     content: "",
     image_url: "",
-    status: "DRAFT",
-    created_at: new Date().toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }),
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Sample articles data
   const [articleList, setArticleList] = useState<Article[]>([]);
@@ -34,25 +27,24 @@ const Articles = () => {
   useEffect(() => {
     setLoading(true);
     api.get("/article").then((response) => {
-      const articles = response.data.map((article: Article) => ({
-        id: article.id,
-        title: article.title,
-        description: article.description,
-        content: article.content,
-        image_url: article.image_url,
-        status: article.status,
-        created_at: formatDateToDDMMYYYY(article.created_at),
-      }));
+      const articles = response.data;
       setArticleList(articles.sort((a: Article, b: Article) => a.id - b.id));
       setLoading(false);
     });
   }, [setLoading, setArticleList]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    if (editNumber !== -1 && editingArticle) {
+      setEditingArticle({
+        ...editingArticle,
+        [e.target.name]: e.target.value,
+      });
+    } else {
+      setCreateArticle({
+        ...createArticle,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,40 +59,27 @@ const Articles = () => {
   );
 
   const resetForm = () => {
-    setIsEditing(false);
+    setEditNumber(-1);
     setEditingArticle(null);
-    setFormData({
-      id: 0,
+    setCreateArticle({
       title: "",
       description: "",
       content: "",
       image_url: "",
-      status: "DRAFT",
-      created_at: new Date().toLocaleDateString("en-GB", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      }),
     });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isEditing && editingArticle) {
+    if (editNumber != -1 && editingArticle) {
       try {
         setLoading(true);
         api
-          .patch(`/article/${editingArticle.id}`, {
-            title: formData.title,
-            description: formData.description,
-            content: formData.content,
-            image_url: formData.image_url,
-            status: formData.status,
-          })
+          .patch(`/article/${editNumber}`, editingArticle)
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .then((_) => {
             const updatedArticles = articleList.map((article) =>
-              article.id === editingArticle.id ? { ...formData, id: article.id } : article
+              article.id === editNumber ? { ...article, ...editingArticle } : article
             );
             setArticleList(updatedArticles);
           });
@@ -112,25 +91,10 @@ const Articles = () => {
     } else {
       try {
         setLoading(true);
-        api
-          .post("/article", {
-            title: formData.title,
-            description: formData.description,
-            content: formData.content,
-            image_url: formData.image_url,
-          })
-          .then((response) => {
-            const newArticle = {
-              id: response.data.id,
-              title: response.data.title,
-              description: response.data.description,
-              content: response.data.content,
-              image_url: response.data.image_url,
-              status: response.data.status,
-              created_at: formatDateToDDMMYYYY(response.data.created_at),
-            };
-            setArticleList([...articleList, newArticle]);
-          });
+        api.post("/article", createArticle).then((response) => {
+          const newArticle = response.data;
+          setArticleList([...articleList, newArticle]);
+        });
       } catch (error) {
         console.error(error);
       } finally {
@@ -156,10 +120,19 @@ const Articles = () => {
     }
   };
 
+  const setEditing = (article: Article) => {
+    setEditNumber(article.id);
+    setEditingArticle({
+      title: article.title,
+      description: article.description,
+      content: article.content,
+      image_url: article.image_url,
+      status: article.status,
+    });
+  };
+
   const handleEditArticle = (article: Article) => {
-    setIsEditing(true);
-    setEditingArticle(article);
-    setFormData(article);
+    setEditing(article);
     onOpen();
   };
 
@@ -236,8 +209,8 @@ const Articles = () => {
                         </button>
                         <button
                           onClick={() => {
+                            setEditing(article);
                             setIsDeleteModalOpen(true);
-                            setEditingArticle(article);
                           }}
                           className="text-red-500 hover:text-red-600">
                           <FaTrash />
@@ -261,7 +234,9 @@ const Articles = () => {
                       }`}>
                       {article.status}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{article.created_at}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">
+                      {formatDateToDDMMYYYY(article.created_at)}
+                    </td>
                     <td className="px-4 py-3 whitespace-nowrap xl:block hidden">
                       <div className="flex space-x-2 justify-center">
                         <button
@@ -271,8 +246,8 @@ const Articles = () => {
                         </button>
                         <button
                           onClick={() => {
+                            setEditing(article);
                             setIsDeleteModalOpen(true);
-                            setEditingArticle(article);
                           }}
                           className="text-red-500 hover:text-red-600">
                           <FaTrash />
@@ -340,7 +315,7 @@ const Articles = () => {
               <button
                 type="button"
                 onClick={() => {
-                  handleDeleteArticle(editingArticle?.id || 0);
+                  handleDeleteArticle(editNumber);
                   setIsDeleteModalOpen(false);
                 }}
                 className="px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm md:text-base">
@@ -387,7 +362,7 @@ const Articles = () => {
         }}>
         <ModalContent>
           <ModalHeader>
-            <h3 className="text-lg md:text-xl font-bold">{isEditing ? "Edit Article" : "Add New Article"}</h3>
+            <h3 className="text-lg md:text-xl font-bold">{editingArticle ? "Edit Article" : "Add New Article"}</h3>
           </ModalHeader>
           <ModalBody>
             <form onSubmit={handleSubmit}>
@@ -396,7 +371,7 @@ const Articles = () => {
                 <input
                   type="text"
                   name="id"
-                  value={isEditing ? formData.id : "Auto-generated"}
+                  value={editingArticle ? editNumber : "Auto-generated"}
                   disabled
                   className="w-full p-2 border rounded-lg text-sm md:text-base text-neutral-400 cursor-not-allowed"
                 />
@@ -407,7 +382,7 @@ const Articles = () => {
                 <input
                   type="text"
                   name="title"
-                  value={formData.title}
+                  value={editingArticle ? editingArticle.title : createArticle.title}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -418,7 +393,7 @@ const Articles = () => {
                 <label className="block text-neutral-700 mb-2">Description</label>
                 <textarea
                   name="description"
-                  value={formData.description}
+                  value={editingArticle ? editingArticle.description : createArticle.description}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   rows={2}
@@ -429,7 +404,7 @@ const Articles = () => {
                 <label className="block text-neutral-700 mb-2">Content</label>
                 <textarea
                   name="content"
-                  value={formData.content}
+                  value={editingArticle ? editingArticle.content : createArticle.content}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   rows={4}
@@ -441,7 +416,7 @@ const Articles = () => {
                 <input
                   type="url"
                   name="image_url"
-                  value={formData.image_url}
+                  value={editingArticle ? editingArticle.image_url : createArticle.image_url}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg mb-2 text-sm md:text-base"
                   required
@@ -452,11 +427,11 @@ const Articles = () => {
                 <label className="block text-neutral-700 mb-2">Status</label>
                 <select
                   name="status"
-                  value={formData.status}
+                  value={editingArticle ? editingArticle.status : "DRAFT"}
                   onChange={handleInputChange}
-                  disabled={!isEditing}
+                  disabled={!editingArticle}
                   className={`w-full p-2 border rounded-lg text-sm md:text-base ${
-                    isEditing ? "" : "cursor-not-allowed"
+                    editingArticle ? "" : "cursor-not-allowed"
                   }`}>
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
@@ -476,7 +451,7 @@ const Articles = () => {
                 <button
                   type="submit"
                   className="px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 text-sm md:text-base">
-                  {isEditing ? "Update" : "Submit"}
+                  {editingArticle ? "Update" : "Create"}
                 </button>
               </div>
             </form>
@@ -487,10 +462,12 @@ const Articles = () => {
   };
 
   return (
-    <div className="p-6 md:p-12">
-      {renderContent()}
-      {renderModal()}
-      {renderDeleteModal()}
+    <div className="flex justify-center ">
+      <div className="p-6 md:p-12 max-w-full">
+        {renderContent()}
+        {renderModal()}
+        {renderDeleteModal()}
+      </div>
     </div>
   );
 };

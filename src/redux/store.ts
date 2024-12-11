@@ -1,27 +1,30 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from 'redux-persist';
-import localStorage from 'redux-persist/lib/storage';
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import authReducer from "./auth/authSlice";
 import flightReducer from "./flightSlice";
+import airportReducer from "./airport/airportSlice";
 
 const persistConfig = {
-    key: 'root',
-    storage: localStorage,
+  key: "root",
+  storage,
+  whitelist: ["auth"],
 };
 
 const rootReducer = combineReducers({
-    auth: authReducer,
+  auth: authReducer,
+  flight: flightReducer,
+  airport: airportReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer: {
-        persistedReducer, flight: flightReducer,
-    },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        serializableCheck: false
-    })
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export const persistor = persistStore(store);

@@ -2,14 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  
   const validRoutes = [
     "/auth/signin",
     "/auth/signup",
     // "/auth/forgot-password",
     "/account",
     "/auth/signup/create-password",
-    "/booking/checking-ticket-info/[id]",
+    "/booking/checking-ticket-info/:id",
     "/booking/find-flight",
     "/booking/manage-booking",
     "/booking/online-check-in",
@@ -17,10 +16,16 @@ export function middleware(req: NextRequest) {
     "/dashboard/signin",
     "/dashboard/account",
   ];
-  
+
+  const dynamicRoutePatterns = [/^\/booking\/checking-ticket-info\/[^/]+$/];
+
   const pathname = req.nextUrl.pathname;
-  
-  if (!validRoutes.some((route) => pathname.startsWith(route))) {
+
+  const isValidStaticRoute = validRoutes.some((route) => pathname.startsWith(route));
+
+  const isValidDynamicRoute = dynamicRoutePatterns.some((pattern) => pattern.test(pathname));
+
+  if (!isValidStaticRoute && !isValidDynamicRoute) {
     return NextResponse.rewrite(new URL("/not-found", req.url));
   }
 
@@ -28,5 +33,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?! api|_next/static|_next/image|favicon.ico|auth|dashboard/signin|$).*)"],
+  matcher: ["/((?! api|_next/static|_next/image|favicon.ico|$).*)"],
 };

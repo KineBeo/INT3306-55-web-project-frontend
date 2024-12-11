@@ -4,22 +4,21 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { Airport } from "@/data/airport";
+import { Airport, CreateAirport, UpdateAirport } from "@/data/airport";
 import api from "@/services/apiClient";
 
 const Airports = () => {
   const { setLoading } = useOverlay();
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingAirport, setEditingAirport] = useState<Airport | null>();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [formData, setFormData] = useState<Airport>({
-    id: 0,
+  const [editNumber, setEditNumber] = useState(-1);
+  const [editingAirport, setEditingAirport] = useState<UpdateAirport | null>();
+  const [createAirport, setCreateAirport] = useState<CreateAirport>({
     code: "",
     name: "",
     city: "",
     country: "",
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Sample airports data
   const [airportList, setAirportList] = useState<Airport[]>([]);
@@ -27,23 +26,24 @@ const Airports = () => {
   useEffect(() => {
     setLoading(true);
     api.get("/airport").then((response) => {
-      const airports = response.data.map((airport: Airport) => ({
-        id: airport.id,
-        code: airport.code,
-        name: airport.name,
-        city: airport.city,
-        country: airport.country,
-      }));
+      const airports = response.data;
       setAirportList(airports.sort((a: Airport, b: Airport) => a.id - b.id));
       setLoading(false);
     });
   }, [setLoading, setAirportList]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    if (editNumber !== -1 && editingAirport) {
+      setEditingAirport({
+        ...editingAirport,
+        [e.target.name]: e.target.value,
+      });
+    } else {
+      setCreateAirport({
+        ...createAirport,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,10 +57,9 @@ const Airports = () => {
   );
 
   const resetForm = () => {
-    setIsEditing(false);
+    setEditNumber(-1);
     setEditingAirport(null);
-    setFormData({
-      id: 0,
+    setCreateAirport({
       code: "",
       name: "",
       city: "",
@@ -70,20 +69,15 @@ const Airports = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isEditing && editingAirport) {
+    if (editNumber != -1 && editingAirport) {
       try {
         setLoading(true);
         api
-          .patch(`/airport/${editingAirport.id}`, {
-            code: formData.code,
-            name: formData.name,
-            city: formData.city,
-            country: formData.country,
-          })
+          .patch(`/airport/${editNumber}`, editingAirport)
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .then((_) => {
             const updateAirports = airportList.map((airport) =>
-              airport.id === editingAirport.id ? { ...formData, id: airport.id } : airport
+              airport.id === editNumber ? { ...airport, ...editingAirport } : airport
             );
             setAirportList(updateAirports);
           });
@@ -95,23 +89,10 @@ const Airports = () => {
     } else {
       try {
         setLoading(true);
-        api
-          .post("/airport", {
-            code: formData.code,
-            name: formData.name,
-            city: formData.city,
-            country: formData.country,
-          })
-          .then((response) => {
-            const newAirport = {
-              id: response.data.id,
-              code: response.data.code,
-              name: response.data.name,
-              city: response.data.city,
-              country: response.data.country,
-            };
-            setAirportList([...airportList, newAirport]);
-          });
+        api.post("/airport", createAirport).then((response) => {
+          const newAirport = response.data;
+          setAirportList([...airportList, newAirport]);
+        });
       } catch (error) {
         console.error(error);
       } finally {
@@ -137,10 +118,18 @@ const Airports = () => {
     }
   };
 
+  const setEditing = (airport: Airport) => {
+    setEditNumber(airport.id);
+    setEditingAirport({
+      code: airport.code,
+      name: airport.name,
+      city: airport.city,
+      country: airport.country,
+    });
+  };
+
   const handleEditAirport = (airport: Airport) => {
-    setIsEditing(true);
-    setEditingAirport(airport);
-    setFormData(airport);
+    setEditing(airport);
     onOpen();
   };
 
@@ -194,6 +183,9 @@ const Airports = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Country
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider xl:block hidden">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-neutral-200">
@@ -208,8 +200,8 @@ const Airports = () => {
                         </button>
                         <button
                           onClick={() => {
+                            setEditing(airport);
                             setIsDeleteModalOpen(true);
-                            setEditingAirport(airport);
                           }}
                           className="text-red-500 hover:text-red-600">
                           <FaTrash />
@@ -217,7 +209,7 @@ const Airports = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{airport.id}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.code}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{airport.code}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.name}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.city}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.country}</td>
@@ -230,8 +222,8 @@ const Airports = () => {
                         </button>
                         <button
                           onClick={() => {
+                            setEditing(airport);
                             setIsDeleteModalOpen(true);
-                            setEditingAirport(airport);
                           }}
                           className="text-red-500 hover:text-red-600">
                           <FaTrash />
@@ -299,7 +291,7 @@ const Airports = () => {
               <button
                 type="button"
                 onClick={() => {
-                  handleDeleteAirport(editingAirport?.id || 0);
+                  handleDeleteAirport(editNumber);
                   setIsDeleteModalOpen(false);
                 }}
                 className="px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm md:text-base">
@@ -346,7 +338,7 @@ const Airports = () => {
         }}>
         <ModalContent>
           <ModalHeader>
-            <h3 className="text-lg md:text-xl font-bold">{isEditing ? "Edit Airport" : "Add New Airport"}</h3>
+            <h3 className="text-lg md:text-xl font-bold">{editingAirport ? "Edit Airport" : "Add New Airport"}</h3>
           </ModalHeader>
           <ModalBody>
             <form onSubmit={handleSubmit}>
@@ -355,7 +347,7 @@ const Airports = () => {
                 <input
                   type="text"
                   name="id"
-                  value={isEditing ? formData.id : "Auto-generated"}
+                  value={editingAirport ? editNumber : "Auto-generated"}
                   disabled
                   className="w-full p-2 border rounded-lg text-sm md:text-base text-neutral-400 cursor-not-allowed"
                 />
@@ -366,7 +358,7 @@ const Airports = () => {
                 <input
                   type="text"
                   name="code"
-                  value={formData.code}
+                  value={editingAirport ? editingAirport.code : createAirport.code}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -378,7 +370,7 @@ const Airports = () => {
                 <input
                   type="text"
                   name="name"
-                  value={formData.name}
+                  value={editingAirport ? editingAirport.name : createAirport.name}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -390,7 +382,7 @@ const Airports = () => {
                 <input
                   type="text"
                   name="city"
-                  value={formData.city}
+                  value={editingAirport ? editingAirport.city : createAirport.city}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -402,13 +394,12 @@ const Airports = () => {
                 <input
                   type="text"
                   name="country"
-                  value={formData.country}
+                  value={editingAirport ? editingAirport.country : createAirport.country}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
                 />
               </div>
-
 
               <div className="flex justify-end space-x-2 mb-4">
                 <button
@@ -423,7 +414,7 @@ const Airports = () => {
                 <button
                   type="submit"
                   className="px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 text-sm md:text-base">
-                  {isEditing ? "Update" : "Submit"}
+                  {editingAirport ? "Update" : "Submit"}
                 </button>
               </div>
             </form>
@@ -434,10 +425,12 @@ const Airports = () => {
   };
 
   return (
-    <div className="p-6 md:p-12">
-      {renderContent()}
-      {renderModal()}
-      {renderDeleteModal()}
+    <div className="flex justify-center ">
+      <div className="p-6 md:p-12 max-w-full">
+        {renderContent()}
+        {renderModal()}
+        {renderDeleteModal()}
+      </div>
     </div>
   );
 };

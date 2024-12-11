@@ -19,7 +19,7 @@ const SignIn = () => {
   const { setLoading } = useOverlay();
   const { showNotification } = useNotification();
   const dispatch = useAppDispatch();
-  const { loading, error } = useAppSelector((state) => state.persistedReducer.auth);
+  const { loading, error, user } = useAppSelector((state) => state.auth);
 
   // State for form fields
   const [phone, setPhone] = useState("");
@@ -78,11 +78,16 @@ const SignIn = () => {
     if (isFormValid) {
       // Call login function from AuthContext
       try {
-        await dispatch(login({ phone_number: phone, password: password }));
-        if (!error) {
-          showNotification("Login successfully!");
-          router.push(redirectPath);
-        }
+        await dispatch(
+          login({
+            phone_number: phone,
+            password: password,
+            onSuccess() {
+              showNotification("Login successfully!");
+              router.push(redirectPath);
+            },
+          })
+        );
       } catch (err) {
         console.error(err);
       }

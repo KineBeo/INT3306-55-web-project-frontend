@@ -77,7 +77,7 @@
     "/user/id/{id}": {
       "get": {
         "operationId": "UserController_findOne",
-        "summary": "Find a user by id",
+        "summary": "Find a user by id. The user can only access their own information.",
         "parameters": [
           {
             "name": "id",
@@ -104,7 +104,7 @@
       },
       "patch": {
         "operationId": "UserController_update",
-        "summary": "Update a user by id",
+        "summary": "Update a user by id. The user can only update their own information.",
         "parameters": [
           {
             "name": "id",
@@ -482,7 +482,7 @@
     "/ticket/user/{userId}": {
       "get": {
         "operationId": "TicketController_findAllByUserId",
-        "summary": "Get all tickets belonging to a user",
+        "summary": "Get all tickets belonging to a user. The user can only access their own tickets",
         "parameters": [
           {
             "name": "userId",
@@ -495,7 +495,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Get all tickets belonging to a user operation completed successfully."
+            "description": "Get all tickets belonging to a user. The user can only access their own tickets operation completed successfully."
           }
         },
         "tags": [
@@ -1793,33 +1793,33 @@
               "INFANT"
             ],
             "description": "Passenger type",
-            "example": "ADULT"
+            "example": "INFANT"
           },
           "associated_adult_id": {
             "type": "number",
             "description": "Associated adult ID",
-            "example": 1
+            "example": 2
           },
           "ticket_id": {
             "type": "number",
             "description": "Ticket ID",
-            "example": 1
+            "example": 9
           },
           "full_name": {
             "type": "string",
             "description": "Full name",
-            "example": "John Doe"
+            "example": "John Wicked"
           },
           "birthday": {
             "format": "date-time",
             "type": "string",
             "description": "Birthday",
-            "example": "2021-12-31T23:59:59Z"
+            "example": "2023-01-31"
           },
           "cccd": {
             "type": "string",
             "description": "CCCD",
-            "example": "123456789"
+            "example": "123456101"
           },
           "country_code": {
             "type": "string",
@@ -1898,17 +1898,17 @@
           "departure_airport_id": {
             "type": "number",
             "description": "Departure airport ID",
-            "example": 1
+            "example": 25
           },
           "arrival_airport_id": {
             "type": "number",
             "description": "Arrival airport ID",
-            "example": 2
+            "example": 26
           },
           "airplane_id": {
             "type": "number",
             "description": "Airplane ID",
-            "example": 3
+            "example": 17
           },
           "flight_number": {
             "type": "string",
@@ -1918,29 +1918,24 @@
           "base_price": {
             "type": "string",
             "description": "Base price",
-            "example": "1000000"
+            "example": "2000000"
           },
           "departure_time": {
             "format": "date-time",
             "type": "string",
             "description": "Departure time",
-            "example": "2021-12-31T23:59:59Z"
+            "example": "2023-12-30T23:59:59Z"
           },
           "arrival_time": {
             "format": "date-time",
             "type": "string",
             "description": "Arrival time",
-            "example": "2021-12-31T23:59:59Z"
-          },
-          "duration": {
-            "type": "string",
-            "description": "Flight duration",
-            "example": "1000000"
+            "example": "2023-12-31T23:59:59Z"
           },
           "delay_duration": {
             "type": "string",
-            "description": "Delay duration",
-            "example": "1000000"
+            "description": "Delay duration in milliseconds",
+            "example": "100"
           }
         },
         "required": [
@@ -1951,7 +1946,6 @@
           "base_price",
           "departure_time",
           "arrival_time",
-          "duration",
           "delay_duration"
         ]
       },
@@ -1961,17 +1955,17 @@
           "departure_airport_id": {
             "type": "number",
             "description": "Departure airport ID",
-            "example": 1
+            "example": 25
           },
           "arrival_airport_id": {
             "type": "number",
             "description": "Arrival airport ID",
-            "example": 2
+            "example": 26
           },
-          "airline_id": {
+          "airplane_id": {
             "type": "number",
-            "description": "Airline ID",
-            "example": 3
+            "description": "Airplae ID",
+            "example": 17
           },
           "flight_number": {
             "type": "string",
@@ -1987,7 +1981,7 @@
             "format": "date-time",
             "type": "string",
             "description": "Departure time",
-            "example": "2021-12-31T23:59:59Z"
+            "example": "2021-12-30T23:59:59Z"
           },
           "arrival_time": {
             "format": "date-time",
@@ -1995,14 +1989,9 @@
             "description": "Arrival time",
             "example": "2021-12-31T23:59:59Z"
           },
-          "duration": {
-            "type": "string",
-            "description": "Flight duration",
-            "example": "1000000"
-          },
           "delay_duration": {
             "type": "string",
-            "description": "Delay duration",
+            "description": "Delay duration in milliseconds",
             "example": "1000000"
           },
           "status": {
@@ -2014,12 +2003,11 @@
         "required": [
           "departure_airport_id",
           "arrival_airport_id",
-          "airline_id",
+          "airplane_id",
           "flight_number",
           "base_price",
           "departure_time",
           "arrival_time",
-          "duration",
           "delay_duration",
           "status"
         ]

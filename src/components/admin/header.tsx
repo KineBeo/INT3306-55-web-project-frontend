@@ -10,7 +10,7 @@ import { logout } from "@/redux/auth/authSlice";
 const AdminHeader = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.persistedReducer.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   return (
     <>
@@ -48,18 +48,20 @@ const AdminHeader = () => {
                     My Account
                   </DropdownItem>
                   <DropdownItem
-                    key="logout"
+                    key="signout"
                     color="danger"
                     onClick={() => {
                       dispatch(logout());
                       router.push("/dashboard");
                     }}>
-                    Log Out
+                    Sign Out
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             ) : (
-              <button className="text-sm md:text-base underline hover:text-primary-6000">Sign In</button>
+              <Link href="/dashboard/signin" className="text-sm md:text-base underline hover:text-primary-6000">
+                Sign In
+              </Link>
             )}
 
             <Logo className="w-12 hidden md:block" href="/dashboard" />

@@ -17,11 +17,13 @@ import eventBus from "@/utils/eventBus";
 import { formatDateToDDMMYYYY } from "@/utils/formatDate";
 import { useOverlay } from "@/context/OverlayContext";
 import api from "@/services/apiClient";
+import LoadingButton from "@/shared/LoadingButton";
 
 const Home = () => {
   const { setLoading } = useOverlay();
   const [activeSlide, setActiveSlide] = useState(0);
   const searchFormRef = useRef<HTMLDivElement>(null);
+  const articlesRef = useRef<HTMLHeadingElement>(null);
   const dispatch = useAppDispatch();
   const currentPath = usePathname();
 
@@ -47,18 +49,23 @@ const Home = () => {
     setLoading(true);
     api.get("/article/published").then((response) => {
       const articles = response.data.map((article: Article) => ({
-        id: article.id,
-        title: article.title,
-        description: article.description,
-        content: article.content,
-        image_url: article.image_url,
-        status: article.status,
+        ...article,
         created_at: formatDateToDDMMYYYY(article.created_at),
       }));
       setArticleList(articles.sort((a: Article, b: Article) => a.id - b.id));
       setLoading(false);
     });
   }, [setLoading, setArticleList]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleScrollIntoView = (ref: any) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  };
 
   const handleShowMore = () => {
     setVisibleCount((prevCount) => {
@@ -67,16 +74,13 @@ const Home = () => {
       }
       return prevCount + 4;
     });
+
+    handleScrollIntoView(articlesRef);
   };
 
   // Hàm cuộn đến SearchForm khi nút Book Now được nhấn
   const handleBookNow = () => {
-    if (searchFormRef.current) {
-      searchFormRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-    }
+    handleScrollIntoView(searchFormRef);
     eventBus.emit("bookNowClicked");
   };
 
@@ -130,8 +134,10 @@ const Home = () => {
           <div
             ref={searchFormRef}
             className="w-[70%] rounded-[2.5rem] shadow-xl px-10 py-8 bg-white mt-4 hidden lg:block border-small">
-            <h2 className="text-center text-3xl font-semibold mb-6 text-neutral-900">
-              Book Your Flight Ticket with Ease!
+            <h2
+              className="text-center text-3xl font-semibold mb-6 text-neutral-900"
+              style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.2)" }}>
+              Book Your Flight Tickets with Ease!
             </h2>
             <SearchForm />
           </div>
@@ -150,7 +156,12 @@ const Home = () => {
                 </div>
               ))}
             </div>
-            <h2 className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20 mt-6">Articles</h2>
+            <h2
+              ref={articlesRef}
+              tabIndex={-1}
+              className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20 mt-6">
+              Articles
+            </h2>
             {/* Cards */}
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
               {articleList.slice(0, visibleCount).map((article) => (
@@ -160,11 +171,16 @@ const Home = () => {
               ))}
             </div>
             <div className="flex justify-center">
-              <button
-                onClick={handleShowMore}
-                className="bg-gradient-to-r from-primary-6000 to-primary-500 text-white text-sm md:text-base px-8 py-3 rounded-full font-semibold hover:bg-gradient-to-r hover:from-primary-700 hover:to-primary-6000 hover:shadow-lg">
-                {visibleCount < articleList.length ? "Show me more" : "Hide"}
-              </button>
+              {articleList.length > 0 && (
+                <LoadingButton
+                  onClick={handleShowMore}
+                  text={visibleCount < articleList.length ? " -- Show me more --" : "-- Hide --"}
+                  classNames={{
+                    base: "flex justify-center item-center bg-white text-neutral-600 text-sm md:text-base px-8 py-3 rounded-lg font-semibold hover:bg-neutral-50 hover:shadow-xl border-3 border-primary-500",
+                    loading: "bg-white",
+                  }}
+                />
+              )}
             </div>
           </div>
           <div className="relative flex justify-between items-center rounded-3xl gap-6 md:px-12 lg:px-20 px-6 md:py-12 py-10 bg-gray-100 w-full">

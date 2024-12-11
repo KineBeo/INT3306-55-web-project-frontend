@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "/": "QAirline",
       "/about": "About Us",
       "/booking/find-flight": "Find Flight",
-      "/booking/checking-ticket-info": "Checking Ticket Info",
+      "/booking/checking-ticket-info/[id]": "Checking Ticket Info",
       "/auth/signin": "Sign In",
       "/auth/signup": "Sign Up",
       "/account": "My Account",

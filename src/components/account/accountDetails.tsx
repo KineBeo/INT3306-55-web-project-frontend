@@ -2,27 +2,20 @@
 
 import { useState, useEffect } from "react";
 import { FiPhone, FiMail, FiCalendar, FiUser } from "react-icons/fi";
-import { UserInfo } from "@/data/types";
+import { UserInfo } from "@/data/auth";
 import { useAppSelector } from "@/redux/hooks";
 import api from "@/services/apiClient";
 import { formatDateToDDMMYYYY } from "@/utils/formatDate";
 
 const AccountDetails = () => {
-  const { user } = useAppSelector((state) => state.persistedReducer.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const [userData, setUserData] = useState<UserInfo | null>(null);
 
   useEffect(() => {
     console.log(user);
-          api.get('/user/id/' + user?.id).then((res) => {
-            setUserData({
-              id: res.data.id,
-              fullname: res.data.fullname,
-              email: res.data.email,
-              phone_number: res.data.phone_number,
-              role: res.data.role,
-              birthdate: res.data.birthday,
-            });
-          });
+    api.get("/user/id/" + user?.id).then((res) => {
+      setUserData(res.data);
+    });
   }, [user]);
 
   if (!userData) {
@@ -30,7 +23,7 @@ const AccountDetails = () => {
   }
 
   return (
-    <div className="bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8 w-full">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="px-4 py-5 sm:px-6">
@@ -87,8 +80,18 @@ const AccountDetails = () => {
                           <FiCalendar className="inline mr-2" />
                           Birth Date
                         </label>
-                        <p className="mt-1 text-sm text-neutral-500">{formatDateToDDMMYYYY(userData.birthdate)}</p>
+                        <p className="mt-1 text-sm text-neutral-500">{formatDateToDDMMYYYY(userData.birthday)}</p>
                       </div>
+
+                      {/* Gender Field */}
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700">
+                          <FiUser className="inline mr-2" />
+                          Gender
+                        </label>
+                        <p className="mt-1 text-sm text-neutral-500">{userData.gender}</p>
+                      </div>
+                      {/* End Gender Field */}
                     </div>
                   </form>
                 </div>

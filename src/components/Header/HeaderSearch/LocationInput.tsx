@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FC } from "react";
-import { useEffect } from "react";
 import ClearDataButton from "@/shared/ClearDataButton";
-import { useRef } from "react";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { MapPinIcon } from "@heroicons/react/24/outline";
+import { useAppSelector } from "@/redux/hooks";
 
 export interface LocationInputProps {
   onInputDone?: (value: string) => void;
@@ -23,6 +22,8 @@ const LocationInput: FC<LocationInputProps> = ({
   desc = "Where?",
   className = "nc-flex-1.5",
 }) => {
+  const { airports } = useAppSelector((state) => state.airport);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -60,20 +61,30 @@ const LocationInput: FC<LocationInputProps> = ({
     setShowPopover(false);
   };
 
-  const testLocation = ["Ha Noi, Viet Nam", "Ho Chi Minh, Viet Nam", "Da Nang, Viet Nam", "Hue, Viet Nam"];
+  const filteredAirports = airports.filter((airport) => {
+    const searchValue = value.toLowerCase();
+    return (
+      airport.name.toLowerCase().includes(searchValue) ||
+      airport.city.toLowerCase().includes(searchValue) ||
+      airport.country.toLowerCase().includes(searchValue)
+    );
+  });
+
   const renderSearchValue = () => {
     return (
       <>
-        {testLocation.map((item) => (
-          <span
-            onClick={() => handleSelectLocation(item)}
-            key={item}
-            className="flex px-4 sm:px-6 items-center space-x-3 py-2 md:py-4 hover:bg-neutral-100 cursor-pointer">
+        {filteredAirports.map((airport) => (
+          <div className="flex px-2 sm:px-4 items-center space-x-3 py-2 md:py-4 hover:bg-neutral-100 cursor-pointer" key={airport.id} onClick={() => handleSelectLocation(airport.name)}>
             <span className="block text-neutral-400 md:text-base text-xs">
               <MapPinIcon className="h-4 w-4 sm:h-6 sm:w-6" />
             </span>
-            <span className="block text-neutral-700">{item}</span>
-          </span>
+            <div className="flex-1 flex flex-col">
+              <span             
+                className="">
+                <span className="block text-neutral-700">{airport.name}</span>
+              </span>
+            </div>
+          </div>
         ))}
       </>
     );
@@ -105,7 +116,7 @@ const LocationInput: FC<LocationInputProps> = ({
       </div>
 
       {showPopover && (
-        <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2 z-40 w-full min-w-[300px] bg-white top-full mt-3 py-3 sm:py-5 rounded-3xl border-1 border-neutral-200 shadow-xl max-h-96 overflow-y-auto">
+        <div className="lg:absolute lg:left-1/2 lg:-translate-x-1/2 z-40 w-full min-w-[300px] bg-white top-full mt-3 py-3 rounded-3xl border-1 border-neutral-200 shadow-xl max-h-96 overflow-y-auto">
           {renderSearchValue()}
         </div>
       )}

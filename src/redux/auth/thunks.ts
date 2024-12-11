@@ -5,11 +5,15 @@ import api from "@/services/apiClient";
 
 export const login = createAsyncThunk(
   "auth/login",
-  async ({ phone_number, password }: { phone_number: string; password: string }, { dispatch }) => {
+  async ({ phone_number, password, onSuccess }: { phone_number: string; password: string; onSuccess?: () => void }, { dispatch }) => {
     dispatch(loginStart());
     try {
       const response = await api.post('/auth/login', { phone_number, password });
       dispatch(loginSuccess(response.data));
+
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error: any) {
       dispatch(loginFailure(error.response.data.message));
       throw error;

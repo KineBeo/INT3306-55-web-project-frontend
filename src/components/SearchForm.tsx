@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import LocationInput from "@/components/Header/HeaderSearch/LocationInput";
@@ -9,6 +9,8 @@ import FlightDateRangeInput from "@/components/Header/HeaderSearch/FlightDateRan
 import ButtonSubmit from "@/shared/ButtonSubmit";
 import { useRouter } from "next/navigation";
 import { useOverlay } from "@/context/OverlayContext";
+import { useAppDispatch } from "@/redux/hooks";
+import { fetchAirports } from "@/redux/airport/thunks";
 
 export interface GuestsObject {
   guestAdults: number;
@@ -44,6 +46,12 @@ const SearchForm = ({ align }: SearchFormProps) => {
   const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(2);
   const [guestChildrenInputValue, setGuestChildrenInputValue] = useState(1);
   const [guestInfantsInputValue, setGuestInfantsInputValue] = useState(1);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAirports());
+  }, [dispatch]);
 
   const handleChangeData = (value: number, type: keyof GuestsObject) => {
     const newValue = {

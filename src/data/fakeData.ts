@@ -22,45 +22,6 @@ export const slides = [
     },
 ];
   
-export const articles: Article[] = [
-    {
-      id: 1,
-      title: "Holiday Special",
-    description: "Get 25% off on your next purchase",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies aliquet, nunc purus ultricies nunc, nec ultricies nunc purus nec nunc. Nullam auctor, nisl eget ultricies aliquet, nunc purus ultricies nunc, nec ultricies nunc purus nec nunc.",
-    image_url: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1",
-    status: "PUBLISHED",
-      created_at: "01/06/2021",
-    },
-    {
-      id: 2,
-      title: "Weekend Deal",
-      description: "Save $50 on orders above $200",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies",
-      image_url: "https://images.unsplash.com/photo-1556742111-a301076d9d18",
-      status: "PUBLISHED",
-      created_at: "01/06/2021",
-    },
-    {
-      id: 3,
-      title: "Flash Sale",
-      description: "Buy one get one free",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies",
-      image_url: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49",
-      status: "DRAFT",
-      created_at: "01/06/2021",
-    },
-    {
-      id: 4,
-      title: "First Time User",
-      description: "Get 30% off on your first order",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies",
-      image_url: "https://images.unsplash.com/photo-1556742044-3c52d6e88c62",
-      status: "PUBLISHED",
-      created_at: "01/06/2021",
-    },
-];
-  
 export const popularDestinations: Destination[] = [
     {
       id: 1,
@@ -243,29 +204,3 @@ export const flightData: Flight[] = [
       children: 0,
     },
 ];
-  
-
-export const airplanes: Airplane[] = [
-    {
-      id: 1,
-      modelName: "Boeing 747",
-      manufacturer: "Boeing",
-      serialNumber: "BOE747-001",
-      registrationNumber: "N123BA",
-      capacity: 400,
-      economySeats: 300,
-      businessSeats: 70,
-      firstClassSeats: 30
-    },
-    {
-      id: 2,
-      modelName: "Airbus A380",
-      manufacturer: "Airbus",
-      serialNumber: "AIR380-002",
-      registrationNumber: "N456AA",
-      capacity: 550,
-      economySeats: 420,
-      businessSeats: 90,
-      firstClassSeats: 40
-    }
-]

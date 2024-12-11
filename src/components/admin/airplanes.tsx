@@ -4,17 +4,15 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { Airplane } from "@/data/airplane";
+import { Airplane, CreateAirplane, UpdateAirplane } from "@/data/airplane";
 import api from "@/services/apiClient";
 
 const Airplanes = () => {
   const { setLoading } = useOverlay();
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingAirplane, setEditingAirplane] = useState<Airplane | null>();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [formData, setFormData] = useState<Airplane>({
-    id: 0,
+  const [editNumber, setEditNumber] = useState(-1);
+  const [editingAirplane, setEditingAirplane] = useState<UpdateAirplane | null>();
+  const [createAirplane, setCreateAirplane] = useState<CreateAirplane>({
     model_name: "",
     manufacturer: "",
     serial_number: "",
@@ -23,8 +21,8 @@ const Airplanes = () => {
     economy_seats: 0,
     business_seats: 0,
     first_class_seats: 0,
-    status: "INACTIVE",
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Sample airplanes data
   const [airplaneList, setAirplaneList] = useState<Airplane[]>([]);
@@ -32,28 +30,24 @@ const Airplanes = () => {
   useEffect(() => {
     setLoading(true);
     api.get("/airplane").then((response) => {
-      const airplanes = response.data.map((airplane: Airplane) => ({
-        id: airplane.id,
-        model_name: airplane.model_name,
-        manufacturer: airplane.manufacturer,
-        serial_number: airplane.serial_number,
-        registration_number: airplane.registration_number,
-        capacity: airplane.capacity,
-        economy_seats: airplane.economy_seats,
-        business_seats: airplane.business_seats,
-        first_class_seats: airplane.first_class_seats,
-        status: airplane.status,
-      }));
+      const airplanes = response.data;
       setAirplaneList(airplanes.sort((a: Airplane, b: Airplane) => a.id - b.id));
       setLoading(false);
     });
   }, [setLoading, setAirplaneList]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    if (editNumber !== -1 && editingAirplane) {
+      setEditingAirplane({
+        ...editingAirplane,
+        [e.target.name]: e.target.value,
+      });
+    } else {
+      setCreateAirplane({
+        ...createAirplane,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,10 +62,9 @@ const Airplanes = () => {
   );
 
   const resetForm = () => {
-    setIsEditing(false);
+    setEditNumber(-1);
     setEditingAirplane(null);
-    setFormData({
-      id: 0,
+    setCreateAirplane({
       model_name: "",
       manufacturer: "",
       serial_number: "",
@@ -80,31 +73,22 @@ const Airplanes = () => {
       economy_seats: 0,
       business_seats: 0,
       first_class_seats: 0,
-      status: "INACTIVE",
     });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isEditing && editingAirplane) {
+    if (editNumber !== -1 && editingAirplane) {
       try {
         setLoading(true);
         api
-          .patch(`/airplane/${editingAirplane.id}`, {
-            model_name: formData.model_name,
-            manufacturer: formData.manufacturer,
-            serial_number: formData.serial_number,
-            registration_number: formData.registration_number,
-            capacity: formData.capacity,
-            economy_seats: formData.economy_seats,
-            business_seats: formData.business_seats,
-            first_class_seats: formData.first_class_seats,
-            status: formData.status,
-          })
+          .patch(`/airplane/${editNumber}`, editingAirplane)
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .then((_) => {
             const updateAirplanes = airplaneList.map((airplane) =>
-              airplane.id === editingAirplane.id ? { ...formData, id: airplane.id } : airplane
+              airplane.id === editNumber
+                ? { ...airplane, ...editingAirplane, status: editingAirplane.status as "ACTIVE" | "INACTIVE" }
+                : airplane
             );
             setAirplaneList(updateAirplanes);
           });
@@ -116,32 +100,10 @@ const Airplanes = () => {
     } else {
       try {
         setLoading(true);
-        api
-          .post("/airplane", {
-            model_name: formData.model_name,
-            manufacturer: formData.manufacturer,
-            serial_number: formData.serial_number,
-            registration_number: formData.registration_number,
-            capacity: formData.capacity,
-            economy_seats: formData.economy_seats,
-            business_seats: formData.business_seats,
-            first_class_seats: formData.first_class_seats,
-          })
-          .then((response) => {
-            const newAirplane = {
-              id: response.data.id,
-              model_name: response.data.model_name,
-              manufacturer: response.data.manufacturer,
-              serial_number: response.data.serial_number,
-              registration_number: response.data.registration_number,
-              capacity: response.data.capacity,
-              economy_seats: response.data.economy_seats,
-              business_seats: response.data.business_seats,
-              first_class_seats: response.data.first_class_seats,
-              status: response.data.status,
-            };
-            setAirplaneList([...airplaneList, newAirplane]);
-          });
+        api.post("/airplane", createAirplane).then((response) => {
+          const newAirplane = response.data;
+          setAirplaneList([...airplaneList, newAirplane]);
+        });
       } catch (error) {
         console.error(error);
       } finally {
@@ -167,10 +129,23 @@ const Airplanes = () => {
     }
   };
 
+  const setEditing = (airplane: Airplane) => {
+    setEditNumber(airplane.id);
+    setEditingAirplane({
+      model_name: airplane.model_name,
+      manufacturer: airplane.manufacturer,
+      serial_number: airplane.serial_number,
+      registration_number: airplane.registration_number,
+      capacity: airplane.capacity,
+      economy_seats: airplane.economy_seats,
+      business_seats: airplane.business_seats,
+      first_class_seats: airplane.first_class_seats,
+      status: airplane.status,
+    })
+  }
+
   const handleEditAirplane = (airplane: Airplane) => {
-    setIsEditing(true);
-    setEditingAirplane(airplane);
-    setFormData(airplane);
+    setEditing(airplane);
     onOpen();
   };
 
@@ -250,8 +225,8 @@ const Airplanes = () => {
                         </button>
                         <button
                           onClick={() => {
+                            setEditing(airplane);
                             setIsDeleteModalOpen(true);
-                            setEditingAirplane(airplane);
                           }}
                           className="text-red-500 hover:text-red-600">
                           <FaTrash />
@@ -259,12 +234,24 @@ const Airplanes = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{airplane.id}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airplane.model_name}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airplane.registration_number}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airplane.capacity}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airplane.economy_seats}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airplane.business_seats}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airplane.first_class_seats}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {airplane.model_name}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {airplane.registration_number}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {airplane.capacity}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {airplane.economy_seats}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {airplane.business_seats}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {airplane.first_class_seats}
+                    </td>
                     <td
                       className={`px-4 py-3 whitespace-nowrap text-xs md:text-sm text-center ${
                         airplane.status === "INACTIVE" ? "text-[#ec9543]" : "text-green-600"
@@ -280,8 +267,8 @@ const Airplanes = () => {
                         </button>
                         <button
                           onClick={() => {
+                            setEditing(airplane);
                             setIsDeleteModalOpen(true);
-                            setEditingAirplane(airplane);
                           }}
                           className="text-red-500 hover:text-red-600">
                           <FaTrash />
@@ -349,7 +336,7 @@ const Airplanes = () => {
               <button
                 type="button"
                 onClick={() => {
-                  handleDeleteAirplane(editingAirplane?.id || 0);
+                  handleDeleteAirplane(editNumber);
                   setIsDeleteModalOpen(false);
                 }}
                 className="px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm md:text-base">
@@ -396,7 +383,7 @@ const Airplanes = () => {
         }}>
         <ModalContent>
           <ModalHeader>
-            <h3 className="text-lg md:text-xl font-bold">{isEditing ? "Edit Airplane" : "Add New Airplane"}</h3>
+            <h3 className="text-lg md:text-xl font-bold">{editingAirplane ? "Edit Airplane" : "Add New Airplane"}</h3>
           </ModalHeader>
           <ModalBody>
             <form onSubmit={handleSubmit}>
@@ -405,7 +392,7 @@ const Airplanes = () => {
                 <input
                   type="text"
                   name="id"
-                  value={isEditing ? formData.id : "Auto-generated"}
+                  value={editingAirplane ? editNumber : "Auto-generated"}
                   disabled
                   className="w-full p-2 border rounded-lg text-sm md:text-base text-neutral-400 cursor-not-allowed"
                 />
@@ -416,7 +403,7 @@ const Airplanes = () => {
                 <input
                   type="text"
                   name="model_name"
-                  value={formData.model_name}
+                  value={editingAirplane ? editingAirplane.model_name : createAirplane.model_name}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -428,7 +415,7 @@ const Airplanes = () => {
                 <input
                   type="text"
                   name="manufacturer"
-                  value={formData.manufacturer}
+                  value={editingAirplane ? editingAirplane.manufacturer : createAirplane.manufacturer}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -440,7 +427,7 @@ const Airplanes = () => {
                 <input
                   type="text"
                   name="serial_number"
-                  value={formData.serial_number}
+                  value={editingAirplane ? editingAirplane.serial_number : createAirplane.serial_number}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -452,7 +439,7 @@ const Airplanes = () => {
                 <input
                   type="text"
                   name="registration_number"
-                  value={formData.registration_number}
+                  value={editingAirplane ? editingAirplane.registration_number : createAirplane.registration_number}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -464,7 +451,7 @@ const Airplanes = () => {
                 <input
                   type="number"
                   name="capacity"
-                  value={formData.capacity}
+                  value={editingAirplane ? editingAirplane.capacity : createAirplane.capacity}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -476,7 +463,7 @@ const Airplanes = () => {
                 <input
                   type="number"
                   name="economy_seats"
-                  value={formData.economy_seats}
+                  value={editingAirplane ? editingAirplane.economy_seats : createAirplane.economy_seats}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -488,7 +475,7 @@ const Airplanes = () => {
                 <input
                   type="number"
                   name="business_seats"
-                  value={formData.business_seats}
+                  value={editingAirplane ? editingAirplane.business_seats : createAirplane.business_seats}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -500,7 +487,7 @@ const Airplanes = () => {
                 <input
                   type="number"
                   name="first_class_seats"
-                  value={formData.first_class_seats}
+                  value={editingAirplane ? editingAirplane.first_class_seats : createAirplane.first_class_seats}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -511,11 +498,11 @@ const Airplanes = () => {
                 <label className="block text-neutral-700 mb-2">Status</label>
                 <select
                   name="status"
-                  value={formData.status}
+                  value={editingAirplane ? editingAirplane.status : "INACTIVE"}
                   onChange={handleInputChange}
-                  disabled={!isEditing}
+                  disabled={!editingAirplane}
                   className={`w-full p-2 border rounded-lg text-sm md:text-base ${
-                    isEditing ? "" : "cursor-not-allowed"
+                    editingAirplane ? "" : "cursor-not-allowed"
                   }`}>
                   <option value="INACTIVE">InActive</option>
                   <option value="ACTIVE">Active</option>
@@ -535,7 +522,7 @@ const Airplanes = () => {
                 <button
                   type="submit"
                   className="px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 text-sm md:text-base">
-                  {isEditing ? "Update" : "Submit"}
+                  {editingAirplane ? "Update" : "Submit"}
                 </button>
               </div>
             </form>
@@ -546,10 +533,12 @@ const Airplanes = () => {
   };
 
   return (
-    <div className="p-6 md:p-12">
-      {renderContent()}
-      {renderModal()}
-      {renderDeleteModal()}
+    <div className="flex justify-center ">
+      <div className="p-6 md:p-12 max-w-full">
+        {renderContent()}
+        {renderModal()}
+        {renderDeleteModal()}
+      </div>
     </div>
   );
 };

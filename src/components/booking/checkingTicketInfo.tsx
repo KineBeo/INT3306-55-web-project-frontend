@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { FormEvent, useState, useEffect } from "react";
+import React, { FormEvent, useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Stepper from "@/components/Stepper";
 import sectionBackground from "@/images/section-background.png";
@@ -18,6 +19,7 @@ import { useOverlay } from "@/context/OverlayContext";
 import { useNotification } from "@/context/NotificationContext";
 import { PassengerInfo } from "@/data/types";
 import { CalendarDate } from "@nextui-org/react";
+import DemoPay, { HandlePay } from "./demoPay";
 
 const CheckingTicketInfo = () => {
   const router = useRouter();
@@ -33,7 +35,7 @@ const CheckingTicketInfo = () => {
 
   useEffect(() => {
     if (!flight || flight.id.toString() !== id) {
-      notFound();  
+      notFound();
     } else {
       const totalPassengers = flight.adults + flight.children;
       const initialPassengers = Array(totalPassengers).fill({
@@ -58,6 +60,7 @@ const CheckingTicketInfo = () => {
   }, [flight, router, id]);
 
   if (!flight) {
+    console.log("Flight not found");
     return null;
   }
 
@@ -110,9 +113,13 @@ const CheckingTicketInfo = () => {
     return newErrors.every((error) => Object.values(error).every((message) => message === ""));
   };
 
+  const payRef = useRef<HandlePay>(null);
+
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (validatePassengers()) {
+    const isValidPassenger = validatePassengers();
+    const isValidPayment = payRef.current && payRef.current.validate();
+    if (isValidPassenger && isValidPayment) {
       setLoading(true);
       // Fake loading
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -126,6 +133,61 @@ const CheckingTicketInfo = () => {
 
   const onCancle = () => {
     router.back();
+  };
+
+  const renderBookingSummary = () => {
+    return (
+      <div className="flex flex-col w-full p-4 md:p-8 gap-2 md:gap-4 bg-white rounded-2xl shadow-lg">
+        <h3 className="text-lg md:text-2xl font-bold">Booking Summary</h3>
+        <span className="text-neutral-600 italic md:text-md text-sm">
+          {flight.departureDate} &#45; {flight.arrivalDate}
+        </span>
+        <div className=" border-t-2 border-dashed border-neutral-300"></div>
+        <div className="flex justify-between">
+          <div className="text-neutral-600">Flight</div>
+          <div className="flex font-semibold">
+            {flight.sectors.map((sector, index) => (
+              <span key={index} className="flex items-center">
+                {sector}
+                {index < flight.sectors.length - 1 && <BsArrowRight className="text-neutral-600 mx-2" />}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="flex justify-between">
+          <div className="text-neutral-600">Departure</div>
+          <div className="font-semibold">{flight.departureTime}</div>
+        </div>
+        <div className="flex justify-between">
+          <div className="text-neutral-600">Arrival</div>
+          <div className="font-semibold">{flight.arrivalTime}</div>
+        </div>
+        <div className="flex justify-between">
+          <div className="text-neutral-600">Duration</div>
+          <div className="font-semibold">{flight.totalTime}</div>
+        </div>
+        <div className="flex justify-between">
+          <div className="text-neutral-600">Adult</div>
+          <div className="font-semibold flex items-center gap-1">
+            {flight.adults} x <FaUser className="text-neutral-600 pb-0.5" />{" "}
+          </div>
+        </div>
+        {flight.children > 0 && (
+          <div className="flex justify-between">
+            <div className="text-neutral-600">Child</div>
+            <div className="font-semibold flex items-center gap-1">
+              {flight.children} x <FaChild className="text-neutral-600 pb-0.5" />{" "}
+            </div>
+          </div>
+        )}
+        <div className=" border-t-2 border-dashed border-neutral-300"></div>
+
+        <div className="flex justify-between">
+          <h3 className="text-lg md:text-2xl font-bold">Total Price</h3>
+          <div className="text-lg md:text-2xl font-bold text-primary-500">{formatCurrency(flight.price)}</div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -143,112 +205,11 @@ const CheckingTicketInfo = () => {
           </div>
           {passengers.length > 0 && errors.length > 0 && valueDate.length > 0 && (
             <form className="z-10" onSubmit={onFinish}>
-            <div className="flex w-full flex-col lg:flex-row gap-6 ">
-              <div className="flex w-full flex-col gap-6">
-                {Array.from({ length: flight.adults }).map((_, i) => (
-                  <div key={i} className="flex flex-col gap-4 w-full p-4 md:p-8 bg-white rounded-2xl shadow-lg">
-                    <h2 className="text-lg text-center md:text-left md:text-xl font-bold">Adult {i + 1}</h2>
-                    <div className="flex flex-col gap-4 px-3 pb-2">
-                      <div className="flex md:flex-row flex-col gap-4 items-start">
-                        <Input
-                          label="First name"
-                          labelPlacement="outside"
-                          startContent={<FaUser className="text-neutral-400" />}
-                          type="text"
-                          variant="bordered"
-                          name="firstName"
-                          onChange={(e) => onInputChange(i, "firstName", e.target.value)}
-                          isInvalid={!!errors[i].firstName}
-                          errorMessage={errors[i].firstName}
-                          isRequired
-                          classNames={{
-                            input: "border-0 focus:ring-0",
-                            label:
-                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
-                          }}
-                        />
-
-                        <Input
-                          label="Last name"
-                          labelPlacement="outside"
-                          startContent={<FaUser className="text-neutral-400" />}
-                          type="text"
-                          variant="bordered"
-                          name="lastName"
-                          onChange={(e) => onInputChange(i, "lastName", e.target.value)}
-                          isInvalid={!!errors[i].lastName}
-                          errorMessage={errors[i].lastName}
-                          isRequired
-                          classNames={{
-                            input: "border-0 focus:ring-0",
-                            label:
-                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
-                          }}
-                        />
-                      </div>
-                      <div className="flex md:flex-row flex-col gap-4 items-start">
-                        <Input
-                          label="Phone"
-                          labelPlacement="outside"
-                          startContent={<FaPhone className="text-neutral-400" />}
-                          type="tel"
-                          variant="bordered"
-                          name="phone"
-                          maxLength={10}
-                          onChange={(e) => onInputChange(i, "phone", e.target.value)}
-                          isInvalid={!!errors[i].phone}
-                          errorMessage={errors[i].phone}
-                          isRequired
-                          classNames={{
-                            input: "border-0 focus:ring-0",
-                            label:
-                              " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
-                          }}
-                        />
-
-                        <Select
-                          defaultSelectedKeys={["Male"]}
-                          label="Gender"
-                          labelPlacement="outside"
-                          startContent={<BsGenderAmbiguous className="text-neutral-400" />}
-                          variant="bordered"
-                          name="gender"
-                          isRequired
-                          onChange={(e) => onInputChange(i, "gender", e.target.value)}
-                          isInvalid={!!errors[i].gender}
-                          errorMessage={errors[i].gender}
-                          classNames={{
-                            base: "border-0 focus:ring-0",
-                            label:
-                              " group-data-[filled=true]:ml-3 group-data-[filled=true]:text-xs group-data-[filled=true]:text-neutral-500",
-                          }}>
-                          {["Male", "Female"].map((gender) => (
-                            <SelectItem key={gender}>{gender}</SelectItem>
-                          ))}
-                        </Select>
-
-                        <DateInput
-                          className="mt-0.5"
-                          label="Birthdate"
-                          labelPlacement="outside"
-                          variant="bordered"
-                          name="dob"
-                          value={valueDate[i]}
-                          onChange={(date) => handleDateChange(i, date)}
-                          isInvalid={!!errors[i].dob}
-                          errorMessage={errors[i].gender}
-                          isRequired
-                          startContent={<BsCalendar className="text-neutral-400" />}
-                          classNames={{ label: "ml-3 text-xs text-neutral-500" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {flight.children > 0 &&
-                  Array.from({ length: flight.children }).map((_, i) => (
+              <div className="flex w-full flex-col lg:flex-row gap-6 ">
+                <div className="flex w-full flex-col gap-6">
+                  {Array.from({ length: flight.adults }).map((_, i) => (
                     <div key={i} className="flex flex-col gap-4 w-full p-4 md:p-8 bg-white rounded-2xl shadow-lg">
-                      <h2 className="text-lg md:text-xl text-center md:text-left font-bold">Child {i + 1}</h2>
+                      <h2 className="text-lg text-center md:text-left md:text-xl font-bold">Adult {i + 1}</h2>
                       <div className="flex flex-col gap-4 px-3 pb-2">
                         <div className="flex md:flex-row flex-col gap-4 items-start">
                           <Input
@@ -258,9 +219,9 @@ const CheckingTicketInfo = () => {
                             type="text"
                             variant="bordered"
                             name="firstName"
-                            onChange={(e) => onInputChange(flight.adults + i, "firstName", e.target.value)}
-                            isInvalid={!!errors[flight.adults + i].firstName}
-                            errorMessage={errors[flight.adults + i].firstName}
+                            onChange={(e) => onInputChange(i, "firstName", e.target.value)}
+                            isInvalid={!!errors[i].firstName}
+                            errorMessage={errors[i].firstName}
                             isRequired
                             classNames={{
                               input: "border-0 focus:ring-0",
@@ -276,9 +237,9 @@ const CheckingTicketInfo = () => {
                             type="text"
                             variant="bordered"
                             name="lastName"
-                            onChange={(e) => onInputChange(flight.adults + i, "lastName", e.target.value)}
-                            isInvalid={!!errors[flight.adults + i].lastName}
-                            errorMessage={errors[flight.adults + i].lastName}
+                            onChange={(e) => onInputChange(i, "lastName", e.target.value)}
+                            isInvalid={!!errors[i].lastName}
+                            errorMessage={errors[i].lastName}
                             isRequired
                             classNames={{
                               input: "border-0 focus:ring-0",
@@ -288,6 +249,25 @@ const CheckingTicketInfo = () => {
                           />
                         </div>
                         <div className="flex md:flex-row flex-col gap-4 items-start">
+                          <Input
+                            label="Phone"
+                            labelPlacement="outside"
+                            startContent={<FaPhone className="text-neutral-400" />}
+                            type="tel"
+                            variant="bordered"
+                            name="phone"
+                            maxLength={10}
+                            onChange={(e) => onInputChange(i, "phone", e.target.value)}
+                            isInvalid={!!errors[i].phone}
+                            errorMessage={errors[i].phone}
+                            isRequired
+                            classNames={{
+                              input: "border-0 focus:ring-0",
+                              label:
+                                " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
+                            }}
+                          />
+
                           <Select
                             defaultSelectedKeys={["Male"]}
                             label="Gender"
@@ -296,9 +276,9 @@ const CheckingTicketInfo = () => {
                             variant="bordered"
                             name="gender"
                             isRequired
-                            onChange={(e) => onInputChange(flight.adults + i, "gender", e.target.value)}
-                            isInvalid={!!errors[flight.adults + i].gender}
-                            errorMessage={errors[flight.adults + i].gender}
+                            onChange={(e) => onInputChange(i, "gender", e.target.value)}
+                            isInvalid={!!errors[i].gender}
+                            errorMessage={errors[i].gender}
                             classNames={{
                               base: "border-0 focus:ring-0",
                               label:
@@ -315,11 +295,10 @@ const CheckingTicketInfo = () => {
                             labelPlacement="outside"
                             variant="bordered"
                             name="dob"
-                            value={valueDate[flight.adults + i]}
-                            onChange={(date) => handleDateChange(flight.adults + i, date)}
-                            isInvalid={!!errors[flight.adults + i].dob}
-                            errorMessage={errors[flight.adults + i].dob}
-                            isRequired
+                            value={valueDate[i]}
+                            onChange={(date) => handleDateChange(i, date)}
+                            isInvalid={!!errors[i].dob}
+                            errorMessage={errors[i].gender}
                             startContent={<BsCalendar className="text-neutral-400" />}
                             classNames={{ label: "ml-3 text-xs text-neutral-500" }}
                           />
@@ -327,76 +306,109 @@ const CheckingTicketInfo = () => {
                       </div>
                     </div>
                   ))}
-              </div>
-              <div className="flex flex-col w-full md:w-2/3 gap-6">
-                <div className="flex flex-col w-full p-4 md:p-8 gap-2 md:gap-4 bg-white rounded-2xl shadow-lg">
-                  <h3 className="text-lg md:text-2xl font-bold">Booking Summary</h3>
-                  <span className="text-neutral-600 italic md:text-md text-sm">
-                    {flight.departureDate} &#45; {flight.arrivalDate}
-                  </span>
-                  <div className=" border-t-2 border-dashed border-neutral-300"></div>
-                  <div className="flex justify-between">
-                    <div className="text-neutral-600">Flight</div>
-                    <div className="flex font-semibold">
-                      {flight.sectors.map((sector, index) => (
-                        <span key={index} className="flex items-center">
-                          {sector}
-                          {index < flight.sectors.length - 1 && <BsArrowRight className="text-neutral-600 mx-2" />}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="text-neutral-600">Departure</div>
-                    <div className="font-semibold">{flight.departureTime}</div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="text-neutral-600">Arrival</div>
-                    <div className="font-semibold">{flight.arrivalTime}</div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="text-neutral-600">Duration</div>
-                    <div className="font-semibold">{flight.totalTime}</div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="text-neutral-600">Adult</div>
-                    <div className="font-semibold flex items-center gap-1">
-                      {flight.adults} x <FaUser className="text-neutral-600 pb-0.5" />{" "}
-                    </div>
-                  </div>
-                  {flight.children > 0 && (
-                    <div className="flex justify-between">
-                      <div className="text-neutral-600">Child</div>
-                      <div className="font-semibold flex items-center gap-1">
-                        {flight.children} x <FaChild className="text-neutral-600 pb-0.5" />{" "}
-                      </div>
-                    </div>
-                  )}
-                  <div className=" border-t-2 border-dashed border-neutral-300"></div>
+                  {flight.children > 0 &&
+                    Array.from({ length: flight.children }).map((_, i) => (
+                      <div key={i} className="flex flex-col gap-4 w-full p-4 md:p-8 bg-white rounded-2xl shadow-lg">
+                        <h2 className="text-lg md:text-xl text-center md:text-left font-bold">Child {i + 1}</h2>
+                        <div className="flex flex-col gap-4 px-3 pb-2">
+                          <div className="flex md:flex-row flex-col gap-4 items-start">
+                            <Input
+                              label="First name"
+                              labelPlacement="outside"
+                              startContent={<FaUser className="text-neutral-400" />}
+                              type="text"
+                              variant="bordered"
+                              name="firstName"
+                              onChange={(e) => onInputChange(flight.adults + i, "firstName", e.target.value)}
+                              isInvalid={!!errors[flight.adults + i].firstName}
+                              errorMessage={errors[flight.adults + i].firstName}
+                              isRequired
+                              classNames={{
+                                input: "border-0 focus:ring-0",
+                                label:
+                                  " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
+                              }}
+                            />
 
-                  <div className="flex justify-between">
-                    <h3 className="text-lg md:text-2xl font-bold">Total Price</h3>
-                    <div className="text-lg md:text-2xl font-bold text-primary-500">{formatCurrency(flight.price)}</div>
-                  </div>
+                            <Input
+                              label="Last name"
+                              labelPlacement="outside"
+                              startContent={<FaUser className="text-neutral-400" />}
+                              type="text"
+                              variant="bordered"
+                              name="lastName"
+                              onChange={(e) => onInputChange(flight.adults + i, "lastName", e.target.value)}
+                              isInvalid={!!errors[flight.adults + i].lastName}
+                              errorMessage={errors[flight.adults + i].lastName}
+                              isRequired
+                              classNames={{
+                                input: "border-0 focus:ring-0",
+                                label:
+                                  " group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs group-data-[filled-within=true]:text-neutral-500",
+                              }}
+                            />
+                          </div>
+                          <div className="flex md:flex-row flex-col gap-4 items-start">
+                            <Select
+                              defaultSelectedKeys={["Male"]}
+                              label="Gender"
+                              labelPlacement="outside"
+                              startContent={<BsGenderAmbiguous className="text-neutral-400" />}
+                              variant="bordered"
+                              name="gender"
+                              isRequired
+                              onChange={(e) => onInputChange(flight.adults + i, "gender", e.target.value)}
+                              isInvalid={!!errors[flight.adults + i].gender}
+                              errorMessage={errors[flight.adults + i].gender}
+                              classNames={{
+                                base: "border-0 focus:ring-0",
+                                label:
+                                  " group-data-[filled=true]:ml-3 group-data-[filled=true]:text-xs group-data-[filled=true]:text-neutral-500",
+                              }}>
+                              {["Male", "Female"].map((gender) => (
+                                <SelectItem key={gender}>{gender}</SelectItem>
+                              ))}
+                            </Select>
+
+                            <DateInput
+                              className="mt-0.5"
+                              label="Birthdate"
+                              labelPlacement="outside"
+                              variant="bordered"
+                              name="dob"
+                              value={valueDate[flight.adults + i]}
+                              onChange={(date) => handleDateChange(flight.adults + i, date)}
+                              isInvalid={!!errors[flight.adults + i].dob}
+                              errorMessage={errors[flight.adults + i].dob}
+                              startContent={<BsCalendar className="text-neutral-400" />}
+                              classNames={{ label: "ml-3 text-xs text-neutral-500" }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                 </div>
-                <button
-                  type="submit"
-                  className="text-white py-2 md:text-lg bg-primary-500 rounded-xl hover:bg-primary-700">
-                  Book
-                </button>
-                <button
-                  onClick={onCancle}
-                  className="text-white py-2 md:text-lg bg-[#E98383] rounded-xl hover:bg-danger-700">
-                  Cancel
-                </button>
+                <div className="flex flex-col w-full md:w-2/3 gap-6">
+                  {renderBookingSummary()}
+                  <DemoPay ref={payRef} />
+
+                  <button
+                    type="submit"
+                    className="text-white py-2 md:text-lg bg-primary-500 rounded-xl hover:bg-primary-700">
+                    Book now
+                  </button>
+                  <button
+                    onClick={onCancle}
+                    className="text-white py-2 md:text-lg bg-[#E98383] rounded-xl hover:bg-danger-700">
+                    Cancel
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
           )}
         </div>
       </div>
     </div>
   );
 };
-
 export default CheckingTicketInfo;

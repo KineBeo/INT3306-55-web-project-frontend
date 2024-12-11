@@ -29,7 +29,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   const { setLoading } = useOverlay();
 
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector((state) => state.persistedReducer.auth);
+  const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     // Đặt showHeaderSearch thành false mỗi khi pathname thay đổi (route thay đổi)
@@ -119,7 +119,7 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   const renderHeaderNavBar = () => {
     return (
       <div
-        className={`w-full relative flex items-center justify-between border border-neutral-200 rounded-full shadow hover:shadow-md transition-all ${
+        className={`w-full relative flex items-center justify-between bg-white border border-neutral-200 rounded-full shadow hover:shadow-md transition-all ${
           showHeaderSearch
             ? "-translate-x-0 translate-y-20 scale-x-[2.55] scale-y-[1.8] opacity-0 pointer-events-none invisible"
             : "visible"
@@ -182,16 +182,16 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   return (
     <>
       <div
-        className={`nc-Header fixed z-40 top-0 inset-0 bg-black/30 transition-opacity will-change-[opacity] ${
+        className={`nc-Header fixed z-40 top-0 inset-0 bg-black/40 transition-opacity will-change-[opacity] ${
           showHeaderSearch ? "visible" : "invisible opacity-0 pointer-events-none"
         }`}></div>
       <header
         ref={headerInnerRef}
-        className={`sticky top-0 z-40 shadow-sm border-b border-neutral-100 nc-header-bg ${className}`}>
+        className={`sticky top-0 z-40 shadow-md border-b border-neutral-200 nc-header-bg ${className}`}>
         <div
           className={`bg-white absolute h-full inset-x-0 top-0 transition-transform will-change-[transform,opacity]
-          ${showHeaderSearch ? "duration-75 scale-y-[4.4]" : ""}`}></div>
-        <div className="relative px-4 lg:container h-[88px] flex">
+          ${showHeaderSearch ? "duration-75 scale-y-[4.4]" : "bg-opacity-40"}`}></div>
+        <div className="relative px-4 lg:container h-[88px] flex ">
           <div className="flex-1 flex justify-between">
             <div className="relative z-10 hidden md:flex flex-1 items-center">
               <Logo className="w-16" />
@@ -233,13 +233,13 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
                         My Account
                       </DropdownItem>
                       <DropdownItem
-                        key="logout"
+                        key="signout"
                         color="danger"
                         onClick={() => {
                           dispatch(logout());
                           router.push("/");
                         }}>
-                        Log Out
+                        Sign Out
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
