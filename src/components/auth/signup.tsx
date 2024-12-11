@@ -115,7 +115,7 @@ const SignUp = () => {
       const day = String(date?.day).padStart(2, "0");
       const month = String(date?.month).padStart(2, "0");
       const year = date?.year;
-      formattedDate = `${day}-${month}-${year}`;
+      formattedDate = `${month}-${day}-${year}`;
     }
     setBirthdate(formattedDate);
   };
