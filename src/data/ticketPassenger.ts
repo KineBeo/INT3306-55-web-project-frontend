@@ -14,5 +14,5 @@ export interface TicketPassenger {
     created_at: string;
     updated_at: string;
     ticket: Ticket;
-    
+    associated_adult_id: TicketPassenger | null;
 };

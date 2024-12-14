@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper } from "react-icons/fa";
+import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper, } from "react-icons/fa";
+import { BsPeopleFill } from "react-icons/bs";
 import { MdLocalAirport } from "react-icons/md";
 import { HiMenuAlt1 } from "react-icons/hi";
 import useOutsideClick from "@/hooks/useOutsideClick";
@@ -16,6 +17,7 @@ const Sidebar = () => {
   const menuItems = useMemo(
     () => [
       { id: "tickets", label: "Tickets", icon: <FaTicketAlt />, href: "/dashboard/tickets" },
+      { id: "ticket-passengers", label: "Ticket Passengers", icon: <BsPeopleFill />, href: "/dashboard/ticket-passengers" },
       { id: "airports", label: "Airports", icon: <MdLocalAirport />, href: "/dashboard/airports" },
       { id: "airplanes", label: "Airplanes", icon: <FaPlane />, href: "/dashboard/airplanes" },
       { id: "flights", label: "Flights", icon: <FaPlaneDeparture />, href: "/dashboard/flights" },

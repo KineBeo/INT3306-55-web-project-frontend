@@ -35,13 +35,15 @@ const flightClass = [
 const SearchForm2Mobile = () => {
   const router = useRouter();
   const { setLoading } = useOverlay();
-  
-  const [dropOffLocationType, setDropOffLocationType] = useState<"Round-trip" | "One-way" | "">("Round-trip");
+
+  const [dropOffLocationType, setDropOffLocationType] = useState<"Round-trip" | "One-way">("Round-trip");
   const [flightClassState, setFlightClassState] = useState("Economy");
   const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(2);
   const [guestChildrenInputValue, setGuestChildrenInputValue] = useState(1);
   const [guestInfantsInputValue, setGuestInfantsInputValue] = useState(1);
-  
+  const [departure_airport_code, setDeparture_airport_code] = useState("");
+  const [arrival_airport_code, setArrival_airport_code] = useState("");
+
   const handleChangeData = (value: number, type: keyof GuestsObject) => {
     const newValue = {
       guestAdults: guestAdultsInputValue,
@@ -190,7 +192,7 @@ const SearchForm2Mobile = () => {
           <span
             className={`flex-1 text-right lg:text-left w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-400 text-xs md:text-base font-semibold placeholder-neutral-800 truncate`}>
             {dropOffLocationType}, {flightClassState}, {totalGuests} Guests
-            </span>
+          </span>
         </div>
         {showRadio && (
           <div className="text-xs md:text-base z-40 flex flex-col gap-2 w-full min-w-[300px] bg-white top-full mt-3 py-3 sm:py-5 px-4 md:px-7 rounded-3xl border-1 border-neutral-200 shadow-xl overflow-y-auto">
@@ -198,8 +200,8 @@ const SearchForm2Mobile = () => {
             {renderRadioBtn()}
             <h4 className="font-semibold mb-1">Ticket class:</h4>
             <div className="flex justify-start gap-3">
-            <div className="border border-neutral-300 rounded-full">{renderSelectClass()}</div>
-            <div className="border border-neutral-300 rounded-full">{renderGuest()}</div>
+              <div className="border border-neutral-300 rounded-full">{renderSelectClass()}</div>
+              <div className="border border-neutral-300 rounded-full">{renderGuest()}</div>
             </div>
           </div>
         )}
@@ -210,6 +212,9 @@ const SearchForm2Mobile = () => {
   const onFinish = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
+    console.log(departure_airport_code, arrival_airport_code);
+    console.log(dropOffLocationType, flightClassState, totalGuests);
 
     try {
       // Gọi API
@@ -230,10 +235,26 @@ const SearchForm2Mobile = () => {
         <form onSubmit={onFinish} className="w-full relative ">
           <div className="flex flex-col items-center gap-4 w-full px-6 md:px-20 py-2 md:py-4 bg-white overflow-scroll">
             {renderFlightType()}
-            <LocationInput placeHolder="Add Location" desc="Flying from" className="flex-1 w-full" />
-            <LocationInput placeHolder="Add Location" desc="Flying to" className="flex-1 w-full" />
+            <LocationInput
+              placeHolder="Add Location"
+              desc="Flying from"
+              className="flex-1 w-full"
+              onInputDone={(value) => {
+                setDeparture_airport_code(value);
+              }}
+            />
+            <LocationInput
+              placeHolder="Add Location"
+              desc="Flying to"
+              className="flex-1 w-full"
+              onInputDone={(value) => {
+                setArrival_airport_code(value);
+              }}
+            />
             <FlightDateRangeInput selectsRange={dropOffLocationType !== "One-way"} className="flex-1 w-full" />
-            <button type="submit" className="p-2 flex self-end rounded-2xl bg-primary-500 text-white items-center text-sm md:text-base hover:bg-primary-6000">
+            <button
+              type="submit"
+              className="p-2 flex self-end rounded-2xl bg-primary-500 text-white items-center text-sm md:text-base hover:bg-primary-6000">
               <MagnifyingGlassIcon className="w-8 h-8" />
               <span className="pl-2">Search</span>
             </button>

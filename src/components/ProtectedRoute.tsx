@@ -12,6 +12,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   useEffect(() => {
     if (!isAuthenticated) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("persist:root");
       router.push(`/auth/signin?redirect=${pathname}`);
     }
   }, [isAuthenticated, router, pathname]);

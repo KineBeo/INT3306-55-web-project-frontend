@@ -49,6 +49,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
       <div className="space-y-4">
         <div className="flex space-x-4">
           <button
+            type="button"
             onClick={() => setPaymentMethod("credit")}
             className={`flex-1 p-4 border rounded-xl flex items-center justify-center space-x-2 ${
               paymentMethod === "credit" ? "border-cyan-600 bg-cyan-50" : "border-gray-200"
@@ -57,6 +58,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
             <span>Credit Card</span>
           </button>
           <button
+            type="button"
             onClick={() => setPaymentMethod("paypal")}
             className={`flex-1 p-4 border rounded-xl flex items-center justify-center space-x-2 ${
               paymentMethod === "paypal" ? "border-cyan-600 bg-cyan-50" : "border-gray-200"

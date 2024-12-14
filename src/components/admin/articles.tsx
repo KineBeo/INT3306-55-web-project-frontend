@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -20,17 +21,24 @@ const Articles = () => {
     image_url: "",
   });
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [error, setError] = useState("");
   // Sample articles data
   const [articleList, setArticleList] = useState<Article[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    api.get("/article").then((response) => {
-      const articles = response.data;
-      setArticleList(articles.sort((a: Article, b: Article) => a.id - b.id));
-      setLoading(false);
-    });
+    api
+      .get("/article")
+      .then((response) => {
+        const articles = response.data;
+        setArticleList(articles.sort((a: Article, b: Article) => a.id - b.id));
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [setLoading, setArticleList]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -67,60 +75,72 @@ const Articles = () => {
       content: "",
       image_url: "",
     });
+    setError("");
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editNumber != -1 && editingArticle) {
-      try {
-        setLoading(true);
-        api
-          .patch(`/article/${editNumber}`, editingArticle)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          .then((_) => {
-            const updatedArticles = articleList.map((article) =>
-              article.id === editNumber ? { ...article, ...editingArticle } : article
-            );
-            setArticleList(updatedArticles);
-          });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
+      setLoading(true);
+      api
+        .patch(`/article/${editNumber}`, editingArticle)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .then((_) => {
+          const updatedArticles = articleList.map((article) =>
+            article.id === editNumber ? { ...article, ...editingArticle } : article
+          );
+          setArticleList(updatedArticles);
+          setLoading(false);
+          resetForm();
+          onClose();
+        })
+        .catch((err) => {
+          setError(err.response.data.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
-      try {
-        setLoading(true);
-        api.post("/article", createArticle).then((response) => {
+      setLoading(true);
+      api
+        .post("/article", createArticle)
+        .then((response) => {
           const newArticle = response.data;
           setArticleList([...articleList, newArticle]);
+          resetForm();
+          onClose();
+        })
+        .catch((err) => {
+          setError(err.response.data.message);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
     }
-    resetForm();
-    //close modal
-    onClose();
   };
 
   const handleDeleteArticle = (id: number) => {
-    try {
-      setLoading(true);
-      api.delete(`/article/${id}`).then(() => {
+    setLoading(true);
+    api
+      .delete(`/article/${id}`)
+      .then(() => {
         const updatedArticles = articleList.filter((article) => article.id !== id);
         setArticleList(updatedArticles);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const setEditing = (article: Article) => {
+    if (!article) {
+      setEditNumber(-1);
+      setEditingArticle(null);
+      return;
+    }
     setEditNumber(article.id);
     setEditingArticle({
       title: article.title,
@@ -132,6 +152,7 @@ const Articles = () => {
   };
 
   const handleEditArticle = (article: Article) => {
+    setError("");
     setEditing(article);
     onOpen();
   };
@@ -423,22 +444,39 @@ const Articles = () => {
                 />
               </div>
 
-              <div className="mb-4">
+              <div>
                 <label className="block text-neutral-700 mb-2">Status</label>
                 <select
                   name="status"
                   value={editingArticle ? editingArticle.status : "DRAFT"}
                   onChange={handleInputChange}
                   disabled={!editingArticle}
-                  className={`w-full p-2 border rounded-lg text-sm md:text-base ${
-                    editingArticle ? "" : "cursor-not-allowed"
+                  required
+                  className={`w-full p-2 border rounded-lg text-sm ${
+                    editingArticle ? "" : "cursor-not-allowed text-neutral-400"
                   }`}>
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
                 </select>
               </div>
 
-              <div className="flex justify-end space-x-2 mb-4">
+              {error ? (
+                Array.isArray(error) ? (
+                  <div className="text-danger-500 text-sm mt-4 flex flex-col">
+                    {error.map((err, index) => (
+                      <span key={index}>{err.charAt(0).toUpperCase() + err.slice(1)}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-danger-500 text-sm mt-4 flex flex-col">
+                    <span>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
+                  </div>
+                )
+              ) : (
+                <></>
+              )}
+
+              <div className="flex justify-end space-x-2 my-4">
                 <button
                   type="button"
                   onClick={() => {

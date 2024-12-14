@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper } from "react-icons/fa";
+import { BsPeopleFill } from "react-icons/bs";
 import { MdLocalAirport } from "react-icons/md";
 
 const Dashboard = () => {
   const menuItems = [
-    { id: "tickets", label: "Tickets", icon: <FaTicketAlt />, href: "/dashboard/tickets" },
-    { id: "airports", label: "Airports", icon: <MdLocalAirport />, href: "/dashboard/airports" },
-    { id: "airplanes", label: "Airplanes", icon: <FaPlane />, href: "/dashboard/airplanes" },
-    { id: "flights", label: "Flights", icon: <FaPlaneDeparture />, href: "/dashboard/flights" },
-    { id: "articles", label: "Articles", icon: <FaNewspaper />, href: "/dashboard/articles" },
+      { id: "tickets", label: "Tickets", icon: <FaTicketAlt />, href: "/dashboard/tickets" },
+      { id: "ticket-passengers", label: "Passengers", icon: <BsPeopleFill />, href: "/dashboard/ticket-passengers" },
+      { id: "airports", label: "Airports", icon: <MdLocalAirport />, href: "/dashboard/airports" },
+      { id: "airplanes", label: "Airplanes", icon: <FaPlane />, href: "/dashboard/airplanes" },
+      { id: "flights", label: "Flights", icon: <FaPlaneDeparture />, href: "/dashboard/flights" },
+      { id: "articles", label: "Articles", icon: <FaNewspaper />, href: "/dashboard/articles" },
   ];
   return (
     <div className="flex justify-center">

@@ -12,7 +12,6 @@ const AccountDetails = () => {
   const [userData, setUserData] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    console.log(user);
     api.get("/user/id/" + user?.id).then((res) => {
       setUserData(res.data);
     });

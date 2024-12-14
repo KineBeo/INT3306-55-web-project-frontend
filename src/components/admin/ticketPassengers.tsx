@@ -5,32 +5,27 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { Airport, CreateAirport, UpdateAirport } from "@/data/airport";
+import { TicketPassenger, UpdateTicketPassenger } from "@/data/ticketPassenger";
+import { formatDateToYYYYMMDD, formatDateToDDMMYYYY } from "@/utils/formatDate";
 import api from "@/services/apiClient";
 
-const Airports = () => {
+const TicketPassengers = () => {
   const { setLoading } = useOverlay();
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [editNumber, setEditNumber] = useState(-1);
-  const [editingAirport, setEditingAirport] = useState<UpdateAirport | null>();
-  const [createAirport, setCreateAirport] = useState<CreateAirport>({
-    code: "",
-    name: "",
-    city: "",
-    country: "",
-  });
+  const [editingPassenger, setEditingPassenger] = useState<UpdateTicketPassenger | null>();
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   // Sample airports data
-  const [airportList, setAirportList] = useState<Airport[]>([]);
+  const [passengerList, setPassengerList] = useState<TicketPassenger[]>([]);
 
   useEffect(() => {
     setLoading(true);
     api
-      .get("/airport")
+      .get("/ticket-passenger")
       .then((response) => {
-        const airports = response.data;
-        setAirportList(airports.sort((a: Airport, b: Airport) => a.id - b.id));
+        const passengers = response.data;
+        setPassengerList(passengers.sort((a: TicketPassenger, b: TicketPassenger) => a.id - b.id));
       })
       .catch((err) => {
         console.error(err);
@@ -38,17 +33,12 @@ const Airports = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [setLoading, setAirportList]);
+  }, [setLoading, setPassengerList]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    if (editNumber !== -1 && editingAirport) {
-      setEditingAirport({
-        ...editingAirport,
-        [e.target.name]: e.target.value,
-      });
-    } else {
-      setCreateAirport({
-        ...createAirport,
+    if (editNumber !== -1 && editingPassenger) {
+      setEditingPassenger({
+        ...editingPassenger,
         [e.target.name]: e.target.value,
       });
     }
@@ -58,52 +48,41 @@ const Airports = () => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredAirports = airportList.filter(
-    (airport) =>
-      airport.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      airport.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredPassengers = passengerList.filter(
+    (passenger) =>
+      passenger.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      passenger.cccd.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const resetForm = () => {
     setEditNumber(-1);
-    setEditingAirport(null);
-    setCreateAirport({
-      code: "",
-      name: "",
-      city: "",
-      country: "",
-    });
+    setEditingPassenger(null);
     setError("");
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (editNumber != -1 && editingAirport) {
+    if (editNumber != -1 && editingPassenger) {
       setLoading(true);
       api
-        .patch(`/airport/${editNumber}`, editingAirport)
+        .patch(`/ticket-passenger/${editNumber}`, editingPassenger)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .then((_) => {
-          const updateAirports = airportList.map((airport) =>
-            airport.id === editNumber ? { ...airport, ...editingAirport } : airport
+          const updatePassengers = passengerList.map((passenger) =>
+            passenger.id === editNumber
+              ? {
+                  ...passenger,
+                  passenger_type: editingPassenger.passenger_type,
+                  associated_adult_id:
+                    passengerList.find((passenger) => passenger.id === editingPassenger.associated_adult_id) || null,
+                  full_name: editingPassenger.full_name,
+                  birthday: editingPassenger.birthday,
+                  cccd: editingPassenger.cccd,
+                  country_code: editingPassenger.country_code,
+                }
+              : passenger
           );
-          setAirportList(updateAirports);
-          resetForm();
-          onClose();
-        })
-        .catch((err) => {
-          setError(err.response.data.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setLoading(true);
-      api
-        .post("/airport", createAirport)
-        .then((response) => {
-          const newAirport = response.data;
-          setAirportList([...airportList, newAirport]);
+          setPassengerList(updatePassengers);
           resetForm();
           onClose();
         })
@@ -116,13 +95,13 @@ const Airports = () => {
     }
   };
 
-  const handleDeleteAirport = (id: number) => {
+  const handleDeletePassenger = (id: number) => {
     setLoading(true);
     api
-      .delete(`/airport/${id}`)
+      .delete(`/ticket-passenger/${id}`)
       .then(() => {
-        const updatedAirports = airportList.filter((airport) => airport.id !== id);
-        setAirportList(updatedAirports);
+        const updatedPassengers = passengerList.filter((passenger) => passenger.id !== id);
+        setPassengerList(updatedPassengers);
       })
       .catch((err) => {
         console.error(err);
@@ -132,52 +111,45 @@ const Airports = () => {
       });
   };
 
-  const setEditing = (airport: Airport) => {
-    if (!airport) {
+  const setEditing = (passenger: TicketPassenger | null) => {
+    if (!passenger) {
       setEditNumber(-1);
-      setEditingAirport(null);
+      setEditingPassenger(null);
       return;
     }
-    setEditNumber(airport.id);
-    setEditingAirport({
-      code: airport.code,
-      name: airport.name,
-      city: airport.city,
-      country: airport.country,
+    setEditNumber(passenger.id);
+    setEditingPassenger({
+      passenger_type: passenger.passenger_type,
+      full_name: passenger.full_name,
+      birthday: passenger.birthday,
+      cccd: passenger.cccd,
+      country_code: passenger.country_code,
+      associated_adult_id: passenger.associated_adult_id?.id || null,
+      ticket_id: passenger.ticket.id,
     });
   };
 
-  const handleEditAirport = (airport: Airport) => {
+  const handleEditPassenger = (passenger: TicketPassenger | null) => {
     setError("");
-    setEditing(airport);
+    setEditing(passenger);
     onOpen();
   };
 
   const renderContent = () => {
     return (
       <div>
-        <h2 className="text-xl md:text-2xl font-bold mb-4">Airport Management</h2>
+        <h2 className="text-xl md:text-2xl font-bold mb-4">Ticket Passenger Management</h2>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4 md:gap-0">
-            <div className="relative order-1 md:order-0">
+            <div className="relative">
               <input
                 type="text"
-                placeholder="Search airport..."
+                placeholder="Search passenger..."
                 value={searchQuery}
                 onChange={handleSearchChange}
                 className="pl-10 pr-4 py-2 border rounded-lg w-56 lg:w-64 text-sm md:text-base"
               />
               <FaSearch className="absolute left-3 top-3 text-neutral-400" />
-            </div>
-            <div className="order-0 md:order-1">
-              <button
-                onClick={() => {
-                  resetForm();
-                  onOpen();
-                }}
-                className="bg-primary-500 text-white px-4 py-3 rounded-lg hover:bg-primary-600 transition-colors text-sm lg:text-base">
-                Add New Airport
-              </button>
             </div>
           </div>
 
@@ -192,16 +164,25 @@ const Airports = () => {
                     ID
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    Code
+                    Fullname
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    Name
+                    Passenger Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    City
+                    Birthday
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    Country
+                    ID Number
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    Country Code
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    Associated Adult
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                    Ticket
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider xl:block hidden">
                     Actions
@@ -209,18 +190,18 @@ const Airports = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-neutral-200">
-                {filteredAirports.map((airport) => (
-                  <tr key={airport.id}>
+                {filteredPassengers.map((passenger) => (
+                  <tr key={passenger.id}>
                     <td className="px-4 py-3 whitespace-nowrap xl:hidden">
                       <div className="flex space-x-2 justify-center">
                         <button
-                          onClick={() => handleEditAirport(airport)}
+                          onClick={() => handleEditPassenger(passenger)}
                           className="text-primary-500 hover:text-primary-600">
                           <FaEdit />
                         </button>
                         <button
                           onClick={() => {
-                            setEditing(airport);
+                            setEditing(passenger);
                             setIsDeleteModalOpen(true);
                           }}
                           className="text-red-500 hover:text-red-600">
@@ -228,21 +209,32 @@ const Airports = () => {
                         </button>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{airport.id}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{airport.code}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.name}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.city}</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.country}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{passenger.id}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{passenger.full_name}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {passenger.passenger_type}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{formatDateToDDMMYYYY(passenger.birthday)}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{passenger.cccd}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {passenger.country_code}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">
+                      {passenger.associated_adult_id?.full_name}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
+                      {passenger.ticket.id}
+                    </td>
                     <td className="px-4 py-3 whitespace-nowrap xl:block hidden">
                       <div className="flex space-x-2 justify-center">
                         <button
-                          onClick={() => handleEditAirport(airport)}
+                          onClick={() => handleEditPassenger(passenger)}
                           className="text-primary-500 hover:text-primary-600">
                           <FaEdit />
                         </button>
                         <button
                           onClick={() => {
-                            setEditing(airport);
+                            setEditing(passenger);
                             setIsDeleteModalOpen(true);
                           }}
                           className="text-red-500 hover:text-red-600">
@@ -303,7 +295,7 @@ const Airports = () => {
                 type="button"
                 onClick={() => {
                   setIsDeleteModalOpen(false);
-                  setEditingAirport(null);
+                  handleEditPassenger(null);
                 }}
                 className="px-4 py-3 text-neutral-600 rounded-lg hover:bg-neutral-100 text-sm md:text-base">
                 Cancel
@@ -311,7 +303,7 @@ const Airports = () => {
               <button
                 type="button"
                 onClick={() => {
-                  handleDeleteAirport(editNumber);
+                  handleDeletePassenger(editNumber);
                   setIsDeleteModalOpen(false);
                 }}
                 className="px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm md:text-base">
@@ -358,7 +350,9 @@ const Airports = () => {
         }}>
         <ModalContent>
           <ModalHeader>
-            <h3 className="text-lg md:text-xl font-bold">{editingAirport ? "Edit Airport" : "Add New Airport"}</h3>
+            <h3 className="text-lg md:text-xl font-bold">
+              {editingPassenger ? "Edit Passenger" : "Add New Passenger"}
+            </h3>
           </ModalHeader>
           <ModalBody>
             <form onSubmit={handleSubmit}>
@@ -367,18 +361,18 @@ const Airports = () => {
                 <input
                   type="text"
                   name="id"
-                  value={editingAirport ? editNumber : "Auto-generated"}
+                  value={editingPassenger ? editNumber : "Auto-generated"}
                   disabled
                   className="w-full p-2 border rounded-lg text-sm md:text-base text-neutral-400 cursor-not-allowed"
                 />
               </div>
 
               <div className="mb-4">
-                <label className="block text-neutral-700 mb-2">Code</label>
+                <label className="block text-neutral-700 mb-2">Fullname</label>
                 <input
                   type="text"
-                  name="code"
-                  value={editingAirport ? editingAirport.code : createAirport.code}
+                  name="full_name"
+                  value={editingPassenger?.full_name}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -386,11 +380,25 @@ const Airports = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-neutral-700 mb-2">Name</label>
+                <label className="block text-neutral-700 mb-2">Passenger Type</label>
+                <select
+                  name="passenger_type"
+                  value={editingPassenger?.passenger_type}
+                  onChange={handleInputChange}
+                  required
+                  className={"w-full p-2 border rounded-lg text-sm"}>
+                  <option value="ADULT">Adult</option>
+                  <option value="CHILD">Child</option>
+                  <option value="INFANT">Infant</option>
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-neutral-700 mb-2">Birthday</label>
                 <input
-                  type="text"
-                  name="name"
-                  value={editingAirport ? editingAirport.name : createAirport.name}
+                  type="date"
+                  name="birthday"
+                  value={editingPassenger ? formatDateToYYYYMMDD(editingPassenger.birthday) : ""}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
@@ -398,24 +406,48 @@ const Airports = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-neutral-700 mb-2">City</label>
+                <label className="block text-neutral-700 mb-2">ID Number</label>
                 <input
                   type="text"
-                  name="city"
-                  value={editingAirport ? editingAirport.city : createAirport.city}
+                  name="cccd"
+                  value={editingPassenger?.cccd}
                   onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg text-sm md:text-base"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-neutral-700 mb-2">Country Code</label>
+                <input
+                  type="text"
+                  name="country_code"
+                  value={editingPassenger?.country_code}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded-lg text-sm md:text-base"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-neutral-700 mb-2">Ticket ID</label>
+                <input
+                  type="number"
+                  name="ticket_id"
+                  value={editingPassenger?.ticket_id}
+                  disabled
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-neutral-700 mb-2">Country</label>
+                <label className="block text-neutral-700 mb-2">Associated Adult ID</label>
                 <input
-                  type="text"
-                  name="country"
-                  value={editingAirport ? editingAirport.country : createAirport.country}
-                  onChange={handleInputChange}
+                  type="number"
+                  name="associated_adult_id"
+                  value={editingPassenger?.associated_adult_id ?? ""}
+                  disabled
                   className="w-full p-2 border rounded-lg text-sm md:text-base"
                   required
                 />
@@ -450,7 +482,7 @@ const Airports = () => {
                 <button
                   type="submit"
                   className="px-4 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 text-sm md:text-base">
-                  {editingAirport ? "Update" : "Submit"}
+                  {editingPassenger ? "Update" : "Submit"}
                 </button>
               </div>
             </form>
@@ -471,4 +503,4 @@ const Airports = () => {
   );
 };
 
-export default Airports;
+export default TicketPassengers;

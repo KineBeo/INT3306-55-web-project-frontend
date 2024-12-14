@@ -13,7 +13,7 @@ export interface Flight {
     arrival_time: string;
     duration: string;
     delay_duration: string;
-    status: string;
+    status: "SCHEDULED" | "DELAYED" | "CANCELLED" | "COMPLETED";
     created_at: string;
     updated_at: string;
     departure_airport: Airport;

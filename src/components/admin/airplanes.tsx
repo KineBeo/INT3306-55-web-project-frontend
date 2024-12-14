@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -23,17 +24,24 @@ const Airplanes = () => {
     first_class_seats: 0,
   });
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [error, setError] = useState("");
   // Sample airplanes data
   const [airplaneList, setAirplaneList] = useState<Airplane[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    api.get("/airplane").then((response) => {
-      const airplanes = response.data;
-      setAirplaneList(airplanes.sort((a: Airplane, b: Airplane) => a.id - b.id));
-      setLoading(false);
-    });
+    api
+      .get("/airplane")
+      .then((response) => {
+        const airplanes = response.data;
+        setAirplaneList(airplanes.sort((a: Airplane, b: Airplane) => a.id - b.id));
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [setLoading, setAirplaneList]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -74,62 +82,73 @@ const Airplanes = () => {
       business_seats: 0,
       first_class_seats: 0,
     });
+    setError("");
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editNumber !== -1 && editingAirplane) {
-      try {
-        setLoading(true);
-        api
-          .patch(`/airplane/${editNumber}`, editingAirplane)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          .then((_) => {
-            const updateAirplanes = airplaneList.map((airplane) =>
-              airplane.id === editNumber
-                ? { ...airplane, ...editingAirplane, status: editingAirplane.status as "ACTIVE" | "INACTIVE" }
-                : airplane
-            );
-            setAirplaneList(updateAirplanes);
-          });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
+      setLoading(true);
+      api
+        .patch(`/airplane/${editNumber}`, editingAirplane)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .then((_) => {
+          const updateAirplanes = airplaneList.map((airplane) =>
+            airplane.id === editNumber
+              ? { ...airplane, ...editingAirplane, status: editingAirplane.status as "ACTIVE" | "INACTIVE" }
+              : airplane
+          );
+          setAirplaneList(updateAirplanes);
+          resetForm();
+          onClose();
+        })
+        .catch((err) => {
+          setError(err.response.data.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
-      try {
-        setLoading(true);
-        api.post("/airplane", createAirplane).then((response) => {
+      setLoading(true);
+      api
+        .post("/airplane", createAirplane)
+        .then((response) => {
           const newAirplane = response.data;
           setAirplaneList([...airplaneList, newAirplane]);
+          resetForm();
+          onClose();
+        })
+        .catch((err) => {
+          setError(err.response.data.message);
+        })
+        .finally(() => {
+          setLoading(false);
         });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
     }
-    resetForm();
-    //close modal
-    onClose();
   };
 
   const handleDeleteAirplane = (id: number) => {
-    try {
-      setLoading(true);
-      api.delete(`/airplane/${id}`).then(() => {
+    setLoading(true);
+    api
+      .delete(`/airplane/${id}`)
+      .then(() => {
         const updatedAirplanes = airplaneList.filter((airplane) => airplane.id !== id);
         setAirplaneList(updatedAirplanes);
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const setEditing = (airplane: Airplane) => {
+    if (!airplane) {
+      setEditNumber(-1);
+      setEditingAirplane(null);
+      return;
+    }
     setEditNumber(airplane.id);
     setEditingAirplane({
       model_name: airplane.model_name,
@@ -141,10 +160,11 @@ const Airplanes = () => {
       business_seats: airplane.business_seats,
       first_class_seats: airplane.first_class_seats,
       status: airplane.status,
-    })
-  }
+    });
+  };
 
   const handleEditAirplane = (airplane: Airplane) => {
+    setError("");
     setEditing(airplane);
     onOpen();
   };
@@ -494,22 +514,39 @@ const Airplanes = () => {
                 />
               </div>
 
-              <div className="mb-4">
+              <div>
                 <label className="block text-neutral-700 mb-2">Status</label>
                 <select
                   name="status"
                   value={editingAirplane ? editingAirplane.status : "INACTIVE"}
                   onChange={handleInputChange}
                   disabled={!editingAirplane}
-                  className={`w-full p-2 border rounded-lg text-sm md:text-base ${
-                    editingAirplane ? "" : "cursor-not-allowed"
+                  required
+                  className={`w-full p-2 border rounded-lg text-sm ${
+                    editingAirplane ? "" : "cursor-not-allowed text-neutral-400"
                   }`}>
                   <option value="INACTIVE">InActive</option>
                   <option value="ACTIVE">Active</option>
                 </select>
               </div>
 
-              <div className="flex justify-end space-x-2 mb-4">
+              {error ? (
+                Array.isArray(error) ? (
+                  <div className="text-danger-500 text-sm mt-4 flex flex-col">
+                    {error.map((err, index) => (
+                      <span key={index}>{err.charAt(0).toUpperCase() + err.slice(1)}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-danger-500 text-sm mt-4 flex flex-col">
+                    <span>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
+                  </div>
+                )
+              ) : (
+                <></>
+              )}
+
+              <div className="flex justify-end space-x-2 my-4">
                 <button
                   type="button"
                   onClick={() => {

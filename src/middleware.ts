@@ -15,6 +15,13 @@ export function middleware(req: NextRequest) {
     "/dashboard",
     "/dashboard/signin",
     "/dashboard/account",
+    "/dashboard/articles",
+    "/dashboard/airplanes",
+    "/dashboard/airports",
+    "/dashboard/flights",
+    "/dashboard/ticket-passengers",
+    "/dashboard/tickets",
+
   ];
 
   const dynamicRoutePatterns = [/^\/booking\/checking-ticket-info\/[^/]+$/];

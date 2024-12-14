@@ -37,6 +37,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "/dashboard": "Dashboard",
       "/dashboard/account": "My Account",
       "/dashboard/signin": "Admin Sign",
+      "/dashboard/airports": "Airports",
+      "/dashboard/airplanes": "Airplanes",
+      "/dashboard/flights": "Flights",
+      "/dashboard/articles": "Articles",
+      "/dashboard/tickets": "Tickets",
+      "/dashboard/ticket-passengers": "Ticket Passengers",
     };
 
     const title = routeTitles[pathname] || "QAirline";

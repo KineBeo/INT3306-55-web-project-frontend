@@ -46,6 +46,8 @@ const SearchForm = ({ align }: SearchFormProps) => {
   const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(2);
   const [guestChildrenInputValue, setGuestChildrenInputValue] = useState(1);
   const [guestInfantsInputValue, setGuestInfantsInputValue] = useState(1);
+  const [departure_airport_code, setDeparture_airport_code] = useState("");
+  const [arrival_airport_code, setArrival_airport_code] = useState("");
 
   const dispatch = useAppDispatch();
 
@@ -208,15 +210,35 @@ const SearchForm = ({ align }: SearchFormProps) => {
     }
   };
 
+  const handleFormKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   const renderForm = () => {
     return (
       <div ref={ref}>
-        <form onSubmit={onFinish} className="w-full relative">
+        <form onSubmit={onFinish} className="w-full relative" onKeyDown={handleFormKeyDown}>
           {renderRadioBtn()}
           <div className="flex items-center w-full rounded-full border border-neutral-200 bg-white mt-4">
-            <LocationInput placeHolder="Add Location" desc="Flying from" className="flex-1" />
+            <LocationInput
+              placeHolder="Add Location"
+              desc="Flying from"
+              className="flex-1"
+              onInputDone={(value) => {
+                setDeparture_airport_code(value);
+              }}
+            />
             <div className="self-center border-r border-slate-200 h-8"></div>
-            <LocationInput placeHolder="Add Location" desc="Flying to" className="flex-1" />
+            <LocationInput
+              placeHolder="Add Location"
+              desc="Flying to"
+              className="flex-1"
+              onInputDone={(value) => {
+                setArrival_airport_code(value);
+              }}
+            />
             <div className="self-center border-r border-slate-200 h-8"></div>
             <FlightDateRangeInput selectsRange={dropOffLocationType !== "oneWay"} className="flex-1" />
             <div className="pr-2 xl:pr-4">

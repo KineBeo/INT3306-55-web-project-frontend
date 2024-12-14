@@ -44,6 +44,7 @@ api.interceptors.response.use(
           } catch (refreshError) {
             localStorage.removeItem("access_token");
             localStorage.removeItem("refresh_token");
+            localStorage.removeItem("persist:root");
             if (window.location.pathname.startsWith("/dashboard")) {
               window.location.href = "/dashboard/signin";
             } else {

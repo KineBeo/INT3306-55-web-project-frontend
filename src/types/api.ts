@@ -11,6 +11,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** PUBLIC: Get Hello */
         get: operations["AppController_getHello"];
         put?: never;
         post?: never;
@@ -45,7 +46,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Find a user by id */
+        /** Find a user by id. The user can only access their own information. */
         get: operations["UserController_findOne"];
         put?: never;
         post?: never;
@@ -53,7 +54,7 @@ export interface paths {
         delete: operations["UserController_remove"];
         options?: never;
         head?: never;
-        /** Update a user by id */
+        /** Update a user by id. The user can only update their own information. */
         patch: operations["UserController_update"];
         trace?: never;
     };
@@ -83,7 +84,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Register new user */
+        /** PUBLIC: Register new user */
         post: operations["AuthController_register"];
         delete?: never;
         options?: never;
@@ -100,7 +101,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Login user */
+        /** PUBLIC: Login user */
         post: operations["AuthController_login"];
         delete?: never;
         options?: never;
@@ -117,7 +118,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Refresh access token */
+        /** PUBLIC: Refresh access token */
         post: operations["AuthController_refreshToken"];
         delete?: never;
         options?: never;
@@ -184,7 +185,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Search tickets */
+        /** PUBLIC: Search tickets */
         get: operations["TicketController_search"];
         put?: never;
         post?: never;
@@ -201,10 +202,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Search tickets by outbound flight time
-         * @description Find tickets where outbound flight departs before or after a specified date
-         */
+        /** PUBLIC: Search tickets by outbound flight time */
         get: operations["TicketController_searchByOutboundTime"];
         put?: never;
         post?: never;
@@ -221,7 +219,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get all tickets belonging to a user */
+        /** Get all tickets belonging to a user. The user can only access their own tickets */
         get: operations["TicketController_findAllByUserId"];
         put?: never;
         post?: never;
@@ -365,7 +363,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** ADMIN: Get all airports */
+        /** PUBLIC: Get all airports */
         get: operations["AirportController_findAll"];
         put?: never;
         /** ADMIN: Create an airport */
@@ -383,7 +381,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** ADMIN: Find an airport by id */
+        /** PUBLIC: Find an airport by id */
         get: operations["AirportController_findOne"];
         put?: never;
         post?: never;
@@ -457,7 +455,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get all published articles */
+        /** PUBLIC: Get all published articles */
         get: operations["ArticleController_findPublished"];
         put?: never;
         post?: never;
@@ -474,7 +472,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get article by id */
+        /** PUBLIC: Get article by id */
         get: operations["ArticleController_findOne"];
         put?: never;
         post?: never;
@@ -725,34 +723,34 @@ export interface components {
         CreateTicketPassengerDto: {
             /**
              * @description Passenger type
-             * @example ADULT
+             * @example INFANT
              * @enum {string}
              */
             passenger_type: "ADULT" | "CHILD" | "INFANT";
             /**
              * @description Associated adult ID
-             * @example 1
+             * @example 2
              */
-            associated_adult_id: number;
+            associated_adult_id: number | null;
             /**
              * @description Ticket ID
-             * @example 1
+             * @example 9
              */
             ticket_id: number;
             /**
              * @description Full name
-             * @example John Doe
+             * @example John Wicked
              */
             full_name: string;
             /**
              * Format: date-time
              * @description Birthday
-             * @example 2021-12-31T23:59:59Z
+             * @example 2023-01-31
              */
             birthday: string;
             /**
              * @description CCCD
-             * @example 123456789
+             * @example 123456101
              */
             cccd: string;
             /**
@@ -772,7 +770,7 @@ export interface components {
              * @description Associated adult ID
              * @example 1
              */
-            associated_adult_id: number;
+            associated_adult_id: number | null;
             /**
              * @description Ticket ID
              * @example 1
@@ -803,17 +801,61 @@ export interface components {
         CreateFlightDto: {
             /**
              * @description Departure airport ID
-             * @example 1
+             * @example 25
              */
             departure_airport_id: number;
             /**
              * @description Arrival airport ID
-             * @example 2
+             * @example 26
              */
             arrival_airport_id: number;
             /**
              * @description Airplane ID
-             * @example 3
+             * @example 17
+             */
+            airplane_id: number;
+            /**
+             * @description Departure airport code
+             * @example HAN
+             */
+            flight_number: string;
+            /**
+             * @description Base price
+             * @example 2000000
+             */
+            base_price: string;
+            /**
+             * Format: date-time
+             * @description Departure time
+             * @example 2023-12-30T23:59:59Z
+             */
+            departure_time: string;
+            /**
+             * Format: date-time
+             * @description Arrival time
+             * @example 2023-12-31T23:59:59Z
+             */
+            arrival_time: string;
+            /**
+             * @description Delay duration in milliseconds
+             * @example 100
+             */
+            delay_duration: string;
+        };
+        UpdateFlightDto: {
+            /**
+             * @description Departure airport ID
+             * @example 25
+             */
+            departure_airport_id: number;
+            /**
+             * @description Arrival airport ID
+             * @example 26
+             */
+            arrival_airport_id: number;
+            /**
+             * @description Airplae ID
+             * @example 17
              */
             airplane_id: number;
             /**
@@ -829,7 +871,7 @@ export interface components {
             /**
              * Format: date-time
              * @description Departure time
-             * @example 2021-12-31T23:59:59Z
+             * @example 2021-12-30T23:59:59Z
              */
             departure_time: string;
             /**
@@ -839,61 +881,7 @@ export interface components {
              */
             arrival_time: string;
             /**
-             * @description Flight duration
-             * @example 1000000
-             */
-            duration: string;
-            /**
-             * @description Delay duration
-             * @example 1000000
-             */
-            delay_duration: string;
-        };
-        UpdateFlightDto: {
-            /**
-             * @description Departure airport ID
-             * @example 1
-             */
-            departure_airport_id: number;
-            /**
-             * @description Arrival airport ID
-             * @example 2
-             */
-            arrival_airport_id: number;
-            /**
-             * @description Airline ID
-             * @example 3
-             */
-            airline_id: number;
-            /**
-             * @description Departure airport code
-             * @example HAN
-             */
-            flight_number: string;
-            /**
-             * @description Base price
-             * @example 1000000
-             */
-            base_price: string;
-            /**
-             * Format: date-time
-             * @description Departure time
-             * @example 2021-12-31T23:59:59Z
-             */
-            departure_time: string;
-            /**
-             * Format: date-time
-             * @description Arrival time
-             * @example 2021-12-31T23:59:59Z
-             */
-            arrival_time: string;
-            /**
-             * @description Flight duration
-             * @example 1000000
-             */
-            duration: string;
-            /**
-             * @description Delay duration
+             * @description Delay duration in milliseconds
              * @example 1000000
              */
             delay_duration: string;
@@ -1104,6 +1092,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description Returns a greeting message */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1427,9 +1416,7 @@ export interface operations {
     TicketController_searchByOutboundTime: {
         parameters: {
             query: {
-                /** @description The reference date in YYYY-MM-DD format */
                 date: string;
-                /** @description If true, finds flights before the date. If false, finds flights after the date */
                 before: boolean;
             };
             header?: never;
@@ -1438,7 +1425,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Returns tickets matching the time criteria */
+            /** @description Find tickets where outbound flight departs before or after a specified date */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1458,7 +1445,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Get all tickets belonging to a user operation completed successfully. */
+            /** @description Get all tickets belonging to a user. The user can only access their own tickets operation completed successfully. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1799,7 +1786,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Get all airports operation completed successfully. */
+            /** @description Returns a list of all airports */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -1841,7 +1828,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Find an airport by id operation completed successfully. */
+            /** @description Returns a single airport by its ID */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -2052,9 +2039,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["Article"][];
-                };
+                content?: never;
             };
             /** @description Bad request */
             400: {
@@ -2062,6 +2047,14 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Article"][];
+                };
             };
         };
     };
@@ -2081,9 +2074,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["Article"];
-                };
+                content?: never;
             };
             /** @description Bad request */
             400: {
@@ -2098,6 +2089,14 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Article"];
+                };
             };
         };
     };

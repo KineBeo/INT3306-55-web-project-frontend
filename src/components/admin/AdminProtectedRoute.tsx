@@ -13,6 +13,9 @@ const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     if (!isAuthenticated) {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      localStorage.removeItem("persist:root");
       router.push(`/dashboard/signin?redirect=${pathname}`);
     }
   }, [isAuthenticated, router, pathname]);

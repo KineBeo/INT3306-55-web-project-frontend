@@ -18,8 +18,7 @@ const airportSlice = createSlice({
   initialState,
   reducers: {
     setAirports(state, action: PayloadAction<Airport[]>) {
-          state.airports = action.payload;
-          localStorage.setItem("airports", JSON.stringify(action.payload));
+      state.airports = action.payload;
     },
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
