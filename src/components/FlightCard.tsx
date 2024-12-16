@@ -318,13 +318,13 @@ const FlightCard: React.FC<FlightCardProps> = ({ tickets, totalPrice, onClick, c
           </div>
         </div>
 
-        <div className="flex items-center justify-end border-t-2 2xl:border-t-0 2xl:border-l-4 border-dashed border-gray-400 2xl:pl-16 md:gap-1 2xl:w-[324px]">
+        <div className="flex items-center justify-end border-t-2 2xl:border-t-0 2xl:border-l-4 border-dashed border-gray-400 2xl:pl-16 md:gap-1 2xl:w-[324px] 2xl:pt-0 pt-1 2xl:mt-0 mt-1">
           <div className="flex flex-col">
             <p className="text-lg md:text-2xl lg:text-3xl font-bold text-primary-6000 text-right order-1 md:order-0">
               {formatCurrency(totalPrice)} VND
             </p>
 
-            <div className="flex flex-col items-end justify-end md:space-y-2 order-0 md:order-1">
+            <div className="flex flex-col items-end justify-end md:space-y-2 order-0 md:order-1 mt-1">
               <div className="flex items-center justify-end space-x-2 text-sm">
                 <FaUser className="text-neutral-400" />
                 <p className="text-neutral-600">
@@ -348,11 +348,10 @@ const FlightCard: React.FC<FlightCardProps> = ({ tickets, totalPrice, onClick, c
                     </p>
                   </div>
                 )}
-
-                <div className="flex items-center justify-end space-x-2">
-                  <BsCashStack className="text-neutral-400" />
-                  <p className="text-neutral-600">{ticket.booking_class}</p>
-                </div>
+              </div>
+              <div className="flex items-center justify-end space-x-2 text-sm">
+                <BsCashStack className="text-neutral-400" />
+                <p className="text-neutral-600">{ticket.booking_class}</p>
               </div>
             </div>
 

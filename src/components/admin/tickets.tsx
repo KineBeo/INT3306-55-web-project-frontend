@@ -533,7 +533,7 @@ const Tickets = () => {
                 <label className="block text-neutral-700 mb-2">Ticket Type</label>
                 <select
                   name="ticket_type"
-                  value={editingTicket ? editingTicket.ticket_type : "ONE_WAY"}
+                  value={editingTicket ? editingTicket.ticket_type : createTicket.ticket_type}
                   onChange={handleInputChange}
                   required
                   className={"w-full p-2 border rounded-lg text-sm md:text-base"}>
@@ -546,7 +546,7 @@ const Tickets = () => {
                 <label className="block text-neutral-700 mb-2">Booking Class</label>
                 <select
                   name="booking_class"
-                  value={editingTicket ? editingTicket.booking_class : "ECONOMY"}
+                  value={editingTicket ? editingTicket.booking_class : createTicket.booking_class}
                   onChange={handleInputChange}
                   required
                   className={"w-full p-2 border rounded-lg text-sm md:text-base"}>
@@ -579,7 +579,7 @@ const Tickets = () => {
                 <label className="block text-neutral-700 mb-2">Status</label>
                 <select
                   name="booking_status"
-                  value={editingTicket ? editingTicket.booking_status : "PENDING"}
+                  value={editingTicket ? editingTicket.booking_status : createTicket.booking_status}
                   onChange={handleInputChange}
                   disabled={!editingTicket}
                   className={`w-full p-2 border rounded-lg text-sm md:text-base ${

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { FiPhone, FiMail, FiCalendar, FiUser } from "react-icons/fi";
+import { SiAdminer } from "react-icons/si";
 import { UserInfo } from "@/data/auth";
 import { useAppSelector } from "@/redux/hooks";
 import api from "@/services/apiClient";
@@ -93,8 +94,13 @@ const AccountDetails = () => {
                       </div>
                       {/* End Gender Field */}
 
-                      <Link href={"/dashboard"} className={`${userData.role === "ADMIN" ? "relative" : "hidden"} text-sm`}>
-                        <button className="bg-primary-500 text-white rounded-xl p-3 hover:bg-primary-6000">Admin Dashboard</button>
+                      <Link
+                        href={"/dashboard"}
+                        className={`${userData.role === "ADMIN" ? "relative" : "hidden"} text-sm`}>
+                        <button className="bg-primary-500 text-white rounded-xl p-3 hover:bg-primary-6000">
+                          <SiAdminer className="mr-1 inline self-center text-xl" />
+                          Dashboard
+                        </button>
                       </Link>
                     </div>
                   </form>

@@ -85,7 +85,6 @@ const FindFlight = () => {
             return acc;
           }, {} as Groups);
 
-        console.log(finalData);
         setTicketSearch(finalData);
       } catch (error) {
         console.error(error);

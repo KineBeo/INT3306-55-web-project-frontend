@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState, useRef, useMemo } from "react";
-import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper, } from "react-icons/fa";
+import { FaTicketAlt, FaPlane, FaPlaneDeparture, FaNewspaper } from "react-icons/fa";
+import { TbHomeUp } from "react-icons/tb";
 import { BsPeopleFill } from "react-icons/bs";
 import { MdLocalAirport } from "react-icons/md";
 import { HiMenuAlt1 } from "react-icons/hi";
@@ -17,7 +18,12 @@ const Sidebar = () => {
   const menuItems = useMemo(
     () => [
       { id: "tickets", label: "Tickets", icon: <FaTicketAlt />, href: "/dashboard/tickets" },
-      { id: "ticket-passengers", label: "Ticket Passengers", icon: <BsPeopleFill />, href: "/dashboard/ticket-passengers" },
+      {
+        id: "ticket-passengers",
+        label: "Ticket Passengers",
+        icon: <BsPeopleFill />,
+        href: "/dashboard/ticket-passengers",
+      },
       { id: "airports", label: "Airports", icon: <MdLocalAirport />, href: "/dashboard/airports" },
       { id: "airplanes", label: "Airplanes", icon: <FaPlane />, href: "/dashboard/airplanes" },
       { id: "flights", label: "Flights", icon: <FaPlaneDeparture />, href: "/dashboard/flights" },
@@ -77,6 +83,10 @@ const Sidebar = () => {
                 </Link>
               </li>
             ))}
+          <Link href={"/"} className="w-full flex items-center space-x-3 p-3 rounded-md transition-colors duration-200 text-neutral-600 hover:bg-primary-50 hover:text-primary-500">
+            <TbHomeUp className="text-xl" />
+            <span>Back to Home</span>
+          </Link>
           </ul>
         </div>
       </nav>
