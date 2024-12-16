@@ -5,16 +5,10 @@ import {
   UserCircleIcon,
   ClipboardDocumentListIcon, CheckBadgeIcon
 } from "@heroicons/react/24/outline";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { PathName } from "@/routers/types";
-import isInViewport from "@/utils/isInViewport";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-let WIN_PREV_POSITION = 0;
-if (typeof window !== "undefined") {
-  WIN_PREV_POSITION = window.pageYOffset;
-}
 
 interface NavItem {
   name: string;
@@ -40,7 +34,7 @@ const NAV: NavItem[] = [
   },
   {
     name: "Account",
-    link: "/",
+    link: "/account",
     icon: UserCircleIcon,
   },
 ];
@@ -49,47 +43,6 @@ const FooterNav = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", handleEvent);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleEvent = () => {
-    if (typeof window !== "undefined") {
-      window.requestAnimationFrame(showHideHeaderMenu);
-    }
-  };
-
-  const showHideHeaderMenu = () => {
-
-    const currentScrollPos = window.pageYOffset;
-    if (!containerRef.current) return;
-
-    // SHOW _ HIDE MAIN MENU
-    if (currentScrollPos > WIN_PREV_POSITION) {
-      if (
-        isInViewport(containerRef.current) &&
-        currentScrollPos - WIN_PREV_POSITION < 80
-      ) {
-        return;
-      }
-
-      containerRef.current.classList.add("FooterNav--hide");
-    } else {
-      if (
-        !isInViewport(containerRef.current) &&
-        WIN_PREV_POSITION - currentScrollPos < 80
-      ) {
-        return;
-      }
-      containerRef.current.classList.remove("FooterNav--hide");
-    }
-
-    WIN_PREV_POSITION = currentScrollPos;
-  };
 
   const renderItem = (item: NavItem, index: number) => {
     const isActive = pathname === item.link;

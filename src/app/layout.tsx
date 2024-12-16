@@ -4,14 +4,14 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import "@/styles/index.scss";
 import "@/fonts/line-awesome-1.3.0/css/line-awesome.min.css";
-import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer/Footer";
-import FooterNav from "@/components/Footer/FooterNav";
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
 import { OverlayProvider, useOverlay } from "@/context/OverlayContext";
 import LoadingOverlay from "@/shared/LoadingOverlay";
 import { NotificationProvider } from "@/context/NotificationContext";
 import { Provider } from "react-redux";
-import store from "@/redux/store";
+import { store, persistor } from "@/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
@@ -32,7 +32,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       "/booking/checking-ticket-info": "Checking Ticket Info",
       "/auth/signin": "Sign In",
       "/auth/signup": "Sign Up",
+      "/account": "My Account",
       "/not-found": "Page Not Found",
+      "/dashboard": "Dashboard",
+      "/dashboard/account": "My Account",
+      "/dashboard/signin": "Admin Sign",
+      "/dashboard/airports": "Airports",
+      "/dashboard/airplanes": "Airplanes",
+      "/dashboard/flights": "Flights",
+      "/dashboard/articles": "Articles",
+      "/dashboard/tickets": "Tickets",
+      "/dashboard/ticket-passengers": "Ticket Passengers",
     };
 
     const title = routeTitles[pathname] || "QAirline";
@@ -40,21 +50,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }, [pathname]);
 
   return (
-    <OverlayProvider>
-      <html lang="en" className={poppins.className}>
+    <html lang="en" className={poppins.className}>
+      <body className="bg-white text-base theme-cyan-blueGrey relative">
         <Provider store={store}>
-          <body className="bg-white text-base theme-cyan-blueGrey relative">
-            <NotificationProvider>
-              <Overlay />
-              <Header />
-              {children}
-              <FooterNav />
-              <Footer />
-            </NotificationProvider>
-          </body>
+          <PersistGate loading={<Overlay />} persistor={persistor}>
+            <OverlayProvider>
+              <NotificationProvider>
+                <Overlay />
+                <SiteHeader />
+                {children}
+                <SiteFooter />
+              </NotificationProvider>
+            </OverlayProvider>
+          </PersistGate>
         </Provider>
-      </html>
-    </OverlayProvider>
+      </body>
+    </html>
   );
 }
 

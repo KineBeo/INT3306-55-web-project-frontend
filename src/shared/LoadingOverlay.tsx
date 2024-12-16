@@ -4,7 +4,7 @@ const LoadingOverlay = () => {
   const dots = Array.from({ length: 12 }, (_, i) => i);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[9999]">
       {/* Rotating dots */}
       {dots.map((dot, index) => (
         <div

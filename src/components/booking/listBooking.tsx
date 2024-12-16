@@ -5,12 +5,13 @@ import FlightTicketCard from "@/components/FlightTicketCard";
 import sectionBackground from "@/images/section-background.png";
 import { useOverlay } from "@/context/OverlayContext";
 import Image from "next/image";
-import { FlightTicket } from "@/data/types";
+import { Ticket } from "@/data/ticket";
 import { useNotification } from "@/context/NotificationContext";
+import api from "@/services/apiClient";
 
 interface ListBookingProps {
-  flightTickets: FlightTicket[];
-  status?: "All" | "Confirmed" | "Pending" | "Cancelled";
+  flightTickets: Ticket[];
+  status?: "ALL" | "CONFIRMED" | "PENDING" | "CANCELLED";
   showFilter?: boolean;
   title?: string;
 }
@@ -19,24 +20,40 @@ const ListBooking = ({ flightTickets, status, showFilter = true, title = "My Boo
   const { setLoading } = useOverlay();
   const { showNotification } = useNotification();
 
-  const [filterStatus, setFilterStatus] = useState<"All" | "Confirmed" | "Pending" | "Cancelled">(status || "All");
+  const [filterStatus, setFilterStatus] = useState<"ALL" | "CONFIRMED" | "PENDING" | "CANCELLED">(status || "ALL");
 
   const filterFlightTickets =
-    filterStatus === "All" ? flightTickets : flightTickets.filter((ticket) => ticket.status === filterStatus);
+    filterStatus === "ALL" ? flightTickets : flightTickets.filter((ticket) => ticket.booking_status === filterStatus);
 
-  const handleCancel = async (ticket: FlightTicket) => {
+  const handleCancel = async (ticket: Ticket) => {
     // Call API to cancel ticket
-    flightTickets.find((t) => t.id === ticket.id)!.status = "Cancelled";
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    showNotification("Cancel ticket successfully");
+    try {
+      setLoading(true);
+      await api.patch(`/ticket/cancel/${ticket.id}`);
+      // update ticket status
+      ticket.booking_status = "CANCELLED";
+      showNotification("Cancel ticket successfully");
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+    } catch (error) {
+      showNotification("Failed to cancel ticket", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCheckIn = async (ticket: FlightTicket) => {
-    setLoading(true);
-    flightTickets.find((t) => t.id === ticket.id)!.status = "Confirmed";
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setLoading(false);
-    showNotification("Check-in successfully");
+  const handleCheckIn = async (ticket: Ticket) => {
+    try {
+      setLoading(true);
+      await api.patch(`/ticket/check-in/${ticket.id}`);
+      // update ticket status
+      ticket.booking_status = "CONFIRMED";
+      showNotification("Check-in successfully");
+      /* eslint-disable @typescript-eslint/no-unused-vars */
+    } catch (error) {
+      showNotification("Failed to check-in", "error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,32 +64,38 @@ const ListBooking = ({ flightTickets, status, showFilter = true, title = "My Boo
         {showFilter && (
           <div className="flex overflow-x-auto flex-nowrap space-x-2 md:space-x-4 w-full text-sm md:text-base">
             <button
-              onClick={() => setFilterStatus("All")}
+              onClick={() => setFilterStatus("ALL")}
               className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap ${
-                filterStatus === "All" ? "bg-cyan-600 text-white" : "bg-white text-neutral-600 border border-neutral-200"
+                filterStatus === "ALL"
+                  ? "bg-cyan-600 text-white"
+                  : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               All Tickets
             </button>
             <button
-              onClick={() => setFilterStatus("Confirmed")}
-              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap${
-                filterStatus === "Confirmed"
+              onClick={() => setFilterStatus("CONFIRMED")}
+              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap ${
+                filterStatus === "CONFIRMED"
                   ? "bg-green-600 text-white"
                   : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               Confirmed
             </button>
             <button
-              onClick={() => setFilterStatus("Pending")}
-              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap${
-                filterStatus === "Pending" ? "bg-[#ec9543] text-white" : "bg-white text-neutral-600 border border-neutral-200"
+              onClick={() => setFilterStatus("PENDING")}
+              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap ${
+                filterStatus === "PENDING"
+                  ? "bg-[#ec9543] text-white"
+                  : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               Pending
             </button>
             <button
-              onClick={() => setFilterStatus("Cancelled")}
-              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap${
-                filterStatus === "Cancelled" ? "bg-red-600 text-white" : "bg-white text-neutral-600 border border-neutral-200"
+              onClick={() => setFilterStatus("CANCELLED")}
+              className={`px-2 md:px-4 py-1 md:py-2 rounded-lg w-auto text-nowrap ${
+                filterStatus === "CANCELLED"
+                  ? "bg-red-600 text-white"
+                  : "bg-white text-neutral-600 border border-neutral-200"
               }`}>
               Cancelled
             </button>

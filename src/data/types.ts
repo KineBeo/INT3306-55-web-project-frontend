@@ -7,12 +7,6 @@ export interface CustomLink {
   targetBlank?: boolean;
 }
 
-export interface NewsData {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-}
 
 export interface Flight {
   id: number;
@@ -54,3 +48,4 @@ export interface FlightTicket {
   passengers: PassengerInfo[];
   status: "Pending" | "Confirmed" | "Cancelled";
 }
+

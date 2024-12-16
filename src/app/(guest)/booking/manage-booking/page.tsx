@@ -1,8 +1,11 @@
 import ManageBooking from "@/components/booking/manageBooking";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const ManageBookingPage = () => {
     return (
-        <ManageBooking />
+        <ProtectedRoute>
+            <ManageBooking />
+        </ProtectedRoute>
     );
 };
 

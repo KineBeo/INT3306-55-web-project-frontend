@@ -1,4 +1,5 @@
 import React from "react";
+import { BiCheck } from "react-icons/bi";
 
 interface StepperProps {
   steps?: { title: string; description: string }[];
@@ -47,7 +48,7 @@ const Stepper: React.FC<StepperProps> = ({ steps = defaultSteps, currentStep = 1
                     : "bg-gray-300 text-neutral-400"
                 } rounded-full`}>
                 {isCompleted ? (
-                  <span className="text-sm font-bold">✔</span>
+                  <BiCheck className="w-6 h-6 font-bold"/>
                 ) : (
                   <div className={`w-3 h-3 rounded-full ${isActive ? "bg-gray-800" : "bg-white"}`}></div>
                 )}

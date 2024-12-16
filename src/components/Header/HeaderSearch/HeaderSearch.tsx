@@ -3,14 +3,14 @@
 import React, { FC, useState, useEffect } from "react";
 import SearchForm from "./SearchForm";
 
-export type SearchTab = "Book" | "Manage Booking" | "Online Check-in";
+export type SearchTab = "Book" | "Manage Booking" | "Online Check-in" | "About";
 
 export interface HeaderSearchProps {
   className?: string;
   defaultTab?: SearchTab;
   onTabChange?: (tab: SearchTab) => void;
 }
-const TABS: SearchTab[] = ["Book", "Manage Booking", "Online Check-in"];
+const TABS: SearchTab[] = ["Book", "Manage Booking", "Online Check-in", "About"];
 
 const HeaderSearch: FC<HeaderSearchProps> = ({ className = "", defaultTab = "Book", onTabChange }) => {
   const [tabActive, setTabActive] = useState<SearchTab>(defaultTab);

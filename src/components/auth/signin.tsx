@@ -9,10 +9,17 @@ import bg1 from "@/images/bg-1.png";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
 import imgSignIn from "@/images/img-sign-in.png";
 import { useOverlay } from "@/context/OverlayContext";
+import { useNotification } from "@/context/NotificationContext";
+import { login } from "@/redux/auth/thunks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { GoEyeClosed, GoEye } from "react-icons/go";
 
 const SignIn = () => {
   const router = useRouter();
   const { setLoading } = useOverlay();
+  const { showNotification } = useNotification();
+  const dispatch = useAppDispatch();
+  const { loading, error } = useAppSelector((state) => state.auth);
 
   // State for form fields
   const [phone, setPhone] = useState("");
@@ -32,6 +39,7 @@ const SignIn = () => {
     switch (name) {
       case "phone":
         if (!value) error = "Phone number is required.";
+        else if (!/^[0-9]+$/.test(value)) error = "Phone number must contain only numbers.";
         break;
       case "password":
         if (!value) error = "Password is required.";
@@ -55,40 +63,43 @@ const SignIn = () => {
     validateInput(name, value);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const key = e.key;
-    if (
-      (e.ctrlKey && key === "a") ||
-      key === "Backspace" ||
-      key === "Delete" ||
-      key === "ArrowLeft" ||
-      key === "ArrowRight" ||
-      key === "ArrowUp" ||
-      key === "ArrowDown" ||
-      key === "Tab"
-    ) {
-      return;
-    }
-    if (!/[\d]/.test(key)) {
-      e.preventDefault();
-    }
-  };
-
   const [redirectPath, setRedirectPath] = useState("/");
   useEffect(() => {
-    const path = new URLSearchParams(window.location.search).get("redirect") || "/";
-    setRedirectPath(path);
+    const originalPath = window.location.href;
+
+    const redirectParamIndex = originalPath.indexOf("redirect=");
+    let redirectUrl = "";
+
+    if (redirectParamIndex !== -1) {
+      redirectUrl = originalPath.slice(redirectParamIndex + 9);
+      // console.log(redirectUrl);
+      setRedirectPath(redirectUrl);
+    }
   }, []);
+
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading, setLoading]);
 
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (isFormValid) {
-      setLoading(true);
-      // Proceed with form submission, such as fetching API
-      const token = "fake-token";
-      document.cookie = `token=${token}; path=/`;
-      // router.replace(redirectPath);
-      window.location.href = redirectPath;
+      // Call login function from AuthContext
+      try {
+        await dispatch(
+          login({
+            phone_number: phone,
+            password: password,
+            onSuccess() {
+              showNotification("Login successfully!");
+              console.log(redirectPath);
+              router.replace(redirectPath);
+            },
+          })
+        );
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -100,9 +111,12 @@ const SignIn = () => {
     }
   };
 
+  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
+  const toggleVisibility = () => setIsVisiblePassword(!isVisiblePassword);
+
   return (
     <>
-      <div className="relative flex flex-wrap min-h-screen items-center justify-center">
+      <div className="relative flex flex-wrap md:min-h-screen items-center justify-center">
         <Image
           src={bg1}
           alt="Background"
@@ -150,11 +164,10 @@ const SignIn = () => {
                     "group-data-[filled-within=true]:text-neutral-200 group-data-[filled-within=true]:ml-3 group-data-[filled-within=true]:text-xs",
                 }}
                 maxLength={10}
-                onKeyDown={handleKeyDown}
               />
 
               <Input
-                type="password"
+                type={isVisiblePassword ? "text" : "password"}
                 label="Password"
                 labelPlacement="outside"
                 value={password}
@@ -165,6 +178,19 @@ const SignIn = () => {
                 variant="bordered"
                 className="mb-4 no-focus"
                 name="password"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}>
+                    {isVisiblePassword ? (
+                      <GoEye className="text-xl text-neutral-400 pointer-events-none" />
+                    ) : (
+                      <GoEyeClosed className="text-xl text-neutral-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
                 classNames={{
                   inputWrapper: "py-6 bg-gray-100 group-data-[focus=true]:border-primary-800",
                   input: "border-0 focus:ring-0",
@@ -173,16 +199,30 @@ const SignIn = () => {
                 }}
               />
               <div className="flex justify-end">
-                <Link
-                  onClick={() => setLoading(true)}
-                  href="/auth/forgot-password"
-                  className="text-neutral-100 text-xs italic underline">
+                <Link href="#" className="text-neutral-100 text-xs italic underline">
                   Forget your password?
                 </Link>
               </div>
+              {error ? (
+                Array.isArray(error) ? (
+                  <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                    {error.map((err, index) => (
+                      <span key={index}>{err.charAt(0).toUpperCase() + err.slice(1)}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                    <span>{error.charAt(0).toUpperCase() + error.slice(1)}</span>
+                  </div>
+                )
+              ) : (
+                <></>
+              )}
               <Button
                 type="submit"
-                className={`w-full mt-6 rounded-full ${isFormValid ? "bg-primary-700 text-neutral-100" : "bg-gray-300"}`}>
+                className={`w-full mt-6 rounded-full ${
+                  isFormValid ? "bg-primary-700 text-neutral-100" : "bg-gray-300"
+                }`}>
                 Sign In
               </Button>
             </form>

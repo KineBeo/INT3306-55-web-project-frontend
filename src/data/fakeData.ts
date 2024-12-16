@@ -1,4 +1,4 @@
-import { FlightTicket, Flight, NewsData, Destination } from "@/data/types";
+import { FlightTicket, Flight, Destination } from "@/data/types";
 
 export const slides = [
     {
@@ -18,33 +18,6 @@ export const slides = [
       image: "https://images.unsplash.com/photo-1570710891163-6d3b5c47248b",
       title: "Luxury Travel",
       description: "Experience comfort at its finest",
-    },
-];
-  
-export const newsData: NewsData[] = [
-    {
-      id: 1,
-      title: "Holiday Special",
-      description: "Get 25% off on your next purchase",
-      image: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1",
-    },
-    {
-      id: 2,
-      title: "Weekend Deal",
-      description: "Save $50 on orders above $200",
-      image: "https://images.unsplash.com/photo-1556742111-a301076d9d18",
-    },
-    {
-      id: 3,
-      title: "Flash Sale",
-      description: "Buy one get one free",
-      image: "https://images.unsplash.com/photo-1556741533-6e6a62bd8b49",
-    },
-    {
-      id: 4,
-      title: "First Time User",
-      description: "Get 30% off on your first order",
-      image: "https://images.unsplash.com/photo-1556742044-3c52d6e88c62",
     },
 ];
   
@@ -229,4 +202,4 @@ export const flightData: Flight[] = [
       adults: 1,
       children: 0,
     },
-  ];
+];

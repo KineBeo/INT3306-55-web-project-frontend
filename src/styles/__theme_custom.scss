@@ -17,6 +17,24 @@
   box-shadow: none
 }
 
+.shine-effect-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  /* Bắt đầu từ bên trái */
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  z-index: 0;
+  transition: left 0.8s ease-in-out;
+}
+
+.shine-effect-container:hover::before {
+  left: 100%;
+  /* di chuyển từ trái qua phải */
+}
+
 #headlessui-portal-root {
   @apply text-neutral-900 text-base;
 }
@@ -143,6 +161,11 @@
   @apply rounded-full;
   box-shadow: rgba(17, 17, 26, 0.05) 0px 4px 16px,
     rgba(17, 17, 26, 0.05) 0px 8px 32px;
+}
+
+.nc-Input-inValid {
+  box-shadow: rgba(255, 24, 24, 0.1) 0px 4px 16px,
+      rgba(255, 26, 14, 0.1) 0px 8px 32px;
 }
 
 .nc-header-bg {

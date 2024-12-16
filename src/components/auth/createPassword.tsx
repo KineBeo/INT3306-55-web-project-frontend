@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import bg1 from "@/images/bg-1.png";
@@ -9,14 +9,48 @@ import { Button, Input } from "@nextui-org/react";
 import Link from "next/link";
 import { ArrowLeftCircleIcon } from "@heroicons/react/16/solid";
 import { useOverlay } from "@/context/OverlayContext";
+import { useNotification } from "@/context/NotificationContext";
+import { components } from "@/types/api";
+import api from "@/services/apiClient";
+import { GoEyeClosed, GoEye } from "react-icons/go";
+
+type CreateUserDto = components["schemas"]["CreateUserDto"];
 
 const CreatePassword = () => {
   const router = useRouter();
   const { setLoading } = useOverlay();
+  const { showNotification } = useNotification();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState({ password: "", confirmPassword: "" });
+  const [formData, setFormData] = useState<CreateUserDto>({
+    fullname: "",
+    email: "",
+    phone_number: "",
+    password_hash: "",
+    role: "USER",
+    birthday: "01/01/2000",
+    gender: "MALE",
+  });
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("basicInfo");
+    if (storedData) {
+      const data = JSON.parse(storedData);
+      setFormData({
+        fullname: data.firstName + " " + data.lastName,
+        email: data.email,
+        phone_number: data.phone,
+        password_hash: "",
+        role: "USER",
+        birthday: data.birthdate,
+        gender: data.gender,
+      });
+    } else {
+      router.push("/auth/signup");
+    }
+  }, [router]);
 
   const [requirements, setRequirements] = useState({
     length: false,
@@ -64,6 +98,8 @@ const CreatePassword = () => {
     return Object.values(requirements).every((req) => req) && password === confirmPassword && password.length > 0;
   };
 
+  const [registerError, setRegisterError] = useState<string | null>(null);
+
   const onFinish = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -71,11 +107,16 @@ const CreatePassword = () => {
     // call api here
     try {
       setLoading(true);
-      router.push("/");
-    } catch (error) {
-      console.error("API call failed", error);
+      await api.post("/auth/register", { ...formData, password_hash: password });
+      localStorage.removeItem("basicInfo");
+      setLoading(false);
+      showNotification("Account created successfully!");
+      router.push("/auth/signin");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setRegisterError(error.response.data.message);
     } finally {
-      setTimeout(() => setLoading(false), 500);
+      setLoading(false);
     }
   };
 
@@ -86,6 +127,9 @@ const CreatePassword = () => {
       router.push("/"); // Redirect đến Home nếu không thể back
     }
   };
+
+  const [isVisiblePassword, setIsVisiblePassword] = useState(false);
+  const [isVisibleConfirmPassword, setIsVisibleConfirmPassword] = useState(false);
 
   return (
     <div className="relative flex flex-wrap min-h-screen items-center justify-center">
@@ -98,7 +142,10 @@ const CreatePassword = () => {
       />
       <div className="flex flex-col md:flex-row w-full max-w-5xl md:shadow-2xl md:rounded-3xl bg-primary-500 overflow-hidden z-10">
         <div className="flex flex-1 flex-col justify-center p-6 md:p-10 text-white">
-          <ArrowLeftCircleIcon className="w-10 md:w-12 hover:text-neutral-200 cursor-pointer mb-5" onClick={handleBack} />
+          <ArrowLeftCircleIcon
+            className="w-10 md:w-12 hover:text-neutral-200 cursor-pointer mb-5"
+            onClick={handleBack}
+          />
           <h2 className="text-2xl md:text-4xl font-semibold mb-2 md:mb-4">Fly with us</h2>
           <p className="text-medium md:text-2xl opacity-80 font-light">Discover incredible journeys around the globe</p>
 
@@ -128,7 +175,7 @@ const CreatePassword = () => {
           <form onSubmit={onFinish} className="w-full">
             <div className="flex flex-col gap-4 mb-4">
               <Input
-                type="password"
+                type={isVisiblePassword ? "text" : "password"}
                 label="Password"
                 labelPlacement="outside"
                 value={password}
@@ -137,6 +184,19 @@ const CreatePassword = () => {
                 errorMessage={errors.password}
                 isRequired
                 variant="bordered"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setIsVisiblePassword(!isVisiblePassword)}>
+                    {isVisiblePassword ? (
+                      <GoEye className="text-xl text-neutral-400 pointer-events-none" />
+                    ) : (
+                      <GoEyeClosed className="text-xl text-neutral-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:
@@ -145,7 +205,7 @@ const CreatePassword = () => {
               />
 
               <Input
-                type="password"
+                type={isVisibleConfirmPassword ? "text" : "password"}
                 label="Confirm password"
                 labelPlacement="outside"
                 value={confirmPassword}
@@ -154,6 +214,19 @@ const CreatePassword = () => {
                 errorMessage={errors.confirmPassword}
                 isRequired
                 variant="bordered"
+                endContent={
+                  <button
+                    aria-label="toggle password visibility"
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={() => setIsVisibleConfirmPassword(!isVisibleConfirmPassword)}>
+                    {isVisiblePassword ? (
+                      <GoEye className="text-xl text-neutral-400 pointer-events-none" />
+                    ) : (
+                      <GoEyeClosed className="text-xl text-neutral-400 pointer-events-none" />
+                    )}
+                  </button>
+                }
                 classNames={{
                   input: "border-0 focus:ring-0",
                   label:
@@ -179,6 +252,21 @@ const CreatePassword = () => {
                 Special character
               </li>
             </ul>
+            {registerError ? (
+              Array.isArray(registerError) ? (
+                <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                  {registerError.map((err, index) => (
+                    <span key={index}>{err.charAt(0).toUpperCase() + err.slice(1)}</span>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-danger-500 text-sm mt-3 flex flex-col">
+                  <span>{registerError.charAt(0).toUpperCase() + registerError.slice(1)}</span>
+                </div>
+              )
+            ) : (
+              <></>
+            )}
 
             <Button
               type="submit"

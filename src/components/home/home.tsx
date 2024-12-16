@@ -6,17 +6,24 @@ import SearchForm from "@/components/SearchForm";
 import sectionBackground from "@/images/section-background.png";
 import becomeAnAuthorImg from "@/images/BecomeAnAuthorImg.png";
 import Image from "next/image";
-import NewsCard from "@/components/NewsCard";
+import ArticleCard from "@/components/ArticleCard";
 import DestinationCard from "@/components/DestinationCard";
-import { clearFlight } from "@/redux/flightSlice";
+import { clearTicket, clearPassengers, clearTotalPrice } from "@/redux/ticket/ticketSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { usePathname } from "next/navigation";
-import { slides, newsData, popularDestinations } from "@/data/fakeData";
+import { slides, popularDestinations } from "@/data/fakeData";
+import { Article } from "@/data/article";
 import eventBus from "@/utils/eventBus";
+import { formatDateToDDMMYYYY } from "@/utils/formatDate";
+import { useOverlay } from "@/context/OverlayContext";
+import api from "@/services/apiClient";
+import LoadingButton from "@/shared/LoadingButton";
 
 const Home = () => {
+  const { setLoading } = useOverlay();
   const [activeSlide, setActiveSlide] = useState(0);
   const searchFormRef = useRef<HTMLDivElement>(null);
+  const articlesRef = useRef<HTMLHeadingElement>(null);
   const dispatch = useAppDispatch();
   const currentPath = usePathname();
 
@@ -24,7 +31,9 @@ const Home = () => {
     // Kiểm tra khi route đã thay đổi
     if (currentPath === "/") {
       // Dispatch action clearFlight khi navigation hoàn tất
-      dispatch(clearFlight());
+      dispatch(clearTicket());
+      dispatch(clearPassengers());
+      dispatch(clearTotalPrice());
     }
   }, [currentPath, dispatch]);
 
@@ -35,29 +44,46 @@ const Home = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Hàm cuộn đến SearchForm khi nút Book Now được nhấn
-  const handleBookNow = () => {
-    if (searchFormRef.current) {
-      searchFormRef.current.scrollIntoView({
+  const [articleList, setArticleList] = useState<Article[]>([]);
+  const [visibleCount, setVisibleCount] = useState(4);
+
+  useEffect(() => {
+    setLoading(true);
+    api.get("/article/published").then((response) => {
+      const articles = response.data.map((article: Article) => ({
+        ...article,
+        created_at: formatDateToDDMMYYYY(article.created_at),
+      }));
+      setArticleList(articles.sort((a: Article, b: Article) => a.id - b.id));
+      setLoading(false);
+    });
+  }, [setLoading, setArticleList]);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleScrollIntoView = (ref: any) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({
         behavior: "smooth",
         block: "center",
       });
     }
-    eventBus.emit("bookNowClicked");
   };
 
-  const [newsLoading, setNewsLoading] = useState(false);
+  const handleShowMore = () => {
+    setVisibleCount((prevCount) => {
+      if (prevCount >= articleList.length) {
+        return 4;
+      }
+      return prevCount + 4;
+    });
 
-  const handleRedeem = async (id: number) => {
-    setNewsLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log(`News ${id} redeemed`);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setNewsLoading(false);
-    }
+    handleScrollIntoView(articlesRef);
+  };
+
+  // Hàm cuộn đến SearchForm khi nút Book Now được nhấn
+  const handleBookNow = () => {
+    handleScrollIntoView(searchFormRef);
+    eventBus.emit("bookNowClicked");
   };
 
   return (
@@ -110,8 +136,10 @@ const Home = () => {
           <div
             ref={searchFormRef}
             className="w-[70%] rounded-[2.5rem] shadow-xl px-10 py-8 bg-white mt-4 hidden lg:block border-small">
-            <h2 className="text-center text-3xl font-semibold mb-6 text-neutral-900">
-              Book Your Flight Ticket with Ease!
+            <h2
+              className="text-center text-3xl font-semibold mb-6 text-neutral-900"
+              style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.2)" }}>
+              Book Your Flight Tickets with Ease!
             </h2>
             <SearchForm />
           </div>
@@ -130,19 +158,31 @@ const Home = () => {
                 </div>
               ))}
             </div>
-            <h2 className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20 mt-6">News</h2>
+            <h2
+              ref={articlesRef}
+              tabIndex={-1}
+              className="text-xl md:text-4xl font-bold text-neutral-900 md:px-12 lg:px-20 mt-6">
+              Articles
+            </h2>
             {/* Cards */}
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
-              {newsData.map((news) => (
-                <div key={news.id}>
-                  <NewsCard key={news.id} {...news} loading={newsLoading} handleRedeem={handleRedeem} />
+              {articleList.slice(0, visibleCount).map((article) => (
+                <div key={article.id}>
+                  <ArticleCard article={article} />
                 </div>
               ))}
             </div>
             <div className="flex justify-center">
-              <button className="bg-gradient-to-r from-primary-6000 to-primary-500 text-white text-sm md:text-base px-8 py-3 rounded-full font-semibold hover:bg-gradient-to-r hover:from-primary-700 hover:to-primary-6000 hover:shadow-lg">
-                Show me more
-              </button>
+              {articleList.length > 0 && (
+                <LoadingButton
+                  onClick={handleShowMore}
+                  text={visibleCount < articleList.length ? " -- Show me more --" : "-- Hide --"}
+                  classNames={{
+                    base: "flex justify-center item-center bg-white text-neutral-600 text-sm md:text-base px-8 py-3 rounded-lg font-semibold hover:bg-neutral-50 hover:shadow-xl border-3 border-primary-500",
+                    loading: "bg-white",
+                  }}
+                />
+              )}
             </div>
           </div>
           <div className="relative flex justify-between items-center rounded-3xl gap-6 md:px-12 lg:px-20 px-6 md:py-12 py-10 bg-gray-100 w-full">
