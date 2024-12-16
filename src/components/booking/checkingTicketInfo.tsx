@@ -158,24 +158,26 @@ const CheckingTicketInfo = () => {
         const infantPassengers = passengers.slice(adults + children, adults + children + infants);
 
         let adult_id = 0;
-        adultPassengers.forEach(async (passenger) => {
+        for (const passenger of adultPassengers) {
           const response = await api.post("/ticket-passenger", passenger);
           adult_id = response.data.id;
-        });
+        }
 
-        childrenPassengers.forEach(async (passenger) => {
+        for (const passenger of childrenPassengers) {
           await api.post("/ticket-passenger", { ...passenger, associated_adult_id: adult_id });
-        });
+        }
 
-        infantPassengers.forEach(async (passenger) => {
+        for (const passenger of infantPassengers) {
           await api.post("/ticket-passenger", { ...passenger, associated_adult_id: adult_id });
-        });
+        }
 
-        tickets.forEach(async (ticket) => {
+        for (const ticket of tickets) {
           await api.patch("/ticket/book/" + ticket.id);
-        });
+        }
         showNotification("Booking successfully");
-        router.replace("/");
+        setTimeout(() => {
+          router.replace("/");
+        }, 500);
         /* eslint-disable @typescript-eslint/no-explicit-any */
       } catch (err: any) {
         showNotification(err.response.data.message, "error");
