@@ -94,7 +94,7 @@ const FindFlight = () => {
       }
     };
     fetchData();
-  }, [booking_class, setLoading, totalPassengers]);
+  }, [booking_class, setLoading, totalPassengers, ticket_type, departure_airport_code, arrival_airport_code, outbound_day, return_day]);
 
   const [priceRange, setPriceRange] = useState<number>(5000000);
   const [sortOrder, setSortOrder] = useState<string>("asc");
