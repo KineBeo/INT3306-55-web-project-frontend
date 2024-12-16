@@ -10,6 +10,7 @@ import HeaderSearch from "./HeaderSearch/HeaderSearch";
 import { useOverlay } from "@/context/OverlayContext";
 import { useRouter, usePathname } from "next/navigation";
 import { FaPlaneDeparture } from "react-icons/fa";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TiTicket } from "react-icons/ti";
 import { GoChecklist } from "react-icons/go";
 import HeaderSearch2Mobile from "./HeaderSearch/(Mobile)/HeaderSearch2Mobile";
@@ -42,6 +43,9 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
         break;
       case "/booking/online-check-in":
         setCurrentTab("Online Check-in");
+        break;
+      case "/about":
+        setCurrentTab("About");
         break;
       default:
         setCurrentTab("Book");
@@ -77,16 +81,18 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
   };
 
   const [showHeaderSearch, setShowHeaderSearch] = useState<boolean>(false);
-  const [currentTab, setCurrentTab] = useState<"Book" | "Manage Booking" | "Online Check-in">("Book");
-  const handleTabChange = (tab: "Book" | "Manage Booking" | "Online Check-in") => {
+  const [currentTab, setCurrentTab] = useState<"Book" | "Manage Booking" | "Online Check-in" | "About">("Book");
+  const handleTabChange = (tab: "Book" | "Manage Booking" | "Online Check-in" | "About") => {
     setShowHeaderSearch(false);
     setCurrentTab(tab);
     if (tab === "Book") {
       router.push("/");
     } else if (tab === "Manage Booking") {
       router.push("/booking/manage-booking");
-    } else {
+    } else if (tab === "Online Check-in") {
       router.push("/booking/online-check-in");
+    } else {
+      router.push("/about");
     }
   };
 
@@ -157,6 +163,19 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
               Online Check-in
             </span>
           </div>
+
+          <span className="h-5 w-[1px] bg-neutral-300"></span>
+
+          <div
+            className={`flex items-center cursor-pointer ${currentTab === "About" ? "text-primary-700" : ""}`}
+            onClick={() => setShowHeaderSearch(false)}>
+            <IoMdInformationCircleOutline className="w-5 h-5 ml-4" />
+            <span
+              onClick={() => router.push("/about")}
+              className="block pl-2 pr-4 cursor-pointer py-3">
+              About
+            </span>
+          </div>
         </div>
 
         <div className="flex-shrink-0 ml-auto pr-2 cursor-pointer" onClick={() => setShowHeaderSearch(true)}>
@@ -187,11 +206,11 @@ const Header: FC<HeaderProps> = ({ className = "" }) => {
         }`}></div>
       <header
         ref={headerInnerRef}
-        className={`sticky top-0 z-[9999] shadow-md border-b border-neutral-200 nc-header-bg ${className}`}>
+        className={`sticky top-0 z-[9000] shadow-md border-b border-neutral-200 nc-header-bg ${className}`}>
         <div
           className={`bg-white absolute h-full inset-x-0 top-0 transition-transform will-change-[transform,opacity]
           ${showHeaderSearch ? "duration-75 scale-y-[4.4]" : "bg-opacity-40"}`}></div>
-        <div className="relative px-4 lg:container h-[88px] flex ">
+        <div className="relative px-3 lg:container h-[88px] flex ">
           <div className="flex-1 flex justify-between">
             <div className="relative z-10 hidden md:flex flex-1 items-center">
               <Logo className="w-16" />

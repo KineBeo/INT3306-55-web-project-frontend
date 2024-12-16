@@ -64,7 +64,7 @@ const AdminHeader = () => {
               </Link>
             )}
 
-            <Logo className="w-12 hidden md:block" href="/dashboard" />
+            <Logo className="w-12 hidden md:block" href="/" />
           </div>
         </div>
       </header>

@@ -1,43 +1,126 @@
 "use client";
 
 import SearchForm from "@/components/SearchForm";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PriceRangeFilter from "@/components/PriceRangeFilter";
 import FlightCard from "@/components/FlightCard";
 import SortButton from "@/components/SortButton";
 import sectionBackground from "@/images/section-background.png";
 import Stepper from "@/components/Stepper";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useOverlay } from "@/context/OverlayContext";
 import Image from "next/image";
+import api from "@/services/apiClient";
+import { Ticket } from "@/data/ticket";
 import { useAppDispatch } from "@/redux/hooks";
-import { setFlight } from "@/redux/flightSlice";
-import { Flight } from "@/data/types";
-import { flightData } from "@/data/fakeData";
+import { setTicket, setPassengers, setTotalPrice } from "@/redux/ticket/ticketSlice";
+
+type Groups = {
+  [key: string]: Ticket[];
+};
 
 const FindFlight = () => {
+  const dispatch = useAppDispatch();
   const router = useRouter();
-  const [priceRange, setPriceRange] = useState<number>(5000000);
-  const [sortOrder, setSortOrder] = useState<string>("asc");
+  const searchParams = useSearchParams();
   const { setLoading } = useOverlay();
 
-  const sortedFlights = flightData
-    .filter((flight) => flight.price <= priceRange)
-    .sort((a, b) => (sortOrder === "asc" ? a.price - b.price : b.price - a.price));
+  // params: departure, arrival, date, class, adults, children, infants
+  const ticket_type = searchParams.get("ticket_type");
+  const booking_class = searchParams.get("booking_class");
+  const departure_airport_code = searchParams.get("departure_airport_code");
+  const arrival_airport_code = searchParams.get("arrival_airport_code");
+  const outbound_day = searchParams.get("outbound_day");
+  const return_day = searchParams.get("return_day");
+  const adults = parseInt(searchParams.get("adults") || "0");
+  const children = parseInt(searchParams.get("children") || "0");
+  const infants = parseInt(searchParams.get("infants") || "0");
+  const totalPassengers = adults + children + infants;
+  // ----------------------------
+
+  const [ticketSearch, setTicketSearch] = useState<Groups>({});
+
+  // call api to get
+  useEffect(() => {
+    const fetchData = async () => {
+      const params = return_day
+        ? {
+            ticket_type: ticket_type,
+            departure_airport_code: departure_airport_code,
+            arrival_airport_code: arrival_airport_code,
+            outbound_day: outbound_day,
+            return_day: return_day,
+          }
+        : {
+            ticket_type: ticket_type,
+            departure_airport_code: departure_airport_code,
+            arrival_airport_code: arrival_airport_code,
+            outbound_day: outbound_day,
+          };
+      try {
+        setLoading(true);
+        const response = await api.get("/ticket/search", {
+          params: params,
+        });
+        const data: Ticket[] = response.data;
+        const filteredData = data.filter((ticket) => ticket.booking_class === booking_class);
+        const groupsData: Groups = {};
+        filteredData.forEach((ticket) => {
+          const key = ticket.returnFlight
+            ? `${ticket.outboundFlight.flight_number}-${ticket.returnFlight.flight_number}`
+            : `${ticket.outboundFlight.flight_number}-null`;
+
+          if (!groupsData[key]) {
+            groupsData[key] = [];
+          }
+
+          groupsData[key].push(ticket);
+        });
+
+        const finalData = Object.entries(groupsData) // Chuyển đối tượng groups thành mảng các entry
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .filter(([key, tickets]) => tickets.length >= totalPassengers) // Lọc những entry có số lượng tickets lớn hơn total Pass
+          .reduce((acc, [key, tickets]) => {
+            acc[key] = tickets.slice(0, totalPassengers);
+            return acc;
+          }, {} as Groups);
+
+        console.log(finalData);
+        setTicketSearch(finalData);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [booking_class, setLoading, totalPassengers]);
+
+  const [priceRange, setPriceRange] = useState<number>(5000000);
+  const [sortOrder, setSortOrder] = useState<string>("asc");
+
+  const calculateTotalPrice = (tickets: Ticket[]): number => {
+    return tickets.reduce((total, ticket) => total + parseFloat(ticket.total_price), 0);
+  };
+
+  const sortedTickets = Object.entries(ticketSearch)
+    .map(([key, tickets]) => ({
+      key,
+      tickets,
+      totalPrice: calculateTotalPrice(tickets), // Tính tổng giá cho mỗi group
+    }))
+    .sort((a, b) => (sortOrder === "asc" ? a.totalPrice - b.totalPrice : b.totalPrice - a.totalPrice)); // Sắp xếp theo giá trị tổng
 
   const searchFormRef = useRef<HTMLDivElement>(null);
 
-  const dispatch = useAppDispatch();
-
-  const handleBookNow = async (flight: Flight) => {
+  const handleBookNow = async (tickets: Ticket[]) => {
     setLoading(true);
 
-    // Lưu flight vào Redux
-    dispatch(setFlight(flight));
-
+    dispatch(setTicket(tickets));
+    dispatch(setPassengers({ adults, children, infants }));
+    dispatch(setTotalPrice(calculateTotalPrice(tickets)));
     // Chuyển trang
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    router.push(`/booking/checking-ticket-info/${flight.id}`);
+    router.push(`/booking/checking-ticket-info/`);
   };
 
   return (
@@ -78,9 +161,16 @@ const FindFlight = () => {
           <div className="absolute inset-0">
             <Image alt="sectionBackground" src={sectionBackground} fill className="object-cover" />
           </div>
-          {sortedFlights.map((flight, index) => (
+          {sortedTickets.map(({ tickets, totalPrice }, index) => (
             <div className="z-10" key={index}>
-              <FlightCard key={flight.id} flight={flight} onClick={() => handleBookNow(flight)} />
+              <FlightCard
+                key={index}
+                tickets={tickets}
+                totalPrice={totalPrice}
+                adult={adults}
+                child={children}
+                infant={infants}
+                onClick={() => handleBookNow(tickets)}></FlightCard>
             </div>
           ))}
         </div>

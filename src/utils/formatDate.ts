@@ -16,6 +16,15 @@ export const formatDateToYYYYMMDD = (dateString: string) => {
   return `${year}-${month}-${day}`;
 }
 
+export const formatDateToYYYYMMDD2 = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear().toString();
+
+  return `${year}/${month}/${day}`;
+}
+
 export const formatToDdMmYyyyHhMm = (dateStr: string) => {
   const date = new Date(dateStr);
 
@@ -43,3 +52,16 @@ export const formatToYyyyMmDdTmm = (dateStr: string) => {
   // Trả về định dạng yyyy-mm-ddThh:mm
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
+
+
+export const formatTime = (isoString: string) => {
+  const date = new Date(isoString);
+  
+  let hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const amPm = hours >= 12 ? 'PM' : 'AM';
+  
+  hours = hours % 12 || 12; // Chuyển sang dạng 12 giờ, 0 giờ đổi thành 12
+  
+  return `${hours}:${minutes} ${amPm}`;
+};

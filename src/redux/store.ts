@@ -2,9 +2,10 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./auth/authSlice";
-import flightReducer from "./flightSlice";
+import flightReducer from "./flight/flightSlice";
 import airportReducer from "./airport/airportSlice";
 import airplaneReducer from "./airplane/airplaneSlice";
+import ticketReducer from "./ticket/ticketSlice";
 
 const persistConfig = {
   key: "root",
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   flight: flightReducer,
   airport: airportReducer,
   airplane: airplaneReducer,
+  tickets: ticketReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

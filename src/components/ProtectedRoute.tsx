@@ -2,12 +2,12 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { RootState } from "@/redux/store";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = window.location.href;
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {

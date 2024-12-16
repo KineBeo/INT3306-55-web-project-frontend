@@ -32,6 +32,7 @@ const LocationInput: FC<LocationInputProps> = ({
   const [value, setValue] = useState("");
   const [showPopover, setShowPopover] = useState(autoFocus);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
+  const [isInvalid, setIsInvalid] = useState(false);
 
   useEffect(() => {
     setShowPopover(autoFocus);
@@ -63,6 +64,7 @@ const LocationInput: FC<LocationInputProps> = ({
 
     setShowPopover(false);
     setHighlightedIndex(null);
+    setIsInvalid(false);
   };
 
   const filteredAirports = airports.filter((airport) => {
@@ -150,13 +152,18 @@ const LocationInput: FC<LocationInputProps> = ({
         onKeyDown={(e) => e.key === "Tab" && setShowPopover(false)}
         className={`flex flex-1 relative z-10 [ nc-Header-field-padding--small ] flex-shrink-0 items-center space-x-3 cursor-pointer focus:outline-none text-left rounded-full border-1 lg:border-0 border-neutral-200 ${
           showPopover ? "nc-Header-field-focused--2" : ""
-        }`}>
+        } ${isInvalid ? "nc-Input-inValid" : ""}`}>
         <div className="flex-1 flex items-center">
           <div className="flex-1 flex lg:flex-col">
             <input
               className={`flex-1 lg:order-0 order-1 text-right lg:text-left w-full bg-transparent border-none focus:ring-0 p-0 focus:outline-none focus:placeholder-neutral-400 text-xs md:text-base font-semibold placeholder-neutral-800 truncate`}
               placeholder={placeHolder}
               value={value}
+              onInvalid={(e) => {
+                e.preventDefault();
+                setIsInvalid(true);
+              }}
+              required
               autoFocus={showPopover}
               onChange={(e) => setValue(e.currentTarget.value)}
               onKeyDown={handleKeyDown}

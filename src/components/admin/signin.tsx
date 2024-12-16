@@ -78,8 +78,16 @@ const SignIn = () => {
 
   const [redirectPath, setRedirectPath] = useState("/");
   useEffect(() => {
-    const path = new URLSearchParams(window.location.search).get("redirect") || "/";
-    setRedirectPath(path);
+    const originalPath = window.location.href;
+
+    const redirectParamIndex = originalPath.indexOf("redirect=");
+    let redirectUrl = "";
+
+    if (redirectParamIndex !== -1) {
+      redirectUrl = originalPath.slice(redirectParamIndex + 9);
+      // console.log(redirectUrl);
+      setRedirectPath(redirectUrl);
+    }
   }, []);
 
   useEffect(() => {
@@ -100,7 +108,7 @@ const SignIn = () => {
               if (redirectPath === "/") {
                 router.push("/dashboard");
               } else {
-                router.push(redirectPath);
+                router.replace(redirectPath);
               }
             },
           })

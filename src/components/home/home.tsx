@@ -8,7 +8,7 @@ import becomeAnAuthorImg from "@/images/BecomeAnAuthorImg.png";
 import Image from "next/image";
 import ArticleCard from "@/components/ArticleCard";
 import DestinationCard from "@/components/DestinationCard";
-import { clearFlight } from "@/redux/flightSlice";
+import { clearTicket, clearPassengers, clearTotalPrice } from "@/redux/ticket/ticketSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { usePathname } from "next/navigation";
 import { slides, popularDestinations } from "@/data/fakeData";
@@ -31,7 +31,9 @@ const Home = () => {
     // Kiểm tra khi route đã thay đổi
     if (currentPath === "/") {
       // Dispatch action clearFlight khi navigation hoàn tất
-      dispatch(clearFlight());
+      dispatch(clearTicket());
+      dispatch(clearPassengers());
+      dispatch(clearTotalPrice());
     }
   }, [currentPath, dispatch]);
 

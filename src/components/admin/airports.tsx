@@ -82,10 +82,9 @@ const Airports = () => {
       setLoading(true);
       api
         .patch(`/airport/${editNumber}`, editingAirport)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .then((_) => {
+        .then((res) => {
           const updateAirports = airportList.map((airport) =>
-            airport.id === editNumber ? { ...airport, ...editingAirport } : airport
+            airport.id === editNumber ? res.data : airport
           );
           setAirportList(updateAirports);
           resetForm();
@@ -189,7 +188,7 @@ const Airports = () => {
                     Actions
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    ID
+                    No
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Code
@@ -209,7 +208,7 @@ const Airports = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-neutral-200">
-                {filteredAirports.map((airport) => (
+                {filteredAirports.map((airport, index) => (
                   <tr key={airport.id}>
                     <td className="px-4 py-3 whitespace-nowrap xl:hidden">
                       <div className="flex space-x-2 justify-center">
@@ -228,7 +227,7 @@ const Airports = () => {
                         </button>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{airport.id}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{index + 1}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{airport.code}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.name}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{airport.city}</td>
@@ -362,17 +361,6 @@ const Airports = () => {
           </ModalHeader>
           <ModalBody>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-neutral-700 mb-2">ID</label>
-                <input
-                  type="text"
-                  name="id"
-                  value={editingAirport ? editNumber : "Auto-generated"}
-                  disabled
-                  className="w-full p-2 border rounded-lg text-sm md:text-base text-neutral-400 cursor-not-allowed"
-                />
-              </div>
-
               <div className="mb-4">
                 <label className="block text-neutral-700 mb-2">Code</label>
                 <input

@@ -642,16 +642,6 @@
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BookTicketDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Book a ticket operation completed successfully."
@@ -1624,11 +1614,6 @@
             "description": "Booking class",
             "example": "ECONOMY"
           },
-          "booking_seat_code": {
-            "type": "string",
-            "description": "Booking seat code",
-            "example": "A1"
-          },
           "description": {
             "type": "string",
             "description": "Description",
@@ -1662,30 +1647,10 @@
           "booking_date",
           "ticket_type",
           "booking_class",
-          "booking_seat_code",
           "description",
           "total_passengers",
           "base_price",
           "booking_status"
-        ]
-      },
-      "BookTicketDto": {
-        "type": "object",
-        "properties": {
-          "booking_seat_code": {
-            "type": "string",
-            "description": "Seat code for the booking",
-            "example": "A12-B15"
-          },
-          "total_passengers": {
-            "type": "number",
-            "description": "Number of passengers",
-            "example": 2
-          }
-        },
-        "required": [
-          "booking_seat_code",
-          "total_passengers"
         ]
       },
       "UpdateTicketDto": {
@@ -1731,11 +1696,6 @@
             "description": "Booking class",
             "example": "ECONOMY"
           },
-          "booking_seat_code": {
-            "type": "string",
-            "description": "Booking seat code",
-            "example": "A1"
-          },
           "description": {
             "type": "string",
             "description": "Description",
@@ -1769,7 +1729,6 @@
           "booking_date",
           "ticket_type",
           "booking_class",
-          "booking_seat_code",
           "description",
           "total_passengers",
           "base_price",
@@ -1906,8 +1865,8 @@
           },
           "flight_number": {
             "type": "string",
-            "description": "Departure airport code",
-            "example": "HAN"
+            "description": "So hieu chuyen bay",
+            "example": "VN245"
           },
           "base_price": {
             "type": "string",

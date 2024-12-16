@@ -65,8 +65,16 @@ const SignIn = () => {
 
   const [redirectPath, setRedirectPath] = useState("/");
   useEffect(() => {
-    const path = new URLSearchParams(window.location.search).get("redirect") || "/";
-    setRedirectPath(path);
+    const originalPath = window.location.href;
+
+    const redirectParamIndex = originalPath.indexOf("redirect=");
+    let redirectUrl = "";
+
+    if (redirectParamIndex !== -1) {
+      redirectUrl = originalPath.slice(redirectParamIndex + 9);
+      // console.log(redirectUrl);
+      setRedirectPath(redirectUrl);
+    }
   }, []);
 
   useEffect(() => {
@@ -84,7 +92,8 @@ const SignIn = () => {
             password: password,
             onSuccess() {
               showNotification("Login successfully!");
-              router.push(redirectPath);
+              console.log(redirectPath);
+              router.replace(redirectPath);
             },
           })
         );

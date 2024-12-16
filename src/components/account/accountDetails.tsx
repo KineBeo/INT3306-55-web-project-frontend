@@ -6,6 +6,7 @@ import { UserInfo } from "@/data/auth";
 import { useAppSelector } from "@/redux/hooks";
 import api from "@/services/apiClient";
 import { formatDateToDDMMYYYY } from "@/utils/formatDate";
+import Link from "next/link";
 
 const AccountDetails = () => {
   const { user } = useAppSelector((state) => state.auth);
@@ -91,6 +92,10 @@ const AccountDetails = () => {
                         <p className="mt-1 text-sm text-neutral-500">{userData.gender}</p>
                       </div>
                       {/* End Gender Field */}
+
+                      <Link href={"/dashboard"} className={`${userData.role === "ADMIN" ? "relative" : "hidden"} text-sm`}>
+                        <button className="bg-primary-500 text-white rounded-xl p-3 hover:bg-primary-6000">Admin Dashboard</button>
+                      </Link>
                     </div>
                   </form>
                 </div>

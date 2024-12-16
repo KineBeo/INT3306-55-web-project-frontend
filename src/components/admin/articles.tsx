@@ -84,10 +84,9 @@ const Articles = () => {
       setLoading(true);
       api
         .patch(`/article/${editNumber}`, editingArticle)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .then((_) => {
+        .then((res) => {
           const updatedArticles = articleList.map((article) =>
-            article.id === editNumber ? { ...article, ...editingArticle } : article
+            article.id === editNumber ? res.data : article
           );
           setArticleList(updatedArticles);
           setLoading(false);
@@ -193,7 +192,7 @@ const Articles = () => {
                     Actions
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    ID
+                    No
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Title
@@ -219,7 +218,7 @@ const Articles = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-neutral-200">
-                {filteredArticles.map((article) => (
+                {filteredArticles.map((article, index) => (
                   <tr key={article.id}>
                     <td className="px-4 py-3 whitespace-nowrap xl:hidden">
                       <div className="flex space-x-2 justify-center">
@@ -238,7 +237,7 @@ const Articles = () => {
                         </button>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{article.id}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{index + 1}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">{article.title}</td>
                     <td className="px-4 py-3">
                       <div className="truncate max-w-[250px] text-sm md:text-base">{article.description}</div>
@@ -387,17 +386,6 @@ const Articles = () => {
           </ModalHeader>
           <ModalBody>
             <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-neutral-700 mb-2">ID</label>
-                <input
-                  type="text"
-                  name="id"
-                  value={editingArticle ? editNumber : "Auto-generated"}
-                  disabled
-                  className="w-full p-2 border rounded-lg text-sm md:text-base text-neutral-400 cursor-not-allowed"
-                />
-              </div>
-
               <div className="mb-4">
                 <label className="block text-neutral-700 mb-2">Title</label>
                 <input

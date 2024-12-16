@@ -8,6 +8,7 @@ export interface LocationInputProps {
   onInputDone?: (value: string) => void;
   dataList?: string[];
   required?: boolean;
+  disabled?: boolean;
   placeHolder?: string;
   defaultValue?: string;
   name?: string;
@@ -21,6 +22,7 @@ export interface LocationInputProps {
 const SuggestionInput: FC<LocationInputProps> = ({
   autoFocus = false,
   required = false,
+  disabled = false,
   onInputDone,
   dataList = [],
   defaultValue = "",
@@ -140,10 +142,11 @@ const SuggestionInput: FC<LocationInputProps> = ({
           showPopover ? "nc-Header-field-focused--2" : ""
         }`}>
         <input
-          className={`${classNames.input}`}
+          className={`${classNames.input} ${disabled ? "cursor-not-allowed text-neutral-400" : ""}`}
           placeholder={placeHolder}
           name={name}
           required={required}
+          disabled={disabled}
           value={value || ""}
           autoFocus={showPopover}
           onChange={(e) => setValue(e.currentTarget.value)}

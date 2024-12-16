@@ -596,18 +596,18 @@ export interface components {
              * @description Return flight ID
              * @example 1
              */
-            return_flight_id: number;
+            return_flight_id: number | null;
             /**
              * @description User ID
              * @example 1
              */
-            user_id: number;
+            user_id: number | null;
             /**
              * Format: date-time
              * @description Booking date
              * @example 2021-12-31T23:59:59Z
              */
-            booking_date: string;
+            booking_date: string | null;
             /**
              * @description Ticket type
              * @example ONE_WAY
@@ -620,11 +620,6 @@ export interface components {
              * @enum {string}
              */
             booking_class: "ECONOMY" | "BUSINESS" | "FIRST_CLASS";
-            /**
-             * @description Booking seat code
-             * @example A1
-             */
-            booking_seat_code: string;
             /**
              * @description Description
              * @example This is a ticket
@@ -647,18 +642,6 @@ export interface components {
              */
             booking_status: "PENDING" | "CONFIRMED" | "CANCELLED";
         };
-        BookTicketDto: {
-            /**
-             * @description Seat code for the booking
-             * @example A12-B15
-             */
-            booking_seat_code: string;
-            /**
-             * @description Number of passengers
-             * @example 2
-             */
-            total_passengers: number;
-        };
         UpdateTicketDto: {
             /**
              * @description Outbound flight ID
@@ -669,18 +652,18 @@ export interface components {
              * @description Return flight ID
              * @example 1
              */
-            return_flight_id: number;
+            return_flight_id: number | null;
             /**
              * @description User ID
              * @example 1
              */
-            user_id: number;
+            user_id: number | null;
             /**
              * Format: date-time
              * @description Booking date
              * @example 2021-12-31T23:59:59Z
              */
-            booking_date: string;
+            booking_date: string | null;
             /**
              * @description Ticket type
              * @example ONE_WAY
@@ -693,11 +676,6 @@ export interface components {
              * @enum {string}
              */
             booking_class: "ECONOMY" | "BUSINESS" | "FIRST_CLASS";
-            /**
-             * @description Booking seat code
-             * @example A1
-             */
-            booking_seat_code: string;
             /**
              * @description Description
              * @example This is a ticket
@@ -815,8 +793,8 @@ export interface components {
              */
             airplane_id: number;
             /**
-             * @description Departure airport code
-             * @example HAN
+             * @description So hieu chuyen bay
+             * @example VN245
              */
             flight_number: string;
             /**
@@ -1547,11 +1525,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["BookTicketDto"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Book a ticket operation completed successfully. */
             200: {

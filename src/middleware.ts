@@ -6,9 +6,10 @@ export function middleware(req: NextRequest) {
     "/auth/signin",
     "/auth/signup",
     // "/auth/forgot-password",
+    "/about",
     "/account",
     "/auth/signup/create-password",
-    "/booking/checking-ticket-info/:id",
+    "/booking/checking-ticket-info",
     "/booking/find-flight",
     "/booking/manage-booking",
     "/booking/online-check-in",
@@ -24,15 +25,15 @@ export function middleware(req: NextRequest) {
 
   ];
 
-  const dynamicRoutePatterns = [/^\/booking\/checking-ticket-info\/[^/]+$/];
+  // const dynamicRoutePatterns = [/^\/booking\/checking-ticket-info\/[^/]+$/];
 
   const pathname = req.nextUrl.pathname;
 
   const isValidStaticRoute = validRoutes.some((route) => pathname.startsWith(route));
 
-  const isValidDynamicRoute = dynamicRoutePatterns.some((pattern) => pattern.test(pathname));
+  // const isValidDynamicRoute = dynamicRoutePatterns.some((pattern) => pattern.test(pathname));
 
-  if (!isValidStaticRoute && !isValidDynamicRoute) {
+  if (!isValidStaticRoute) {
     return NextResponse.rewrite(new URL("/not-found", req.url));
   }
 

@@ -24,6 +24,21 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
     cvv: null,
   });
 
+   const handlePaymentMethodChange = (method: "credit" | "paypal") => {
+    setPaymentMethod(method);
+    if (method === "paypal") {
+      // Clear all errors when switching to PayPal
+      setErrorsPayment({
+        cardNumber: null,
+        cardHolder: null,
+        expiryDate: null,
+        cvv: null,
+      });
+    }
+     
+     console.log("Payment method changed to", errorsPayment);
+   };
+  
   // Expose functions to parent using `useImperativeHandle`
   useImperativeHandle(ref, () => ({
     validate() {
@@ -50,7 +65,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
         <div className="flex space-x-4">
           <button
             type="button"
-            onClick={() => setPaymentMethod("credit")}
+            onClick={() => handlePaymentMethodChange("credit")}
             className={`flex-1 p-4 border rounded-xl flex items-center justify-center space-x-2 ${
               paymentMethod === "credit" ? "border-cyan-600 bg-cyan-50" : "border-gray-200"
             }`}>
@@ -59,7 +74,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
           </button>
           <button
             type="button"
-            onClick={() => setPaymentMethod("paypal")}
+            onClick={() => handlePaymentMethodChange("paypal")}
             className={`flex-1 p-4 border rounded-xl flex items-center justify-center space-x-2 ${
               paymentMethod === "paypal" ? "border-cyan-600 bg-cyan-50" : "border-gray-200"
             }`}>
@@ -91,7 +106,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                     setErrorsPayment((prev) => ({ ...prev, cardNumber: "" }));
                   }
                 }}
-                isRequired
+                // isRequired
                 classNames={{
                   input: "border-0 focus:ring-0 text-base",
                   label:
@@ -118,7 +133,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                     setErrorsPayment((prev) => ({ ...prev, cardHolder: "" }));
                   }
                 }}
-                isRequired
+                // isRequired
                 classNames={{
                   input: "border-0 focus:ring-0 text-base",
                   label:
@@ -134,7 +149,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                   variant="bordered"
                   name="expiryDate"
                   placeholder="MM/YY"
-                  isRequired
+                  // isRequired
                   errorMessage={errorsPayment.expiryDate}
                   isInvalid={!!errorsPayment.expiryDate}
                   classNames={{
@@ -177,7 +192,7 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
                       setErrorsPayment((prev) => ({ ...prev, cvv: "" }));
                     }
                   }}
-                  isRequired
+                  // isRequired
                   classNames={{
                     input: "border-0 focus:ring-0",
                     label:

@@ -80,16 +80,18 @@ const Flights = () => {
       setEditingFlight({
         ...editingFlight,
         [e.target.name]: e.target.value,
+        departure_time: e.target.name === "departure_time" ? new Date(e.target.value).toISOString() : editingFlight.departure_time,
+        arrival_time: e.target.name === "arrival_time" ? new Date(e.target.value).toISOString() : editingFlight.arrival_time,
         status: status,
       });
     } else {
       setCreateFlight({
         ...createFlight,
         [e.target.name]: e.target.value,
+        departure_time: e.target.name === "departure_time" ? new Date(e.target.value).toISOString() : createFlight.departure_time,
+        arrival_time: e.target.name === "arrival_time" ? new Date(e.target.value).toISOString() : createFlight.arrival_time,
       });
     }
-    console.log(editingFlight);
-    console.log(createFlight);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -257,7 +259,7 @@ const Flights = () => {
                     Actions
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    ID
+                    No
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                     Flight Number
@@ -292,7 +294,7 @@ const Flights = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-neutral-200">
-                {filteredFlights.map((flight) => (
+                {filteredFlights.map((flight, index) => (
                   <tr key={flight.id}>
                     <td className="px-4 py-3 whitespace-nowrap xl:hidden">
                       <div className="flex space-x-2 justify-center">
@@ -311,7 +313,7 @@ const Flights = () => {
                         </button>
                       </div>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{flight.id}</td>
+                    <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{index + 1}</td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
                       {flight.flight_number}
                     </td>
@@ -481,17 +483,6 @@ const Flights = () => {
                   e.preventDefault();
                 }
               }}>
-              <div className="mb-4">
-                <label className="block text-neutral-700 mb-2">ID</label>
-                <input
-                  type="text"
-                  name="id"
-                  value={editingFlight ? editNumber : "Auto-generated"}
-                  disabled
-                  className="w-full p-2 border rounded-lg text-sm md:text-base text-neutral-400 cursor-not-allowed"
-                />
-              </div>
-
               <div className="mb-4">
                 <label className="block text-neutral-700 mb-2">Flight Number</label>
                 <input
