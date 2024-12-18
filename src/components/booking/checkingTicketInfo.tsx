@@ -54,7 +54,7 @@ const CheckingTicketInfo = () => {
         passenger_type: "CHILD",
         full_name: "",
         cccd: "",
-        associated_adult_id: 0,
+        associated_adult_id: null,
         ticket_id: 0,
         birthday: "",
         country_code: "",
@@ -90,24 +90,24 @@ const CheckingTicketInfo = () => {
     }
   }, [tickets, adults, children, infants, router]);
 
-  const validateField = (field: keyof CreateTicketPassenger, value: string, isAdult: boolean) => {
+  const validateField = (field: keyof CreateTicketPassenger, value: string, isInfant: boolean) => {
     let error = "";
     if (!value.trim()) {
       error = "This field is required";
     }
     if (field === "associated_adult_id") {
-      error = !isAdult && !value ? "This field is required" : "";
+      error = isInfant && !value ? "This field is required" : "";
     }
     return error;
   };
 
   const onInputChange = (index: number, field: keyof CreateTicketPassenger, value: string) => {
-    const isAdult = index < adults;
+    const isInfant = index >= adults + children;
 
     setPassengers((prev) => prev.map((passenger, i) => (i === index ? { ...passenger, [field]: value } : passenger)));
 
     setErrors((prev) =>
-      prev.map((error, i) => (i === index ? { ...error, [field]: validateField(field, value, isAdult) } : error))
+      prev.map((error, i) => (i === index ? { ...error, [field]: validateField(field, value, isInfant) } : error))
     );
   };
 
@@ -125,16 +125,16 @@ const CheckingTicketInfo = () => {
 
   const validatePassengers = () => {
     const newErrors = passengers.map((passenger, index) => {
-      const isAdult = index < adults;
+      const isInfant = index >= adults + children;
       return {
-        full_name: validateField("full_name", passenger.full_name, isAdult),
-        cccd: validateField("cccd", passenger.cccd, isAdult),
-        birthday: validateField("birthday", passenger.birthday, isAdult),
-        country_code: validateField("country_code", passenger.country_code, isAdult),
+        full_name: validateField("full_name", passenger.full_name, isInfant),
+        cccd: validateField("cccd", passenger.cccd, isInfant),
+        birthday: validateField("birthday", passenger.birthday, isInfant),
+        country_code: validateField("country_code", passenger.country_code, isInfant),
         associated_adult_id: validateField(
           "associated_adult_id",
           passenger.associated_adult_id?.toString() || "",
-          isAdult
+          isInfant
         ),
       };
     });
@@ -163,7 +163,7 @@ const CheckingTicketInfo = () => {
         }
 
         for (const passenger of childrenPassengers) {
-          await api.post("/ticket-passenger", { ...passenger, associated_adult_id: adult_id });
+          await api.post("/ticket-passenger", passenger);
         }
 
         for (const passenger of infantPassengers) {
