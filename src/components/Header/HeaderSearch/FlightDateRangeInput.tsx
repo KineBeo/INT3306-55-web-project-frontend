@@ -1,30 +1,41 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { FC } from "react";
 import CustomRangeDatePicker from "@/components/CustomRangeDatePicker";
 import CustomDatePicker from "@/components/CustomDatePicker";
 import useOutsideClick from "@/hooks/useOutsideClick";
-import { CalendarDate } from "@nextui-org/calendar";
+import { CalendarDate } from "@internationalized/date";
 import ClearDataButton from "@/shared/ClearDataButton";
 
 export interface FlightDateRangeInputProps {
   className?: string;
   selectsRange?: boolean;
+  defaultStart?: string;
+  defaultEnd?: string;
   onInputDone?: (value: string[]) => void;
 }
 
-const FlightDateRangeInput: FC<FlightDateRangeInputProps> = ({ className = "", selectsRange = true, onInputDone }) => {
+const FlightDateRangeInput: FC<FlightDateRangeInputProps> = ({
+  className = "",
+  selectsRange = true,
+  onInputDone,
+  defaultStart = "",
+  defaultEnd = "",
+}) => {
   const [startDate, setStartDate] = useState<CalendarDate | null>(null);
   const [endDate, setEndDate] = useState<CalendarDate | null>(null);
   const [value, setValue] = useState("");
   const [isInvalid, setIsInvalid] = useState(false);
 
-  const onChangeRangeDate = (start: CalendarDate | null, end: CalendarDate | null) => {
+  const hasInitialized = useRef(false);
+
+  
+  const onChangeRangeDate = useCallback((start: CalendarDate | null, end: CalendarDate | null) => {
     if (!start || !end) return;
     setStartDate(start);
     setEndDate(end);
-
+    
     if (onInputDone) {
       onInputDone([`${start.year}-${start.month}-${start.day}`, `${end.year}-${end.month}-${end.day}`]);
     }
@@ -38,24 +49,39 @@ const FlightDateRangeInput: FC<FlightDateRangeInputProps> = ({ className = "", s
         day: "2-digit",
       })}`
     );
-  };
-
-  const onChangeDate = (date: CalendarDate | null) => {
+  }, [onInputDone]);
+  
+  const onChangeDate = useCallback((date: CalendarDate | null) => {
     if (!date) return;
     setStartDate(date);
-
+    
     if (onInputDone) {
       onInputDone([`${date.year}-${date.month}-${date.day}`]);
     }
-
+    
     setValue(
       new Date(date.year, date.month - 1, date.day).toLocaleDateString("en-US", {
         month: "short",
         day: "2-digit",
       })
     );
-  };
+  }, [onInputDone]);
+  
+  useEffect(() => {
+    if (hasInitialized.current) return;
 
+    if (defaultStart && defaultEnd) {
+      const ds = new Date(defaultStart);
+      const de = new Date(defaultEnd);
+      onChangeRangeDate(new CalendarDate(ds.getFullYear(), ds.getMonth() + 1, ds.getDate()), new CalendarDate(de.getFullYear(), de.getMonth() + 1, de.getDate()))
+    } else if (defaultStart) {
+      const ds = new Date(defaultStart);
+      onChangeDate(new CalendarDate(ds.getFullYear(), ds.getMonth() + 1, ds.getDate()))
+    }
+
+    hasInitialized.current = true;
+  }, [defaultEnd, defaultStart, onChangeDate, onChangeRangeDate]);
+  
   const clearData = () => {
     setStartDate(null);
     setEndDate(null);

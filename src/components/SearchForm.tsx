@@ -7,10 +7,10 @@ import LocationInput from "@/components/Header/HeaderSearch/LocationInput";
 import InputNumber from "@/components/InputNumber";
 import FlightDateRangeInput from "@/components/Header/HeaderSearch/FlightDateRangeInput";
 import ButtonSubmit from "@/shared/ButtonSubmit";
-import { useRouter } from "next/navigation";
-import { useOverlay } from "@/context/OverlayContext";
-import { useAppDispatch } from "@/redux/hooks";
+import { useRouter, usePathname } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchAirports } from "@/redux/airport/thunks";
+import { setSearch } from "@/redux/search/searchSlice";
 
 export interface GuestsObject {
   guestAdults: number;
@@ -18,7 +18,7 @@ export interface GuestsObject {
   guestInfants: number;
 }
 
-const flightClass = [
+const flightClassList = [
   {
     name: "Economy",
     value: "ECONOMY",
@@ -30,8 +30,8 @@ const flightClass = [
     href: "##",
   },
   {
-    name: "Multiple",
-    value: "MULTIPLE",
+    name: "First Class",
+    value: "FIRST_CLASS",
     href: "##",
   },
 ];
@@ -42,7 +42,11 @@ interface SearchFormProps {
 
 const SearchForm = ({ align }: SearchFormProps) => {
   const router = useRouter();
-  const { setLoading } = useOverlay();
+  const pathname = usePathname();
+  const dispatch = useAppDispatch();
+  const { fromLocation, toLocation, ticketType, flightClass, outboundDate, returnDate, adults, children, infants } =
+    useAppSelector((state) => state.search);
+  const { airports } = useAppSelector((state) => state.airport);
 
   const [dropOffLocationType, setDropOffLocationType] = useState<"ONE_WAY" | "ROUND_TRIP">("ONE_WAY");
   const [flightClassState, setFlightClassState] = useState("ECONOMY");
@@ -53,11 +57,21 @@ const SearchForm = ({ align }: SearchFormProps) => {
   const [arrival_airport_code, setArrival_airport_code] = useState("");
   const [date, setDate] = useState<string[]>([]);
 
-  const dispatch = useAppDispatch();
+  useEffect(() => {
+    setDropOffLocationType(ticketType);
+    setFlightClassState(flightClass);
+    setGuestAdultsInputValue(adults);
+    setGuestChildrenInputValue(children);
+    setGuestInfantsInputValue(infants);
+    setDeparture_airport_code(fromLocation);
+    setArrival_airport_code(toLocation);
+  }, [ticketType, flightClass, adults, children, infants, fromLocation, toLocation]);
 
   useEffect(() => {
-    dispatch(fetchAirports());
-  }, [dispatch]);
+    if (!airports.length) {
+      dispatch(fetchAirports());
+    }
+  }, [dispatch, airports]);
 
   const handleChangeData = (value: number, type: keyof GuestsObject) => {
     const newValue = {
@@ -156,7 +170,7 @@ const SearchForm = ({ align }: SearchFormProps) => {
             selectionMode="single"
             selectedKeys={selectedKeys}
             onSelectionChange={(keys) => setSelectedKeys(new Set(keys as string))}>
-            {flightClass.map((item) => (
+            {flightClassList.map((item) => (
               <DropdownItem key={item.name} onClick={() => setFlightClassState(item.value)} className="custom-focus">
                 {item.name}
               </DropdownItem>
@@ -202,12 +216,37 @@ const SearchForm = ({ align }: SearchFormProps) => {
     if (!departure_airport_code || !arrival_airport_code || !date.length) {
       return;
     }
-    setLoading(true);
     if (dropOffLocationType === "ROUND_TRIP") {
+      dispatch(
+        setSearch({
+          ticketType: dropOffLocationType,
+          flightClass: flightClassState as "ECONOMY" | "BUSINESS" | "FIRST_CLASS",
+          fromLocation: departure_airport_code,
+          toLocation: arrival_airport_code,
+          outboundDate: date[0],
+          returnDate: date.length > 1 ? date[1] : "",
+          adults: guestAdultsInputValue,
+          children: guestChildrenInputValue,
+          infants: guestInfantsInputValue,
+        })
+      );
       router.push(
         `/booking/find-flight?ticket_type=${dropOffLocationType}&booking_class=${flightClassState}&departure_airport_code=${departure_airport_code}&arrival_airport_code=${arrival_airport_code}&outbound_day=${date[0]}&return_day=${date[1]}&adults=${guestAdultsInputValue}&children=${guestChildrenInputValue}&infants=${guestInfantsInputValue}`
       );
     } else {
+      dispatch(
+        setSearch({
+          ticketType: dropOffLocationType,
+          flightClass: flightClassState as "ECONOMY" | "BUSINESS" | "FIRST_CLASS",
+          fromLocation: departure_airport_code,
+          toLocation: arrival_airport_code,
+          outboundDate: date[0],
+          returnDate: "",
+          adults: guestAdultsInputValue,
+          children: guestChildrenInputValue,
+          infants: guestInfantsInputValue,
+        })
+      );
       router.push(
         `/booking/find-flight?ticket_type=${dropOffLocationType}&booking_class=${flightClassState}&departure_airport_code=${departure_airport_code}&arrival_airport_code=${arrival_airport_code}&outbound_day=${date[0]}&adults=${guestAdultsInputValue}&children=${guestChildrenInputValue}&infants=${guestInfantsInputValue}`
       );
@@ -230,6 +269,7 @@ const SearchForm = ({ align }: SearchFormProps) => {
               placeHolder="Add Location"
               desc="Flying from"
               className="flex-1"
+              defaultLocationCode={pathname === "/booking/find-flight" ? fromLocation : ""}
               onInputDone={(value) => {
                 setDeparture_airport_code(value);
               }}
@@ -239,6 +279,7 @@ const SearchForm = ({ align }: SearchFormProps) => {
               placeHolder="Add Location"
               desc="Flying to"
               className="flex-1"
+              defaultLocationCode={pathname === "/booking/find-flight" ? toLocation : ""}
               onInputDone={(value) => {
                 setArrival_airport_code(value);
               }}
@@ -247,6 +288,8 @@ const SearchForm = ({ align }: SearchFormProps) => {
             <FlightDateRangeInput
               selectsRange={dropOffLocationType !== "ONE_WAY"}
               className="flex-1"
+              defaultStart={pathname === "/booking/find-flight" ? outboundDate : ""}
+              defaultEnd={pathname === "/booking/find-flight" ? returnDate : ""}
               onInputDone={(dates) => {
                 setDate(dates);
               }}

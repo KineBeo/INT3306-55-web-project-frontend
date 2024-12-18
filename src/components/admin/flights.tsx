@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { Flight, CreateFlight, UpdateFlight } from "@/data/flight";
+import { Flight, CreateFlight, UpdateFlight } from "@/types/flight";
 import api from "@/services/apiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchAirports } from "@/redux/airport/thunks";
@@ -35,13 +35,9 @@ const Flights = () => {
   const { airports } = useAppSelector((state) => state.airport);
   const { airplanes } = useAppSelector((state) => state.airplane);
   useEffect(() => {
-    if (!airports.length) {
-      dispatch(fetchAirports());
-    }
-    if (!airplanes.length) {
-      dispatch(fetchAirplanes());
-    }
-  }, [dispatch, airports, airplanes]);
+    dispatch(fetchAirports());
+    dispatch(fetchAirplanes());
+  }, [dispatch]);
 
   const findIdByValue = (map: Record<number, string>, value: string): number | undefined => {
     return Object.keys(map).find((key) => map[Number(key)] === value) as unknown as number | undefined;
@@ -127,7 +123,6 @@ const Flights = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (editNumber != -1 && editingFlight) {
-      console.log(editingFlight);
       setLoading(true);
       api
         .patch(`/flight/${editNumber}`, editingFlight)
@@ -161,7 +156,6 @@ const Flights = () => {
           setLoading(false);
         });
     } else {
-      console.log(createFlight);
       setLoading(true);
       api
         .post("/flight", createFlight)

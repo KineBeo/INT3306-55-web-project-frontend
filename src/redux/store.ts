@@ -6,6 +6,7 @@ import flightReducer from "./flight/flightSlice";
 import airportReducer from "./airport/airportSlice";
 import airplaneReducer from "./airplane/airplaneSlice";
 import ticketReducer from "./ticket/ticketSlice";
+import searchReducer from "./search/searchSlice";
 
 const persistConfig = {
   key: "root",
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   airport: airportReducer,
   airplane: airplaneReducer,
   tickets: ticketReducer,
+  search: searchReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

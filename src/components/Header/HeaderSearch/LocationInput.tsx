@@ -6,7 +6,7 @@ import ClearDataButton from "@/shared/ClearDataButton";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { useAppSelector } from "@/redux/hooks";
-import { Airport } from "@/data/airport";
+import { Airport } from "@/types/airport";
 
 export interface LocationInputProps {
   onInputDone?: (value: string) => void;
@@ -14,6 +14,7 @@ export interface LocationInputProps {
   desc?: string;
   className?: string;
   autoFocus?: boolean;
+  defaultLocationCode?: string;
 }
 
 const LocationInput: FC<LocationInputProps> = ({
@@ -22,6 +23,7 @@ const LocationInput: FC<LocationInputProps> = ({
   placeHolder = "Location",
   desc = "Where?",
   className = "nc-flex-1.5",
+  defaultLocationCode = "",
 }) => {
   const { airports } = useAppSelector((state) => state.airport);
 
@@ -29,10 +31,16 @@ const LocationInput: FC<LocationInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null); // Thêm ref để cuộn danh sách
 
+  
   const [value, setValue] = useState("");
   const [showPopover, setShowPopover] = useState(autoFocus);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
   const [isInvalid, setIsInvalid] = useState(false);
+  
+  useEffect(() => {
+    const defaultLocation = airports.find((airport) => airport.code === defaultLocationCode);
+    setValue(defaultLocation ? defaultLocation.name : "");
+  }, [airports, defaultLocationCode]);
 
   useEffect(() => {
     setShowPopover(autoFocus);

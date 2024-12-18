@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { TicketPassenger, UpdateTicketPassenger } from "@/data/ticketPassenger";
+import { TicketPassenger, UpdateTicketPassenger } from "@/types/ticketPassenger";
 import { formatDateToYYYYMMDD, formatDateToDDMMYYYY } from "@/utils/formatDate";
 import api from "@/services/apiClient";
 

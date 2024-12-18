@@ -2,7 +2,7 @@
 
 import ListBooking from "@/components/booking/listBooking";
 import api from "@/services/apiClient";
-import { Ticket } from "@/data/ticket";
+import { Ticket } from "@/types/ticket";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { useOverlay } from "@/context/OverlayContext";

@@ -1,4 +1,4 @@
-import { Flight } from '@/data/flight';
+import { Flight } from '@/types/flight';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FlightState {

@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useOverlay } from "@/context/OverlayContext";
 import Image from "next/image";
 import api from "@/services/apiClient";
-import { Ticket } from "@/data/ticket";
+import { Ticket } from "@/types/ticket";
 import { useAppDispatch } from "@/redux/hooks";
 import { setTicket, setPassengers, setTotalPrice } from "@/redux/ticket/ticketSlice";
 
@@ -93,7 +93,16 @@ const FindFlight = () => {
       }
     };
     fetchData();
-  }, [booking_class, setLoading, totalPassengers, ticket_type, departure_airport_code, arrival_airport_code, outbound_day, return_day]);
+  }, [
+    booking_class,
+    setLoading,
+    totalPassengers,
+    ticket_type,
+    departure_airport_code,
+    arrival_airport_code,
+    outbound_day,
+    return_day,
+  ]);
 
   const [priceRange, setPriceRange] = useState<number>(5000000);
   const [sortOrder, setSortOrder] = useState<string>("asc");
@@ -146,7 +155,7 @@ const FindFlight = () => {
         <div className="w-full flex">
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 md:items-end">
             <div>
-              <PriceRangeFilter priceRange={priceRange} setPriceRange={setPriceRange} min={500000} max={5000000} />
+              <PriceRangeFilter priceRange={priceRange} setPriceRange={setPriceRange} min={0} max={10000000} />
             </div>
             <div>
               <SortButton sortOrder={sortOrder} setSortOrder={setSortOrder} />
@@ -160,7 +169,7 @@ const FindFlight = () => {
           <div className="absolute inset-0">
             <Image alt="sectionBackground" src={sectionBackground} fill className="object-cover" />
           </div>
-          {sortedTickets.map(({ tickets, totalPrice }, index) => (
+          {sortedTickets.map(({ tickets, totalPrice }, index) => totalPrice < priceRange && (
             <div className="z-10" key={index}>
               <FlightCard
                 key={index}
@@ -171,7 +180,8 @@ const FindFlight = () => {
                 infant={infants}
                 onClick={() => handleBookNow(tickets)}></FlightCard>
             </div>
-          ))}
+          )
+          )}
         </div>
       </div>
     </div>

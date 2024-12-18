@@ -9,10 +9,12 @@ import Image from "next/image";
 import ArticleCard from "@/components/ArticleCard";
 import DestinationCard from "@/components/DestinationCard";
 import { clearTicket, clearPassengers, clearTotalPrice } from "@/redux/ticket/ticketSlice";
+import { clearSearch } from "@/redux/search/searchSlice";
+import { fetchAirports } from "@/redux/airport/thunks";
 import { useAppDispatch } from "@/redux/hooks";
 import { usePathname } from "next/navigation";
-import { slides, popularDestinations } from "@/data/fakeData";
-import { Article } from "@/data/article";
+import { slides, popularDestinations } from "@/types/fakeData";
+import { Article } from "@/types/article";
 import eventBus from "@/utils/eventBus";
 import { formatDateToDDMMYYYY } from "@/utils/formatDate";
 import { useOverlay } from "@/context/OverlayContext";
@@ -34,6 +36,8 @@ const Home = () => {
       dispatch(clearTicket());
       dispatch(clearPassengers());
       dispatch(clearTotalPrice());
+      dispatch(clearSearch());
+      dispatch(fetchAirports());
     }
   }, [currentPath, dispatch]);
 
@@ -85,6 +89,18 @@ const Home = () => {
     handleScrollIntoView(searchFormRef);
     eventBus.emit("bookNowClicked");
   };
+
+  const [randomDestinations, setRandomDestinations] = useState(popularDestinations.slice(0, 4));
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const shuffled = [...popularDestinations].sort(() => Math.random() - 0.5); // Trộn ngẫu nhiên
+      setRandomDestinations(shuffled.slice(0, 4)); // Lấy 4 phần tử đầu tiên
+      console.log("Shuffled");
+    }, 10000);
+
+    return () => clearInterval(interval); // Dọn dẹp interval khi component unmount
+  }, []);
+
 
   return (
     <div>
@@ -152,11 +168,11 @@ const Home = () => {
             </h4>
             {/* Cards */}
             <div className="flex gap-6 justify-start md:justify-center overflow-x-auto md:overflow-visible md:flex-wrap md:px-10">
-              {popularDestinations.map((dest) => (
-                <div key={dest.id}>
-                  <DestinationCard destination={dest} onClick={handleBookNow} />
-                </div>
-              ))}
+              {randomDestinations.map((dest) => (
+                  <div key={dest.id}>
+                    <DestinationCard destination={dest} onClick={handleBookNow} />
+                  </div>
+                ))}
             </div>
             <h2
               ref={articlesRef}

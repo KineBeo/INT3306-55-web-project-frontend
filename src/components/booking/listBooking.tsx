@@ -5,7 +5,7 @@ import FlightTicketCard from "@/components/FlightTicketCard";
 import sectionBackground from "@/images/section-background.png";
 import { useOverlay } from "@/context/OverlayContext";
 import Image from "next/image";
-import { Ticket } from "@/data/ticket";
+import { Ticket } from "@/types/ticket";
 import { useNotification } from "@/context/NotificationContext";
 import api from "@/services/apiClient";
 

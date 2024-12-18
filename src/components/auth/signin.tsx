@@ -92,7 +92,6 @@ const SignIn = () => {
             password: password,
             onSuccess() {
               showNotification("Login successfully!");
-              console.log(redirectPath);
               router.replace(redirectPath);
             },
           })

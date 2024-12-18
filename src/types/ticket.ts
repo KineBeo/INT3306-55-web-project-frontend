@@ -21,7 +21,7 @@ export interface Ticket {
     outboundFlight: Flight;
     returnFlight: Flight | null;
     user: UserInfo | null;
-    TicketPassengers: TicketPassenger[];
+    ticketPassengers: TicketPassenger[];
     created_at: string;
     updated_at: string;
 };

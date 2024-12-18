@@ -12,10 +12,10 @@ export interface SocialsProps {
 }
 
 const socials: SocialType[] = [
-  { name: "Facebook", icon: "lab la-facebook-f", href: "#"},
-  { name: "Twitter", icon: "lab la-twitter", href: "#"},
-  { name: "Instagram", icon: "lab la-instagram", href: "#" },
-  { name: "Linkedin", icon: "lab la-linkedin", href: "#" },
+  { name: "Facebook", icon: "lab la-facebook-f", href: "https://www.vietnamairlines.com/vn/vi/home"},
+  { name: "Twitter", icon: "lab la-twitter", href: "https://www.vietjetair.com/"},
+  { name: "Instagram", icon: "lab la-instagram", href: "https://www.bambooairways.com/vn/vi/home" },
+  { name: "Linkedin", icon: "lab la-linkedin", href: "https://www.jetstar.com/vn/vi/home" },
 ];
 
 const Socials: FC<SocialsProps> = ({ className = "space-y-2.5", itemClassName = "text-neutral-700 hover:text-black" }) => {

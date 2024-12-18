@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Airport } from "@/data/airport";
+import { Airport } from "@/types/airport";
 
 interface AirportState {
   airports: Airport[];
