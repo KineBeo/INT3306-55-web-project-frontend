@@ -23,6 +23,7 @@ interface FlightCardProps {
 
 const FlightTicketCard: React.FC<FlightCardProps> = ({ flightTicket, handleCheckIn, handleCancel }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isOpenCheckIn, setIsOpenCheckIn] = useState(false);
   const isRoundTrip = flightTicket.ticket_type === "ROUND_TRIP";
   const outboundFlight = flightTicket.outboundFlight;
   const returnFlight = flightTicket.returnFlight;
@@ -277,6 +278,15 @@ const FlightTicketCard: React.FC<FlightCardProps> = ({ flightTicket, handleCheck
                 )}
               </ModalBody>
               <ModalFooter>
+                <button
+                  onClick={() => {
+                    if (isOPenCancel) {
+                      setIsOpenCancel(false);
+                    } else onClose();
+                  }}
+                  className="text-sm md:text-md px-4 md:px-6 py-2 border-2 border-[#ec9543] text-white rounded-lg bg-[#ec9543] hover:bg-[#ffd4ab] hover:text-[#e78a34]">
+                  {isOPenCancel ? "Cancel" : "Close"}
+                </button>
                 {flightTicket.booking_status === "PENDING" && (
                   <button
                     onClick={() => {
@@ -289,18 +299,54 @@ const FlightTicketCard: React.FC<FlightCardProps> = ({ flightTicket, handleCheck
                     {isOPenCancel ? "Confirm" : "Cancel"}
                   </button>
                 )}
-                <button
-                  onClick={() => {
-                    if (isOPenCancel) {
-                      setIsOpenCancel(false);
-                    } else onClose();
-                  }}
-                  className="text-sm md:text-md px-4 md:px-6 py-2 border-2 border-[#ec9543] text-white rounded-lg bg-[#ec9543] hover:bg-[#ffd4ab] hover:text-[#e78a34]">
-                  {isOPenCancel ? "Cancel" : "Close"}
-                </button>
               </ModalFooter>
             </>
           )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        backdrop="opaque"
+        isOpen={isOpenCheckIn}
+        scrollBehavior="inside"
+        placement="center"
+        onClose={() => setIsOpenCheckIn(false)}
+        size="xl">
+        <ModalContent>
+          <>
+            <ModalHeader>
+              <h3 className="font-semibold text-xl md:text-2xl text-primary-700">
+                <div className="flex space-x-4 items-center">
+                  <div className="bg-primary-100 p-3 rounded-full">
+                    <FaCheckCircle className="text-primary-500 text-xl" />
+                  </div>
+                  <p>Confirm Online Check-in ?</p>
+                </div>
+              </h3>
+            </ModalHeader>
+            <ModalBody>
+              <p className="text-neutral-600 text-base">
+                Online check-in does not allow changes to the information once completed. Please double-check your
+                details before proceeding with check-in.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <button
+                onClick={() => {
+                  setIsOpenCheckIn(false);
+                }}
+                className="text-sm md:text-md px-4 md:px-6 py-2 border-2 border-[#ec9543] text-white rounded-lg bg-[#ec9543] hover:bg-[#ffd4ab] hover:text-[#e78a34]">
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  handleCheckIn && handleCheckIn();
+                  setIsOpenCheckIn(false);
+                }}
+                className="text-sm md:text-md px-4 md:px-6 py-2 border-2 border-primary-100 text-white rounded-lg bg-primary-500 hover:bg-primary-50 hover:text-primary-6000">
+                Confirm
+              </button>
+            </ModalFooter>
+          </>
         </ModalContent>
       </Modal>
       <div className="shine-effect-container relative flex overflow-hidden flex-col 2xl:flex-row bg-white rounded-2xl shadow-lg p-3 md:p-4 lg:p-6 transition-all hover:shadow-xl">
@@ -448,7 +494,7 @@ const FlightTicketCard: React.FC<FlightCardProps> = ({ flightTicket, handleCheck
               </button>
               {flightTicket.booking_status === "PENDING" && (
                 <button
-                  onClick={handleCheckIn}
+                  onClick={() => setIsOpenCheckIn(true)}
                   className="text-sm md:text-md px-4 md:px-6 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-700">
                   Check-in
                 </button>
