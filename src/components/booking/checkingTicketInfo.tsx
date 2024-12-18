@@ -16,7 +16,7 @@ import { Input } from "@nextui-org/react";
 import { DateInput } from "@nextui-org/react";
 import { useOverlay } from "@/context/OverlayContext";
 import { useNotification } from "@/context/NotificationContext";
-import { CreateTicketPassenger } from "@/data/ticketPassenger";
+import { CreateTicketPassenger } from "@/types/ticketPassenger";
 import { CalendarDate } from "@nextui-org/react";
 import DemoPay, { HandlePay } from "./demoPay";
 import api from "@/services/apiClient";
@@ -75,7 +75,6 @@ const CheckingTicketInfo = () => {
         passenger.ticket_id = tickets[index].id;
       });
 
-      console.log(initialPassengers);
       setPassengers(initialPassengers);
 
       setErrors(

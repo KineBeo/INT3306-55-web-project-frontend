@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { Airplane, CreateAirplane, UpdateAirplane } from "@/data/airplane";
+import { Airplane, CreateAirplane, UpdateAirplane } from "@/types/airplane";
 import api from "@/services/apiClient";
 
 const Airplanes = () => {

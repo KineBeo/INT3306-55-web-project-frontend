@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { FiPhone, FiMail, FiCalendar, FiUser } from "react-icons/fi";
 import { SiAdminer } from "react-icons/si";
-import { UserInfo } from "@/data/auth";
+import { UserInfo } from "@/types/auth";
 import { useAppSelector } from "@/redux/hooks";
 import api from "@/services/apiClient";
 import { formatDateToDDMMYYYY } from "@/utils/formatDate";

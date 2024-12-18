@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { CreateArticle, UpdateArticle, Article } from "@/data/article";
+import { CreateArticle, UpdateArticle, Article } from "@/types/article";
 import api from "@/services/apiClient";
 import { formatDateToDDMMYYYY } from "@/utils/formatDate";
 

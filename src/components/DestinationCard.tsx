@@ -1,6 +1,6 @@
 import React from "react";
 import { BsArrowRight } from "react-icons/bs";
-import { Destination } from "@/data/types";
+import { Destination } from "@/types/other";
 import Image from "next/image";
 
 interface DestinationCardProps {
@@ -12,7 +12,7 @@ const DestinationCard: React.FC<DestinationCardProps> = ({ destination, onClick 
   return (
     <div
       key={destination.id}
-      className="flex-none bg-white w-60 md:w-72 h-60 md:h-[300px] rounded-2xl border-2 shadow-lg overflow-hidden group hover:shadow-xl transition-all">
+      className="flex-none bg-white w-60 md:w-72 h-60 md:h-[260px] rounded-2xl border-2 shadow-lg overflow-hidden group hover:shadow-xl transition-all">
       {/* Image Section */}
       <div className="relative h-40 md:h-48 overflow-hidden">
         <Image
@@ -30,7 +30,6 @@ const DestinationCard: React.FC<DestinationCardProps> = ({ destination, onClick 
       </div>
       {/* Description Section */}
       <div className="p-3 md:p-6">
-        <p className="text-sm md:text-md text-neutral-600 mb-2 md:mb-4 truncate">{destination.description}</p>
         <div className="flex justify-end items-center">
           <button onClick={onClick} className="text-sm md:text-md flex items-center text-primary-6000 hover:text-primary-700 transition-colors">
             Book Now

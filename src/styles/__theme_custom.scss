@@ -31,8 +31,17 @@
 }
 
 .shine-effect-container:hover::before {
-  left: 100%;
-  /* di chuyển từ trái qua phải */
+  animation: shine 0.8s ease-in-out forwards;
+}
+
+@keyframes shine {
+  from {
+    left: -100%;
+  }
+
+  to {
+    left: 100%;
+  }
 }
 
 #headlessui-portal-root {

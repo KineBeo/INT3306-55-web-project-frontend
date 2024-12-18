@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Airplane } from "@/data/airplane";
+import { Airplane } from "@/types/airplane";
 
 interface AirplaneState {
   airplanes: Airplane[];

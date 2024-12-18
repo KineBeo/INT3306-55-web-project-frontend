@@ -35,8 +35,6 @@ const DemoPay = forwardRef<HandlePay, ChildProps>((props, ref) => {
         cvv: null,
       });
     }
-     
-     console.log("Payment method changed to", errorsPayment);
    };
   
   // Expose functions to parent using `useImperativeHandle`

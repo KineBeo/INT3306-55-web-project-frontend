@@ -1,7 +1,7 @@
 import React from "react";
 import { FaPlane, FaUser, FaPlaneArrival, FaPlaneDeparture, FaChild, FaBaby } from "react-icons/fa";
 import { BsCashStack, BsAirplane } from "react-icons/bs";
-import { Ticket } from "@/data/ticket";
+import { Ticket } from "@/types/ticket";
 import formatCurrency from "@/utils/formatCurrency";
 import smallLogo from "@/images/small-logo.png";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
@@ -36,7 +36,7 @@ const FlightCard: React.FC<FlightCardProps> = ({ tickets, totalPrice, onClick, c
       .hours
   }h ${
     intervalToDuration({ start: new Date(outboundFlight.departure_time), end: new Date(outboundFlight.arrival_time) })
-      .minutes
+      .minutes ?? 0
   }m`;
   const duration_return = returnFlight
     ? `${
@@ -44,10 +44,10 @@ const FlightCard: React.FC<FlightCardProps> = ({ tickets, totalPrice, onClick, c
           .hours
       }h ${
         intervalToDuration({ start: new Date(returnFlight.departure_time), end: new Date(returnFlight.arrival_time) })
-          .minutes
+          .minutes?? 0
       }m`
     : "";
-
+  
   return (
     <>
       <Modal
@@ -318,7 +318,7 @@ const FlightCard: React.FC<FlightCardProps> = ({ tickets, totalPrice, onClick, c
           </div>
         </div>
 
-        <div className="flex items-center justify-end border-t-2 2xl:border-t-0 2xl:border-l-4 border-dashed border-gray-400 2xl:pl-16 md:gap-1 2xl:w-[324px] 2xl:pt-0 pt-1 2xl:mt-0 mt-1">
+        <div className="flex items-center justify-end border-t-2 2xl:border-t-0 2xl:border-l-4 border-dashed border-gray-400 2xl:pl-16 md:gap-1 2xl:w-[328px] 2xl:pt-0 pt-1 2xl:mt-0 mt-1">
           <div className="flex flex-col">
             <p className="text-lg md:text-2xl lg:text-3xl font-bold text-primary-6000 text-right order-1 md:order-0">
               {formatCurrency(totalPrice)} VND

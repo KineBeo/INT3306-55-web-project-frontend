@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import { useOverlay } from "@/context/OverlayContext";
-import { Ticket, CreateTicket, UpdateTicket } from "@/data/ticket";
+import { Ticket, CreateTicket, UpdateTicket } from "@/types/ticket";
 import api from "@/services/apiClient";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchFlights } from "@/redux/flight/thunks";
@@ -35,10 +35,8 @@ const Tickets = () => {
   const dispatch = useAppDispatch();
   const { flights } = useAppSelector((state) => state.flight);
   useEffect(() => {
-    if (!flights.length) {
-      dispatch(fetchFlights());
-    }
-  }, [dispatch, flights]);
+    dispatch(fetchFlights());
+  }, [dispatch]);
 
   const findIdByValue = (map: Record<number, string>, value: string): number | undefined => {
     return Object.keys(map).find((key) => map[Number(key)] === value) as unknown as number | undefined;
@@ -66,7 +64,6 @@ const Tickets = () => {
       const tickets = response.data;
       setTicketList(tickets.sort((a: Ticket, b: Ticket) => a.id - b.id));
       setLoading(false);
-      console.log(tickets);
     });
   }, [setLoading, setTicketList]);
 
@@ -155,7 +152,6 @@ const Tickets = () => {
           setLoading(false);
         });
     } else {
-      console.log(createTicket);
       setLoading(true);
       api
         .post("/ticket", createTicket)
@@ -306,7 +302,9 @@ const Tickets = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">{index + 1}</td>
-                    <td className="px-4 py-3 whitespace-nowrap max-w-[500px] truncate text-sm md:text-base">{ticket.description}</td>
+                    <td className="px-4 py-3 whitespace-nowrap max-w-[500px] truncate text-sm md:text-base">
+                      {ticket.description}
+                    </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base text-center">
                       {ticket.ticket_type}
                     </td>
@@ -317,7 +315,7 @@ const Tickets = () => {
                       {flightMap[ticket.outboundFlight.id]}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base truncate">
-                      {flightMap[ticket.outboundFlight.id]}
+                      {ticket.returnFlight ? flightMap[ticket.returnFlight.id] : ""}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap text-sm md:text-base">
                       {ticket.user ? ticket.user.fullname : ""}
@@ -470,7 +468,6 @@ const Tickets = () => {
                   e.preventDefault();
                 }
               }}>
-
               <div className="mb-4">
                 <label className="block text-neutral-700 mb-2">User</label>
                 <input
@@ -513,7 +510,7 @@ const Tickets = () => {
                     input: "w-full p-2 border rounded-lg text-sm md:text-base",
                   }}
                   dataList={Object.values(flightMap)}
-                  disabled={createTicket.ticket_type === "ONE_WAY"}
+                  disabled={editingTicket ? editingTicket.ticket_type === "ONE_WAY" : createTicket.ticket_type === "ONE_WAY"}
                   defaultValue={
                     editingTicket && editingTicket.return_flight_id ? flightMap[editingTicket.return_flight_id] : ""
                   }

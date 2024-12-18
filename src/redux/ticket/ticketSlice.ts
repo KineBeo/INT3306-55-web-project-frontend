@@ -1,4 +1,4 @@
-import { Ticket } from "@/data/ticket";
+import { Ticket } from "@/types/ticket";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface TicketState {

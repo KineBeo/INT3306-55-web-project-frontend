@@ -5,8 +5,9 @@ import {
   UserCircleIcon,
   ClipboardDocumentListIcon, CheckBadgeIcon
 } from "@heroicons/react/24/outline";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import React, { useRef } from "react";
-import { PathName } from "@/routers/types";
+import { PathName } from "@/types/page";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -23,7 +24,7 @@ const NAV: NavItem[] = [
     icon: MagnifyingGlassIcon,
   },
   {
-    name: "Manage Booking",
+    name: "Bookings",
     link: "/booking/manage-booking",
     icon: ClipboardDocumentListIcon,
   },
@@ -36,6 +37,11 @@ const NAV: NavItem[] = [
     name: "Account",
     link: "/account",
     icon: UserCircleIcon,
+  },
+  {
+    name: "About us",
+    link: "/about",
+    icon: IoMdInformationCircleOutline,
   },
 ];
 

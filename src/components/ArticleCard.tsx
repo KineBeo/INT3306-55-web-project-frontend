@@ -1,6 +1,6 @@
 import { BsGift } from "react-icons/bs";
 import Image from "next/image";
-import { Article } from "@/data/article";
+import { Article } from "@/types/article";
 import { Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/modal";
 
 interface ArticleProps {
