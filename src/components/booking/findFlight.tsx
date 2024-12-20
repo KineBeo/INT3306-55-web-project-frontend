@@ -84,7 +84,7 @@ const FindFlight = () => {
             acc[key] = tickets.slice(0, totalPassengers);
             return acc;
           }, {} as Groups);
-
+          console.log("fetch");
         setTicketSearch(finalData);
       } catch (error) {
         console.error(error);

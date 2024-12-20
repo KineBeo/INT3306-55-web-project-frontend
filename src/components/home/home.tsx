@@ -95,7 +95,7 @@ const Home = () => {
     const interval = setInterval(() => {
       const shuffled = [...popularDestinations].sort(() => Math.random() - 0.5); // Trộn ngẫu nhiên
       setRandomDestinations(shuffled.slice(0, 4)); // Lấy 4 phần tử đầu tiên
-      console.log("Shuffled");
+      // console.log("Shuffled");
     }, 10000);
 
     return () => clearInterval(interval); // Dọn dẹp interval khi component unmount

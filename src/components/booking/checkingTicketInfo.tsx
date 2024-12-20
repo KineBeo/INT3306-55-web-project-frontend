@@ -234,7 +234,7 @@ const CheckingTicketInfo = () => {
             intervalToDuration({
               start: new Date(tickets[0].outboundFlight.departure_time),
               end: new Date(tickets[0].outboundFlight.arrival_time),
-            }).minutes
+            }).minutes ?? 0
           }m`}</div>
         </div>
 
@@ -270,7 +270,7 @@ const CheckingTicketInfo = () => {
                 intervalToDuration({
                   start: new Date(tickets[0].returnFlight.departure_time),
                   end: new Date(tickets[0].returnFlight.arrival_time),
-                }).minutes
+                }).minutes ?? 0
               }m`}</div>
             </div>
           </>
