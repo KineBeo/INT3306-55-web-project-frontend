@@ -72,6 +72,11 @@ const FlightTicketCard: React.FC<FlightCardProps> = ({ flightTicket, handleCheck
         scrollBehavior="inside"
         placement="center"
         size="xl"
+        classNames={{
+          backdrop: "z-[9998]",
+          base: "z-[9999]",
+          wrapper: "z-[9999]",
+        }}
         motionProps={{
           variants: {
             enter: {

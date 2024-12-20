@@ -12,7 +12,7 @@ const DestinationCard: React.FC<DestinationCardProps> = ({ destination, onClick 
   return (
     <div
       key={destination.id}
-      className="flex-none bg-white w-60 md:w-72 h-60 md:h-[260px] rounded-2xl border-2 shadow-lg overflow-hidden group hover:shadow-xl transition-all">
+      className="flex-none bg-white w-60 md:w-72 h-52 md:h-[260px] rounded-2xl border-2 shadow-lg overflow-hidden group hover:shadow-xl transition-all">
       {/* Image Section */}
       <div className="relative h-40 md:h-48 overflow-hidden">
         <Image
